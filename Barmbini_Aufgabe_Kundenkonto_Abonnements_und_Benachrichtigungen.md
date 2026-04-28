@@ -537,3 +537,35 @@ Die Aufgabe ist abgeschlossen, wenn alle folgenden Punkte erfuellt sind:
 6. Die Einwilligung ist nachvollziehbar dokumentiert.
 7. Es werden keine unkontrollierten Dubletten verschickt.
 8. Datenschutz, Abmeldung und Nachvollziehbarkeit sind beruecksichtigt.
+
+## Aktueller Umsetzungs- und Teststand
+
+Stand der lokalen Verifikation: 2026-04-28.
+
+Bereits umgesetzt im Projekt-Plugin `wp-content/plugins/barmbini-core/`:
+
+- Bootstrap und Modulregistrierung fuer Konto, Benachrichtigungen, Admin und Datenschutz
+- WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
+- Speicherung der Abo-Einstellungen in `usermeta`
+- Trigger fuer `news`, `category_product` und `discount`
+- Versandlog, Digest-Queue und Scheduler fuer `taeglich` und `woechentlich`
+- tokenbasierte Abmeldung sowie Datenschutz-Export/Loeschintegration
+
+Lokal verifiziert gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`:
+
+- Browser-Test mit Kundenlogin: Der neue Konto-Menuepunkt `Abonnements` ist sichtbar und der Endpoint laedt.
+- Formularspeicherung: Abo-Einstellungen werden gespeichert; Einwilligungs- und Aktualisierungszeitstempel werden angezeigt.
+- News-Trigger: Ein neu veroeffentlichter Beitrag in der Kategorie `neuigkeiten` erzeugt bei `sofort` einen direkten Versandlog-Eintrag mit Status `sent`.
+- Produkt-Trigger: Ein neu veroeffentlichtes Produkt in der abonnierten Kategorie `Babybedarf` erzeugt bei `taeglich` einen Queue-Eintrag; ein erzwungener Daily-Digest verarbeitet ihn erfolgreich zu einem `daily_digest`-Log-Eintrag.
+- Rabatt-Trigger: Ein Produkt im aktiven Sale-Zustand erzeugt beim Hook-Pfad `save_post_product` einen direkten Versandlog-Eintrag mit Status `sent`.
+
+Wichtige Einordnung fuer lokale CLI-Tests:
+
+- Die fachliche Rabatt-Logik ist verifiziert.
+- In einem reinen CLI-Test ueber WooCommerce-CRUD `product->save()` wurde der WordPress-Hook `save_post_product` nicht automatisch in derselben Form erreicht wie bei einem echten Produktspeichern ueber WordPress oder WooCommerce.
+- Fuer die lokale Verifikation wurde deshalb der echte Hook-Pfad gezielt ausgeloest.
+
+Offene Restpunkte ausserhalb der reinen Technik:
+
+- Rechtliche Texte fuer die neue Benachrichtigungs- und Frequenzlogik muessen weiterhin aktualisiert werden.
+- Vor einem Live-Rollout ist der finale Deploy-Ablauf gemaess Modus A oder Modus B festzulegen und zu dokumentieren.

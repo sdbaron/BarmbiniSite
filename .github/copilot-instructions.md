@@ -35,4 +35,6 @@
 ## Documentation Practice
 
 - Keep new runbooks and feature notes explicit, implementation-oriented, and reversible where possible.
+- Update the relevant documentation before creating tasks so scope, assumptions, and prerequisites are current.
+- Update the relevant documentation again after creating or completing tasks so outcomes, decisions, and follow-up work remain consistent.
 - When a task changes the technical process, update the relevant documentation in the same work item.

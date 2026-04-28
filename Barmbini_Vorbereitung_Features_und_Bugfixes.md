@@ -45,6 +45,7 @@ Expand-Archive -Path '.\barmbini-wp-content.zip' -DestinationPath '.\wp-content-
 
 #### Plugins
 
+- `barmbini-core`
 - `all-in-one-wp-migration`
 - `contact-form-7`
 - `hide-cart-functions`
@@ -83,9 +84,17 @@ Diese Themes liegen zwar im lokalen Archiv bzw. im Arbeitsstand vor, werden aber
 Es gibt aktuell:
 
 - kein Child-Theme
-- kein projektspezifisches Custom-Plugin
+- ein projektspezifisches Custom-Plugin unter `wp-content/plugins/barmbini-core/`
 
-Gleichzeitig liegen projektspezifische WooCommerce-Anpassungen direkt in `themes/kadence/functions.php`.
+Gleichzeitig liegen weiterhin projektspezifische WooCommerce-Anpassungen direkt in `themes/kadence/functions.php`.
+
+Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
+
+- WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
+- Speicherung der Abo-Einstellungen in `usermeta`
+- Trigger fuer Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
+- Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
+- Admin-Uebersicht, Unsubscribe-Logik und Datenschutz-Export/Loeschintegration
 
 Dort wurden bereits unter anderem umgesetzt:
 
@@ -95,6 +104,17 @@ Dort wurden bereits unter anderem umgesetzt:
 - Entfernung des Standard-Breadcrumb-Hooks und eigener Re-Insert
 
 Das ist der wichtigste technische Hebel fuer kommende Arbeiten.
+
+## Aktueller Validierungsstand fuer das Feature-Abonnementssystem
+
+Der neue Stand wurde lokal gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\public` verifiziert.
+
+- Das Plugin `barmbini-core` laesst sich in WordPress laden und aktivieren.
+- Die Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue` wurden lokal angelegt.
+- Der Konto-Endpoint `Mein Konto -> Abonnements` ist im Browser sichtbar und speichert Einstellungen erfolgreich.
+- Der News-Trigger erzeugt bei `sofort` einen direkten Log-Eintrag.
+- Der Produkt-Trigger erzeugt bei `taeglich` einen Queue-Eintrag und wird im Daily-Digest korrekt als `daily_digest` protokolliert.
+- Der Rabatt-Trigger wurde lokal ueber den produktbezogenen WordPress-Hook auf ein Produkt im aktiven Sale-Zustand erfolgreich verifiziert.
 
 ## Schlussfolgerung fuer neue Implementierungen
 

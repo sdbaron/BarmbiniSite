@@ -1,0 +1,40 @@
+.barmbini-subscriptions {
+	max-width: 880px;
+	padding: 1rem 0;
+}
+
+.barmbini-subscriptions__form {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.barmbini-subscriptions__section {
+	border: 1px solid #d8d0c8;
+	border-radius: 10px;
+	padding: 1rem;
+	background: #fffaf3;
+	display: grid;
+	gap: 0.75rem;
+}
+
+.barmbini-subscriptions__toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-weight: 600;
+}
+
+.barmbini-subscriptions__section select {
+	max-width: 220px;
+}
+
+.barmbini-subscriptions__categories {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 0.5rem 1rem;
+}
+
+.barmbini-subscriptions__meta {
+	font-size: 0.95rem;
+	color: #5b5148;
+}
