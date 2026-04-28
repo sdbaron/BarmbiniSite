@@ -176,6 +176,50 @@ Da vor dem Lauf keine Bestellungen und keine abweichenden Live-Benutzerkonten fe
 - Fuer die tatsaechliche Remote-Ausfuehrung des Folge-Updates wurde deshalb lokal `paramiko` verwendet.
 - Die fachlichen und technischen Server-Schritte entsprachen weiterhin dem dokumentierten Update-Ablauf.
 
+## Dokumentierter Modus-B-Plugin-Deploy 2026-04-28
+
+Am `2026-04-28` wurde ein weiterer Live-Update-Lauf ausgefuehrt, diesmal bewusst als Modus-B-Deployment ohne SQL-Vollimport.
+
+### Entscheidungsgrundlage vor dem Lauf
+
+Vor dem Deploy wurden die minimalen Live-Indikatoren erneut direkt auf dem Server geprueft:
+
+- `wp_users`: `2`
+- `shop_order`: `0`
+- freier Speicher auf `/`: rund `1.3G`
+- `wp-content`-Groesse: rund `305M`
+- Plugin-Verzeichnis `wp-content/plugins/barmbini-core` war auf dem Live-System noch nicht vorhanden
+
+Die Entscheidung fiel trotzdem auf Modus B, weil bereits produktive Live-Benutzerkonten vorhanden waren und fuer den neuen Stand kein Datenbank-Vollabgleich erforderlich war.
+
+### Durchgefuehrte Schritte im Modus-B-Lauf
+
+- aktuelles Backup erstellt unter `/root/barmbini-backup-2026-04-28-140650-barmbini-core`
+- Live-Datenbank gesichert als `live-before-barmbini-core.sql`
+- aktueller `wp-content`-Stand gesichert als `wp-content-before-barmbini-core.tar.gz`
+- minimales Plugin-Artefakt `barmbini-core-plugin.zip` lokal gebaut und auf den Server uebertragen
+- WordPress-Wartungsmodus aktiviert
+- Plugin `barmbini-core` unter `/var/www/barmbini/wp-content/plugins/` neu abgelegt
+- Eigentumsrechte auf `www-data:www-data` gesetzt
+- Plugin `barmbini-core` per WP-CLI aktiviert
+- WordPress-Wartungsmodus wieder deaktiviert
+- temporaere Transferdateien unter `/root/` und `/root/barmbini-import/` wieder entfernt
+
+Wichtig:
+
+- Es wurde kein Import von `local.sql` ausgefuehrt.
+- Es wurde kein bestehender Live-Ordner `uploads` ersetzt oder geloescht.
+- Es wurden nur die fuer das neue Plugin benoetigten Code-Dateien uebernommen.
+
+### Validiertes Ergebnis des Modus-B-Laufs
+
+- Plugin `barmbini-core` ist auf Live aktiv
+- die Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue` wurden auf Live angelegt
+- der berechnete Endpoint lautet `http://217.160.74.128/mein-konto/abonnements/`
+- `http://217.160.74.128/` antwortet weiter mit `HTTP/1.1 200 OK`
+- `http://217.160.74.128/mein-konto/` antwortet weiter mit `HTTP/1.1 200 OK`
+- nach dem Cleanup standen rund `1.1G` freier Speicher auf `/` zur Verfuegung
+
 ## Festgestellte Abweichung zur frueheren Inventarliste
 
 Eine fruehere Arbeitsnotiz nannte `Polylang` als aktives Plugin. Der aktuelle lokale Quellstand enthaelt jedoch kein Plugin-Verzeichnis `polylang`. Der auf den Server migrierte Plugin-Bestand entspricht dem tatsaechlich vorhandenen lokalen `wp-content/plugins`.
