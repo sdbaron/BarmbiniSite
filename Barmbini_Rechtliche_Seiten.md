@@ -1,4 +1,6 @@
-# Barrierefreiheitserklärung
+# Rechtliche Seiten
+
+## Barrierefreiheitserklärung
 
 **Sozialkaufhaus Barmbini**
 Stand: April 2026
@@ -30,11 +32,11 @@ Wenn Sie auf Barrieren stoßen oder Schwierigkeiten beim Zugriff auf Inhalte hab
 **Sozialkaufhaus Barmbini**
 Alter Teichweg 11, 22081 Hamburg
 📞 040 4294 5339
-✉️ agh.kunstkram@verbandshaus-hamburg.de
+✉️ [agh.kunstkram@verbandshaus-hamburg.de](mailto:agh.kunstkram@verbandshaus-hamburg.de)
 
 ---
 
-# Datenschutzerklärung
+## Datenschutzerklärung
 
 **Sozialkaufhaus Barmbini**
 Stand: April 2026
@@ -50,7 +52,7 @@ Alter Teichweg 11
 22081 Hamburg
 
 📞 040 4294 5339
-✉️ agh.kunstkram@verbandshaus-hamburg.de
+✉️ [agh.kunstkram@verbandshaus-hamburg.de](mailto:agh.kunstkram@verbandshaus-hamburg.de)
 
 ---
 
@@ -59,6 +61,7 @@ Alter Teichweg 11
 Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Daten werden auf dieser Website nur im technisch notwendigen Umfang erhoben und ausschließlich gemäß den geltenden Datenschutzvorschriften (DSGVO) verarbeitet.
 
 Diese Website:
+
 - verwendet keine Tracking-Tools (kein Google Analytics o.ä.)
 - lädt keine externen Schriften oder Dienste
 - bettet keine Google Maps iframes ein
@@ -101,7 +104,41 @@ Technisch notwendige Cookies bedürfen keiner Einwilligung gemäß § 25 Abs. 2 
 
 ---
 
-## 6. Ihre Rechte
+## 6. Kundenkonto, Abonnements und Benachrichtigungen
+
+Wenn Sie ein Kundenkonto anlegen oder im Bereich `Mein Konto -> Abonnements` Benachrichtigungen aktivieren, verarbeiten wir zusätzlich die dafür erforderlichen personenbezogenen Daten.
+
+Dabei können insbesondere folgende Daten verarbeitet werden:
+
+- Kontodaten wie Benutzername und E-Mail-Adresse
+- technische Kontodaten, die WordPress für Login und Kontoverwaltung benötigt
+- Ihre Auswahl zu Benachrichtigungen für Neuigkeiten, Rabatte und Produktkategorien
+- die von Ihnen gewählte Versandfrequenz `sofort`, `taeglich` oder `woechentlich`
+- ausgewählte Produktkategorien
+- Zeitpunkte der Einwilligung und der letzten Änderung
+- technische Versand-, Fehler- und Warteschlangeninformationen zur Zustellung und zur Vermeidung von Dubletten
+- technische Abmeldeinformationen für sichere Abmeldelinks in E-Mails
+
+Die Verarbeitung erfolgt zu folgenden Zwecken:
+
+- Bereitstellung und Verwaltung des Kundenkontos
+- Versand der von Ihnen ausdrücklich gewünschten Benachrichtigungen per E-Mail
+- technische Steuerung täglicher oder wöchentlicher Sammelbenachrichtigungen
+- Nachweis der Einwilligung, Vermeidung doppelter Benachrichtigungen und Fehleranalyse
+- Bearbeitung von Abmeldungen und Änderungen Ihrer Abo-Einstellungen
+
+Rechtsgrundlagen:
+
+- Art. 6 Abs. 1 lit. b DSGVO für die Bereitstellung und Verwaltung des Kundenkontos
+- Art. 6 Abs. 1 lit. a DSGVO für freiwillige Benachrichtigungen zu Neuigkeiten, Produktkategorien und Rabatten
+
+Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Dies ist im Kundenkonto oder über den Abmeldelink in jeder Benachrichtigungs-E-Mail möglich.
+
+Die Abo-Einstellungen werden grundsätzlich für die Dauer des aktiven Kundenkontos gespeichert. Technische Versand- und Fehlerprotokolle können darüber hinaus gespeichert bleiben, soweit dies für die sichere Bereitstellung, die Nachvollziehbarkeit der Einwilligung, die Fehleranalyse oder die Abwehr von Missbrauch erforderlich ist. Noch nicht versendete Sammelbenachrichtigungen werden nach einer wirksamen Abmeldung oder Deaktivierung des betroffenen Abonnements nicht mehr ausgeliefert.
+
+---
+
+## 7. Ihre Rechte
 
 Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:
 
@@ -113,11 +150,11 @@ Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Da
 - **Widerspruchsrecht** (Art. 21 DSGVO)
 
 Zur Ausübung Ihrer Rechte wenden Sie sich bitte an:
-✉️ agh.kunstkram@verbandshaus-hamburg.de
+✉️ [agh.kunstkram@verbandshaus-hamburg.de](mailto:agh.kunstkram@verbandshaus-hamburg.de)
 
 ---
 
-## 7. Beschwerderecht
+## 8. Beschwerderecht
 
 Sie haben das Recht, sich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren:
 
@@ -127,6 +164,6 @@ Ludwig-Erhard-Str. 22, 20459 Hamburg
 
 ---
 
-## 8. Änderungen dieser Datenschutzerklärung
+## 9. Änderungen dieser Datenschutzerklärung
 
 Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie stets den aktuellen rechtlichen Anforderungen entsprechend zu halten. Die jeweils aktuelle Version finden Sie auf dieser Seite.

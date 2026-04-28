@@ -567,5 +567,60 @@ Wichtige Einordnung fuer lokale CLI-Tests:
 
 Offene Restpunkte ausserhalb der reinen Technik:
 
-- Rechtliche Texte fuer die neue Benachrichtigungs- und Frequenzlogik muessen weiterhin aktualisiert werden.
 - Vor einem Live-Rollout ist der finale Deploy-Ablauf gemaess Modus A oder Modus B festzulegen und zu dokumentieren.
+
+## Definierte lokale Testfixtures
+
+Die folgenden Testfixtures sind fuer die lokale Entwicklungs- und Verifikationsumgebung festgelegt. Sie duerfen nicht in ein Live-System uebernommen werden und sind ausschliesslich fuer lokale Reproduktion, Debugging und Abnahmetests gedacht.
+
+### Geltungsbereich
+
+- lokale WordPress-Installation unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`
+- Plugin `wp-content/plugins/barmbini-core/` ist lokal aktiv
+- PHP-CLI-Checks erfolgen mit der Local-PHP-Installation und der site-spezifischen `php.ini`
+
+### Fixture 1: Testkunde fuer Konto- und Abo-Tests
+
+- Benutzername: `copilot_test_customer`
+- E-Mail: `copilot-test@barmbini.local`
+- Passwort: `Barmbini!Test123`
+- Rolle: `customer`
+- Zweck: Browser-Login, Speichern der Abo-Einstellungen, Datenschutz- und Unsubscribe-Pruefungen
+
+### Fixture 2: Standard-Abo-Konfiguration fuer Trigger-Tests
+
+Diese Konfiguration wurde fuer die reproduzierbaren lokalen Trigger-Tests verwendet:
+
+- `news_enabled = 1`
+- `news_frequency = sofort`
+- `discount_enabled = 1`
+- `discount_frequency = sofort`
+- `category_enabled = 1`
+- `category_frequency = taeglich`
+- `category_terms = [63]`
+
+Interpretation auf dem aktuellen lokalen Stand:
+
+- Produktkategorie-ID `63` entspricht `Babybedarf`
+
+### Fixture 3: Inhaltsdaten fuer Ereignistests
+
+Aktuell lokal angelegte Referenzobjekte:
+
+- News-Testbeitrag: ID `272`
+- Produkt-Testobjekt: ID `273`
+- abonnierte Testkategorie: `Babybedarf` mit lokaler Term-ID `63`
+
+Fachliche Verwendung:
+
+- News-Trigger: erstmalige Veroeffentlichung eines Beitrags in der Kategorie `neuigkeiten`
+- Kategorie-Trigger: erstmalige Veroeffentlichung eines Produkts in der abonnierten Kategorie `Babybedarf`
+- Rabatt-Trigger: Produkt im aktiven Sale-Zustand mit Ausloesung ueber den WordPress-Hook `save_post_product`
+
+### Reproduktionsregeln fuer kuenftige lokale Tests
+
+- Der Testkunde bleibt als definierter lokaler Fixture-Benutzer bestehen, solange keine bereinigte Testdatenbasis ausdruecklich verlangt wird.
+- Die Objekt-IDs `272` und `273` gelten fuer den aktuellen lokalen Stand als Referenz. Bei einer neu aufgebauten lokalen Datenbank duerfen sie neu erzeugt werden, muessen dann aber in dieser Dokumentation aktualisiert werden.
+- Fuer reproduzierbare Trigger-Checks ist die oben definierte Abo-Konfiguration vor jedem Testlauf erneut zu setzen.
+- Queue- und Log-Eintraege des Testkunden sollen vor einem neuen Testlauf bereinigt werden, damit die Ergebnisse eindeutig bleiben.
+- Alle definierten Testfixtures sind lokal zu halten und duerfen weder auf Live noch in dauerhaft produktive Inhaltsdaten uebernommen werden.
