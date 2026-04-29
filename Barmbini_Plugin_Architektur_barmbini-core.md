@@ -1,18 +1,18 @@
-# Plugin-Architektur fuer `barmbini-core`
+# Plugin-Architektur für `barmbini-core`
 
 ## Ziel
 
-Dieses Dokument leitet aus der Aufgabenbeschreibung fuer Kundenkonto, Abonnements, Benachrichtigungen und Kuendigung eine konkrete Plugin-Architektur fuer `wp-content/plugins/barmbini-core/` ab.
+Dieses Dokument leitet aus der Aufgabenbeschreibung für Kundenkonto, Abonnements, Benachrichtigungen und Kündigung eine konkrete Plugin-Architektur für `wp-content/plugins/barmbini-core/` ab.
 
-Das Plugin soll die zentrale Stelle fuer projektspezifische Fachlogik werden, damit neue Logik nicht weiter direkt im Vendor-Theme `kadence` umgesetzt wird.
+Das Plugin soll die zentrale Stelle für projektspezifische Fachlogik werden, damit neue Logik nicht weiter direkt im Vendor-Theme `kadence` umgesetzt wird.
 
 ## Zielbild
 
 `barmbini-core` soll mittelfristig drei Aufgaben gleichzeitig erfuellen:
 
 1. bestehende projektspezifische WooCommerce- und Kataloganpassungen aus `themes/kadence/functions.php` aufnehmen
-2. neue Fachlogik fuer Kundenkonto, Abonnements und Benachrichtigungen kapseln
-3. eine stabile Grundlage fuer spaetere Support-, Admin- und Migrationsfunktionen bereitstellen
+2. neue Fachlogik für Kundenkonto, Abonnements und Benachrichtigungen kapseln
+3. eine stabile Grundlage für spätere Support-, Admin- und Migrationsfunktionen bereitstellen
 
 ## Nicht-Ziele
 
@@ -30,7 +30,7 @@ Die erste Architekturversion umfasst bewusst nicht:
 - Fachlogik lebt im Plugin, nicht im Theme.
 - Template- oder CSS-lastige Anpassungen bleiben optional im Child-Theme.
 - Keine externen PHP-Abhaengigkeiten oder Composer-Pflicht in der Erstversion.
-- Datenhaltung moeglichst einfach: `usermeta` fuer Einstellungen, eigene Tabellen fuer Queue und Versandlog.
+- Datenhaltung möglichst einfach: `usermeta` für Einstellungen, eigene Tabellen für Queue und Versandlog.
 - Datenschutz, Dubletten-Schutz und nachvollziehbare Deaktivierung sind Pflichtbestandteile der Architektur.
 
 ## Zielverzeichnis
@@ -94,7 +94,7 @@ wp-content/plugins/barmbini-core/
 Verantwortung:
 
 - Plugin-Metadaten bereitstellen
-- Konstanten fuer Pfade und Version definieren
+- Konstanten für Pfade und Version definieren
 - `class-plugin.php` laden
 - Plugin-Initialisierung starten
 
@@ -107,7 +107,7 @@ Verantwortung:
 - Kernmodule registrieren
 - WordPress- und WooCommerce-Hooks anbinden
 - Aktivierungs- und Deaktivierungslogik anstoessen
-- spaetere Module kontrolliert erweitern
+- spätere Module kontrolliert erweitern
 
 ### Loader-Klasse
 
@@ -119,8 +119,8 @@ Verantwortung:
 
 Zweck:
 
-- Uebernahme bestehender projektspezifischer Kataloglogik aus dem Kadence-Theme
-- Breadcrumb-Anpassungen fuer `Sortiment`
+- Übernahme bestehender projektspezifischer Kataloglogik aus dem Kadence-Theme
+- Breadcrumb-Anpassungen für `Sortiment`
 - Ausblenden von Unterkategorie-Anzahlen
 - Kategoriebeschreibung unter Unterkategorien
 
@@ -135,22 +135,22 @@ Zweck:
 
 - WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
 - Laden, Validieren und Speichern der Abo-Einstellungen
-- Darstellung der Frequenzwahl fuer `sofort`, `taeglich`, `woechentlich`
+- Darstellung der Frequenzwahl für `sofort`, `täglich`, `wöchentlich`
 
 Verantwortung:
 
 - Form-Rendering
 - Nonce-Pruefung
 - Sanitizing
-- Rueckmeldungen nach dem Speichern
+- Rückmeldungen nach dem Speichern
 
 ### 3. Notifications-Modul
 
 Zweck:
 
 - Erfassen von fachlich relevanten Ereignissen
-- Sofortversand fuer `sofort`
-- Queue-Aufbau fuer `taeglich` und `woechentlich`
+- Sofortversand für `sofort`
+- Queue-Aufbau für `täglich` und `wöchentlich`
 - Digest-Lauf und Versand
 - Dubletten-Schutz
 - Abmeldung und Tokenpruefung
@@ -163,7 +163,7 @@ Zweck:
 
 - Sicht auf aktive Abonnements
 - Sicht auf Versandereignisse und Fehler
-- Basis fuer spaetere Support-Werkzeuge
+- Basis für spätere Support-Werkzeuge
 
 Empfohlene Platzierung im Backend:
 
@@ -175,8 +175,8 @@ Empfohlene Platzierung im Backend:
 Zweck:
 
 - Protokollierung der Einwilligung
-- spaetere Export- oder Loeschunterstuetzung
-- technische Grundlage fuer Datenschutzanfragen
+- spätere Export- oder Löschunterstuetzung
+- technische Grundlage für Datenschutzanfragen
 
 ## Datenmodell
 
@@ -205,7 +205,7 @@ Bewusst nicht vorgesehen:
 
 Zweck:
 
-- Vormerkung geplanter Digest-Eintraege
+- Vormerkung geplanter Digest-Einträge
 - Trennung zwischen Ereigniserfassung und Versand
 
 Empfohlene Spalten:
@@ -270,20 +270,20 @@ Empfohlene Oberflaeche im Endpoint `Abonnements`:
 2. Select `Neuigkeiten Frequenz`
 3. Checkbox `Rabatte abonnieren`
 4. Select `Rabatte Frequenz`
-5. Mehrfachauswahl fuer Produktkategorien
+5. Mehrfachauswahl für Produktkategorien
 6. Select `Produktkategorien Frequenz`
 7. Speichern
-8. Link oder Aktion `Alle Benachrichtigungen kuendigen`
+8. Link oder Aktion `Alle Benachrichtigungen kündigen`
 
 Empfohlene Select-Werte:
 
 - `sofort`
-- `taeglich`
-- `woechentlich`
+- `täglich`
+- `wöchentlich`
 
 UI-Regeln:
 
-- keine Vorauswahl auf `taeglich` oder `woechentlich` ohne aktive Zustimmung
+- keine Vorauswahl auf `täglich` oder `wöchentlich` ohne aktive Zustimmung
 - Frequenzfelder nur aktiv, wenn die zugehoerige Abo-Art aktiv ist
 - klare deutsche Beschriftung ohne Marketing-Sprache
 
@@ -301,7 +301,7 @@ Empfohlene Hooks:
 
 Empfohlene Hooks und Filter:
 
-- `init` fuer Endpoint-Registrierung
+- `init` für Endpoint-Registrierung
 - `query_vars` oder WooCommerce-eigene Endpoint-Registrierung
 - `woocommerce_account_menu_items`
 - `woocommerce_account_abonnements_endpoint`
@@ -342,7 +342,7 @@ Wichtig:
 - vorherigen Rabattzustand gegen aktuellen aktiven Rabattzustand vergleichen
 - das Ergebnis als eigenen Status oder Fingerprint speichern
 
-### Cron- und Digest-Laeufe
+### Cron- und Digest-Läufe
 
 Empfohlene Events:
 
@@ -352,7 +352,7 @@ Empfohlene Events:
 Empfohlene Ausfuehrung:
 
 - in Entwicklungsumgebungen kann WP-Cron ausreichen
-- fuer Live-Betrieb ist ein echter Server-Cron robuster, der `wp cron event run` oder WP-CLI gesteuert ausloest
+- für Live-Betrieb ist ein echter Server-Cron robuster, der `wp cron event run` oder WP-CLI gesteuert auslöst
 
 ## Versandlogik
 
@@ -371,23 +371,23 @@ Ablauf:
 Ablauf:
 
 1. Ereignis wird erkannt.
-2. Passende Benutzer mit Frequenz `taeglich` oder `woechentlich` werden bestimmt.
-3. Queue-Eintraege werden angelegt oder aktualisiert.
-4. Geplanter Lauf sammelt die offenen Eintraege pro Benutzer.
+2. Passende Benutzer mit Frequenz `täglich` oder `wöchentlich` werden bestimmt.
+3. Queue-Einträge werden angelegt oder aktualisiert.
+4. Geplanter Lauf sammelt die offenen Einträge pro Benutzer.
 5. Vor dem Versand wird geprueft, ob das Abo noch aktiv ist.
 6. Digest-E-Mail wird erstellt und versendet.
 7. Queue und Versandlog werden aktualisiert.
 
 Wichtige Regel:
 
-- Eine spaetere Abmeldung muss noch nicht versendete Queue-Eintraege technisch entwerten koennen.
+- Eine spätere Abmeldung muss noch nicht versendete Queue-Einträge technisch entwerten können.
 
 ## E-Mail-Konzept
 
 Es werden zwei Mailtypen benoetigt:
 
-1. Sofortmail fuer ein einzelnes Ereignis
-2. Digest-Mail fuer mehrere Ereignisse eines Zeitraums
+1. Sofortmail für ein einzelnes Ereignis
+2. Digest-Mail für mehrere Ereignisse eines Zeitraums
 
 Pflichtbestandteile jeder Mail:
 
@@ -395,16 +395,16 @@ Pflichtbestandteile jeder Mail:
 - deutschsprachiger Inhalt
 - Link zum relevanten Beitrag oder Produkt
 - Link zur Abmeldung
-- Hinweis auf die gewaehlte Versandfrequenz bei Digest-Mails
+- Hinweis auf die gewählte Versandfrequenz bei Digest-Mails
 
 ## Sicherheits- und Datenschutzkonzept
 
-- Tokens fuer Abmeldelinks nur gehasht speichern, nicht im Klartext.
+- Tokens für Abmeldelinks nur gehasht speichern, nicht im Klartext.
 - Formularspeicherung nur mit Nonce und Berechtigungspruefung.
 - Eingaben konsequent validieren und escapen.
-- Keine versteckte oder vorausgewaehlte Einwilligung.
-- Bei Export- oder Loeschanfragen muessen Abo- und Versanddaten technisch auffindbar sein.
-- Abmeldungen muessen auch Queue-Eintraege fuer kuenftige Digests sperren.
+- Keine versteckte oder vorausgewählte Einwilligung.
+- Bei Export- oder Löschanfragen muessen Abo- und Versanddaten technisch auffindbar sein.
+- Abmeldungen muessen auch Queue-Einträge für künftige Digests sperren.
 
 ## Aktivierung, Deaktivierung, Uninstall
 
@@ -412,7 +412,7 @@ Pflichtbestandteile jeder Mail:
 
 Beim Aktivieren des Plugins:
 
-- Tabellen fuer Queue und Versandlog anlegen
+- Tabellen für Queue und Versandlog anlegen
 - Cron-Events registrieren
 - Standardoptionen setzen, falls noetig
 
@@ -421,24 +421,24 @@ Beim Aktivieren des Plugins:
 Beim Deaktivieren des Plugins:
 
 - Cron-Events sauber entfernen
-- keine fachlichen Daten automatisch loeschen
+- keine fachlichen Daten automatisch löschen
 
 ### Uninstall
 
 Vorsichtige Empfehlung:
 
-- keine automatische Loeschung von `usermeta` und Versandhistorie ohne explizite Administratorentscheidung
-- Datenschutzrelevante Loeschungen besser ueber eine separate Admin-Aktion oder ein explizites Cleanup-Flag steuern
+- keine automatische Löschung von `usermeta` und Versandhistorie ohne explizite Administratorentscheidung
+- Datenschutzrelevante Löschungen besser über eine separate Admin-Aktion oder ein explizites Cleanup-Flag steuern
 
 ## Migration bestehender Theme-Logik
 
-`barmbini-core` soll nicht nur neue Abo-Logik aufnehmen, sondern auch die bereits vorhandenen projektspezifischen WooCommerce-Anpassungen aus `themes/kadence/functions.php` uebernehmen.
+`barmbini-core` soll nicht nur neue Abo-Logik aufnehmen, sondern auch die bereits vorhandenen projektspezifischen WooCommerce-Anpassungen aus `themes/kadence/functions.php` übernehmen.
 
 Empfohlene Reihenfolge:
 
 1. bestehende Katalog- und Breadcrumb-Hooks zuerst in das Catalog-Modul verschieben
 2. danach Account- und Notification-Module einbauen
-3. erst nach erfolgreicher Uebernahme die Theme-Datei bereinigen
+3. erst nach erfolgreicher Übernahme die Theme-Datei bereinigen
 
 So bleibt die Einfuehrung von `barmbini-core` nicht nur eine neue Funktion, sondern auch eine technische Bereinigung des bisherigen Zustands.
 
@@ -446,9 +446,9 @@ So bleibt die Einfuehrung von `barmbini-core` nicht nur eine neue Funktion, sond
 
 ### Phase 1
 
-- Plugin-Grundgeruest
+- Plugin-Grundgerüst
 - Aktivierungslogik
-- Catalog-Modul fuer bestehende Theme-Hooks
+- Catalog-Modul für bestehende Theme-Hooks
 
 ### Phase 2
 
@@ -458,14 +458,14 @@ So bleibt die Einfuehrung von `barmbini-core` nicht nur eine neue Funktion, sond
 
 ### Phase 3
 
-- Sofortbenachrichtigungen fuer News, Produkte und Rabatte
+- Sofortbenachrichtigungen für News, Produkte und Rabatte
 - Versandlog
 
 ### Phase 4
 
 - Queue-Tabelle
 - Daily- und Weekly-Digest
-- Admin-Ansicht fuer Versandstatus
+- Admin-Ansicht für Versandstatus
 
 ### Phase 5
 
@@ -475,18 +475,18 @@ So bleibt die Einfuehrung von `barmbini-core` nicht nur eine neue Funktion, sond
 
 ## Risiken und offene Punkte
 
-- Die Rabatt-Erkennung ist fachlich anspruchsvoller als News- oder Produktveroeffentlichungen und braucht eine saubere Zustandspruefung.
-- WP-Cron allein kann fuer Digests auf einer traffic-armen Website unzuverlaessig sein.
-- Bei spaeterer Einfuehrung externer Versanddienste darf die Plugin-Architektur nicht auf einen bestimmten Anbieter fest verdrahtet sein.
+- Die Rabatt-Erkennung ist fachlich anspruchsvoller als News- oder Produktveröffentlichungen und braucht eine saubere Zustandspruefung.
+- WP-Cron allein kann für Digests auf einer traffic-armen Website unzuverlässig sein.
+- Bei späterer Einfuehrung externer Versanddienste darf die Plugin-Architektur nicht auf einen bestimmten Anbieter fest verdrahtet sein.
 - Rechtliche Texte muessen parallel zur technischen Einfuehrung aktualisiert werden.
 
-## Abnahmebild fuer die erste Architekturversion
+## Abnahmebild für die erste Architekturversion
 
 Die Architektur ist passend, wenn folgende Punkte erfuellt sind:
 
-1. `barmbini-core` ist die zentrale Stelle fuer projektspezifische Fachlogik.
+1. `barmbini-core` ist die zentrale Stelle für projektspezifische Fachlogik.
 2. Neue Benachrichtigungslogik liegt nicht im Kadence-Theme.
 3. Kontoeinstellungen, Queue, Versandlog und Abmeldung sind sauber getrennt.
-4. Sofort-, Daily- und Weekly-Versand koennen ohne Architekturbruch gemeinsam betrieben werden.
-5. Bestehende Kataloganpassungen koennen kontrolliert aus dem Theme in das Plugin uebernommen werden.
-6. Datenschutz, Dubletten-Schutz und Support-Sicht sind technisch beruecksichtigt.
+4. Sofort-, Daily- und Weekly-Versand können ohne Architekturbruch gemeinsam betrieben werden.
+5. Bestehende Kataloganpassungen können kontrolliert aus dem Theme in das Plugin übernommen werden.
+6. Datenschutz, Dubletten-Schutz und Support-Sicht sind technisch berücksichtigt.

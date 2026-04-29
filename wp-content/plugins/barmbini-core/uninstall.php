@@ -4,4 +4,4 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// Absichtlich kein automatisches Loeschen produktiver Daten.
+// Absichtlich kein automatisches Löschen produktiver Daten.

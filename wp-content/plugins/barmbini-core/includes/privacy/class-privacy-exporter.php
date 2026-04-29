@@ -80,7 +80,7 @@ class Barmbini_Core_Privacy_Exporter {
 					array( 'name' => 'Ereignis', 'value' => $queue_item['event_type'] ),
 					array( 'name' => 'Frequenz', 'value' => $queue_item['frequency'] ),
 					array( 'name' => 'Status', 'value' => $queue_item['status'] ),
-					array( 'name' => 'Geplant fuer', 'value' => $queue_item['scheduled_for'] ),
+					array( 'name' => 'Geplant für', 'value' => $queue_item['scheduled_for'] ),
 				),
 			);
 		}

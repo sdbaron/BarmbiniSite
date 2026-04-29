@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Barmbini Core
- * Description: Projektspezifische Fachlogik fuer Sozialkaufhaus Barmbini.
+ * Description: Projektspezifische Fachlogik für Sozialkaufhaus Barmbini.
  * Version: 0.1.0
  * Author: Barmbini
  */

@@ -5,14 +5,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $frequency_labels = array(
-	'sofort'      => 'Sofort',
-	'taeglich'    => 'Taeglich',
-	'woechentlich' => 'Woechentlich',
+	'sofort'       => 'Sofort',
+	'täglich'      => 'Täglich',
+	'wöchentlich'  => 'Wöchentlich',
 );
 ?>
 <div class="barmbini-subscriptions">
 	<h2>Abonnements</h2>
-	<p>Sie koennen hier Benachrichtigungen fuer Neuigkeiten, Rabatte und Produktkategorien aktivieren oder beenden.</p>
+	<p>Sie können hier Benachrichtigungen für Neuigkeiten, Rabatte und Produktkategorien aktivieren oder beenden.</p>
 
 	<form method="post" class="barmbini-subscriptions__form">
 		<?php wp_nonce_field( 'barmbini_save_subscriptions', 'barmbini_subscriptions_nonce' ); ?>
@@ -73,7 +73,7 @@ $frequency_labels = array(
 		</section>
 
 		<section class="barmbini-subscriptions__section barmbini-subscriptions__meta">
-			<p>Keine Option ist vorausgewaehlt. Ihre Auswahl gilt nur fuer die hier aktivierten Benachrichtigungen.</p>
+			<p>Keine Option ist vorausgewählt. Ihre Auswahl gilt nur für die hier aktivierten Benachrichtigungen.</p>
 			<?php if ( ! empty( $settings['consent_at'] ) ) : ?>
 				<p>Einwilligung erfasst am: <?php echo esc_html( $settings['consent_at'] ); ?></p>
 			<?php endif; ?>

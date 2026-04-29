@@ -39,11 +39,11 @@ class Barmbini_Core_Digest_Scheduler {
 	}
 
 	public function run_daily_digest() {
-		$this->run_digest( 'taeglich' );
+		$this->run_digest( 'täglich' );
 	}
 
 	public function run_weekly_digest() {
-		$this->run_digest( 'woechentlich' );
+		$this->run_digest( 'wöchentlich' );
 	}
 
 	protected function run_digest( $frequency ) {

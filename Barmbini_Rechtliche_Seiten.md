@@ -113,7 +113,7 @@ Dabei können insbesondere folgende Daten verarbeitet werden:
 - Kontodaten wie Benutzername und E-Mail-Adresse
 - technische Kontodaten, die WordPress für Login und Kontoverwaltung benötigt
 - Ihre Auswahl zu Benachrichtigungen für Neuigkeiten, Rabatte und Produktkategorien
-- die von Ihnen gewählte Versandfrequenz `sofort`, `taeglich` oder `woechentlich`
+- die von Ihnen gewählte Versandfrequenz `sofort`, `täglich` oder `wöchentlich`
 - ausgewählte Produktkategorien
 - Zeitpunkte der Einwilligung und der letzten Änderung
 - technische Versand-, Fehler- und Warteschlangeninformationen zur Zustellung und zur Vermeidung von Dubletten

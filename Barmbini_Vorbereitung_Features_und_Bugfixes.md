@@ -1,10 +1,10 @@
-# Vorbereitung fuer neue Features und Bugfixes
+# Vorbereitung für neue Features und Bugfixes
 
 ## Ziel
 
 Dieses Dokument fasst den verifizierten Ist-Stand zusammen und legt fest, wo neue Funktionalitaet oder Fehlerbehebungen im Projekt sauber eingebaut werden sollen.
 
-Es dient als Arbeitsgrundlage, bevor konkrete Aenderungen an WordPress, WooCommerce, Theme, Plugins oder dem Deployment-Prozess umgesetzt werden.
+Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooCommerce, Theme, Plugins oder dem Deployment-Prozess umgesetzt werden.
 
 ## Verifizierter Ist-Stand
 
@@ -16,22 +16,22 @@ Es dient als Arbeitsgrundlage, bevor konkrete Aenderungen an WordPress, WooComme
 - Der Update-Prozess unterscheidet zwischen:
   - Modus A: Vollabgleich mit SQL-Import
   - Modus B: Live-Daten behalten, kein Vollimport
-- Fuer technische Aenderungen steht jetzt ein editierbarer Code-Arbeitsstand unter `wp-content-workdir/` im Workspace bereit.
+- Für technische Änderungen steht jetzt ein editierbarer Code-Arbeitsstand unter `wp-content-workdir/` im Workspace bereit.
 
 ### Verifizierter `wp-content`-Bestand aus dem Archiv `barmbini-wp-content.zip`
 
 ### Temporaere Arbeitsartefakte im Workspace
 
-- `wp-content-workdir/` ist ein entpackter, editierbarer Arbeitsstand fuer technische Pruefung und Aenderungen.
-- `barmbini-wp-content.zip` ist das Transport- und Import-Archiv fuer den dokumentierten Update-Prozess auf den Server.
-- Beide Artefakte duerfen lokal geloescht werden, wenn der gleiche Stand weiterhin in `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content` vorhanden ist.
+- `wp-content-workdir/` ist ein entpackter, editierbarer Arbeitsstand für technische Pruefung und Änderungen.
+- `barmbini-wp-content.zip` ist das Transport- und Import-Archiv für den dokumentierten Update-Prozess auf den Server.
+- Beide Artefakte duerfen lokal gelöscht werden, wenn der gleiche Stand weiterhin in `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content` vorhanden ist.
 
 #### Fester Ablauf zum sicheren Neuerzeugen
 
 1. Quelle ist der lokale WordPress-Bestand unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content`.
-2. Fuer einen Remote-Transfer wird daraus ein neues `barmbini-wp-content.zip` erzeugt.
+2. Für einen Remote-Transfer wird daraus ein neues `barmbini-wp-content.zip` erzeugt.
 3. `wp-content-workdir/` wird nur bei Bedarf aus diesem Archiv neu entpackt.
-4. Fuer den Server-Import ist das ZIP erforderlich, `wp-content-workdir/` dagegen optional.
+4. Für den Server-Import ist das ZIP erforderlich, `wp-content-workdir/` dagegen optional.
 
 Beispiel in PowerShell:
 
@@ -92,20 +92,20 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 
 - WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
 - Speicherung der Abo-Einstellungen in `usermeta`
-- Trigger fuer Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
+- Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
-- Admin-Uebersicht, Unsubscribe-Logik und Datenschutz-Export/Loeschintegration
+- Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
 
 Dort wurden bereits unter anderem umgesetzt:
 
 - Ausblenden der Unterkategorie-Anzahl
-- eigene Breadcrumb-Logik fuer `Sortiment`
+- eigene Breadcrumb-Logik für `Sortiment`
 - Einblendung von Kategoriebeschreibungen unter Unterkategorien
 - Entfernung des Standard-Breadcrumb-Hooks und eigener Re-Insert
 
-Das ist der wichtigste technische Hebel fuer kommende Arbeiten.
+Das ist der wichtigste technische Hebel für kommende Arbeiten.
 
-## Aktueller Validierungsstand fuer das Feature-Abonnementssystem
+## Aktueller Validierungsstand für das Feature-Abonnementssystem
 
 Der neue Stand wurde lokal gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\public` verifiziert.
 
@@ -113,10 +113,10 @@ Der neue Stand wurde lokal gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\p
 - Die Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue` wurden lokal angelegt.
 - Der Konto-Endpoint `Mein Konto -> Abonnements` ist im Browser sichtbar und speichert Einstellungen erfolgreich.
 - Der News-Trigger erzeugt bei `sofort` einen direkten Log-Eintrag.
-- Der Produkt-Trigger erzeugt bei `taeglich` einen Queue-Eintrag und wird im Daily-Digest korrekt als `daily_digest` protokolliert.
-- Der Rabatt-Trigger wurde lokal ueber den produktbezogenen WordPress-Hook auf ein Produkt im aktiven Sale-Zustand erfolgreich verifiziert.
+- Der Produkt-Trigger erzeugt bei `täglich` einen Queue-Eintrag und wird im Daily-Digest korrekt als `daily_digest` protokolliert.
+- Der Rabatt-Trigger wurde lokal über den produktbezogenen WordPress-Hook auf ein Produkt im aktiven Sale-Zustand erfolgreich verifiziert.
 
-## Schlussfolgerung fuer neue Implementierungen
+## Schlussfolgerung für neue Implementierungen
 
 ### 1. Business-Logik nicht weiter im Vendor-Theme erweitern
 
@@ -124,13 +124,13 @@ Neue projektbezogene Funktionalitaet soll nicht weiter direkt in `kadence/functi
 
 Grund:
 
-- Theme-Updates koennen die Aenderungen ueberschreiben.
+- Theme-Updates können die Änderungen überschreiben.
 - Fachlogik und Darstellungslogik sind aktuell unnoetig vermischt.
 - Bugfixes werden schwerer testbar und schwerer deploybar.
 
 ### 2. Bevorzugte Zielstruktur
 
-Fuer neue Funktionen soll ein eigenes Projekt-Plugin angelegt werden, zum Beispiel:
+Für neue Funktionen soll ein eigenes Projekt-Plugin angelegt werden, zum Beispiel:
 
 - `wp-content/plugins/barmbini-core/`
 
@@ -143,15 +143,15 @@ Empfohlene Aufgaben dieses Plugins:
 
 ### 3. Wann stattdessen ein Child-Theme sinnvoll ist
 
-Ein Child-Theme ist nur dann die bessere Wahl, wenn kuenftige Aenderungen vor allem diese Bereiche betreffen:
+Ein Child-Theme ist nur dann die bessere Wahl, wenn künftige Änderungen vor allem diese Bereiche betreffen:
 
 - Template-Overrides
 - umfangreiche Layout-Anpassungen
-- theme-nahe CSS- und Markup-Aenderungen
+- theme-nahe CSS- und Markup-Änderungen
 
-Fuer Fachlogik, Integrationen, Kontofunktionen, Benachrichtigungen und Datenverarbeitung bleibt ein eigenes Plugin die richtige Stelle.
+Für Fachlogik, Integrationen, Kontofunktionen, Benachrichtigungen und Datenverarbeitung bleibt ein eigenes Plugin die richtige Stelle.
 
-## Empfohlene Einbauorte nach Aenderungstyp
+## Empfohlene Einbauorte nach Änderungstyp
 
 ### Neue Fachfunktion, z. B. Kundenkonto, Abonnements, Benachrichtigungen
 
@@ -176,17 +176,17 @@ Einbauort:
 
 Einbauort:
 
-- bei kleinen Korrekturen zunaechst Theme-CSS oder Child-Theme
-- bei strukturellen Template-Aenderungen Child-Theme
+- bei kleinen Korrekturen zunächst Theme-CSS oder Child-Theme
+- bei strukturellen Template-Änderungen Child-Theme
 
 ### Deployment-, Server- oder Migrationsfehler
 
 Einbauort:
 
 - Runbooks und Serverdokumentation aktualisieren
-- niemals nur ad hoc auf dem Live-System reparieren, wenn die Aenderung spaeter wieder aus lokal deployt wird
+- niemals nur ad hoc auf dem Live-System reparieren, wenn die Änderung später wieder aus lokal deployt wird
 
-## Konkrete Vorbereitung fuer die naechste groessere Funktion
+## Konkrete Vorbereitung für die nächste größere Funktion
 
 ### Fall: Kundenkonto mit Abonnements und Benachrichtigungen
 
@@ -194,27 +194,27 @@ Die vorhandene Aufgabenbeschreibung ist fachlich bereits weit genug, um eine sau
 
 Empfohlene technische Richtung:
 
-1. eigenes Plugin fuer die Funktion anlegen
+1. eigenes Plugin für die Funktion anlegen
 2. WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto` registrieren
 3. Speicherung der Einstellungen in `usermeta`
 4. Versandprotokoll in eigener Tabelle, z. B. `wp_barmbini_notification_log`
-5. Trigger getrennt behandeln fuer:
+5. Trigger getrennt behandeln für:
    - Neuigkeiten
    - neue Produkte in abonnierten Kategorien
    - neue aktive Rabatte
-6. Abmeldelogik ueber Token und eigene Endpunkt- oder Query-Logik
+6. Abmeldelogik über Token und eigene Endpunkt- oder Query-Logik
 7. Datenschutzerklaerung parallel erweitern
 
-### Minimale Plugin-Module fuer diese Funktion
+### Minimale Plugin-Module für diese Funktion
 
 - Bootstrap / Plugin-Loader
 - WooCommerce-Account-Endpoint
-- Usermeta-Read/Write fuer Abo-Einstellungen
-- Trigger-Handler fuer Posts und Produkte
+- Usermeta-Read/Write für Abo-Einstellungen
+- Trigger-Handler für Posts und Produkte
 - Mail-Versand
 - Versandlog gegen Dubletten
 - Unsubscribe-Handler
-- optional Admin-Ansicht fuer Support
+- optional Admin-Ansicht für Support
 
 ## Dokumentierte Widersprueche und offene Klaerungen
 
@@ -227,7 +227,7 @@ Empfohlene technische Richtung:
 
 Folgerung:
 
-Vor kuenftigen Features oder Bugfixes muss entschieden werden, ob diese Sprachreste nur technische Altlasten sind oder bewusst behalten werden.
+Vor künftigen Features oder Bugfixes muss entschieden werden, ob diese Sprachreste nur technische Altlasten sind oder bewusst behalten werden.
 
 ### 2. Cache-Strategie
 
@@ -236,7 +236,7 @@ Vor kuenftigen Features oder Bugfixes muss entschieden werden, ob diese Sprachre
 
 Folgerung:
 
-Fuer Performance- oder Cache-Bugfixes ist `WP Fastest Cache` als realer Ist-Stand zu behandeln, bis eine bewusste Umstellung beschlossen wird.
+Für Performance- oder Cache-Bugfixes ist `WP Fastest Cache` als realer Ist-Stand zu behandeln, bis eine bewusste Umstellung beschlossen wird.
 
 ### 3. Hosting-Modell
 
@@ -245,7 +245,7 @@ Fuer Performance- oder Cache-Bugfixes ist `WP Fastest Cache` als realer Ist-Stan
 
 Folgerung:
 
-Vor Infrastruktur-, Backup- oder Sicherheitsaenderungen muss das reale Zielmodell als fuehrend behandelt werden: selbst verwalteter Serverablauf, nicht rein gemanagtes WordPress-Hosting.
+Vor Infrastruktur-, Backup- oder Sicherheitsänderungen muss das reale Zielmodell als führend behandelt werden: selbst verwalteter Serverablauf, nicht rein gemanagtes WordPress-Hosting.
 
 ### 4. Rechtliche Texte bei neuen Funktionen
 
@@ -258,30 +258,30 @@ Jede Funktion mit personenbezogenen Daten braucht parallel ein Update der rechtl
 
 ### 5. Sicherheitslage des Servers
 
-- Die Server-Aenderungsdokumentation beschreibt einen frueher kompromittierten Zustand mit manipulativer Persistenz und boesartiger Nachladung.
+- Die Server-Änderungsdokumentation beschreibt einen früher kompromittierten Zustand mit manipulativer Persistenz und bösartiger Nachladung.
 
 Folgerung:
 
 Neue Features sollten nicht unkritisch direkt auf diesem Server aufgebaut werden, ohne die dokumentierten Haertungs- oder Neuaufsetzungsfragen zu klaeren.
 
-## Praktische Regeln fuer kommende Aenderungen
+## Praktische Regeln für kommende Änderungen
 
 1. Lokaler Stand bleibt die fachliche Quelle.
 2. Keine produktiven Datenbank-Vollimporte mehr, sobald Live-Daten erhalten bleiben muessen.
-3. Keine neuen projektbezogenen Aenderungen direkt im Vendor-Theme, wenn sie auch im Projekt-Plugin leben koennen.
-4. Keine manuellen Live-Fixes, die spaeter beim naechsten Deploy ueberschrieben werden.
+3. Keine neuen projektbezogenen Änderungen direkt im Vendor-Theme, wenn sie auch im Projekt-Plugin leben können.
+4. Keine manuellen Live-Fixes, die später beim nächsten Deploy überschrieben werden.
 5. Fachlogik, Deploy-Logik und rechtliche Texte immer zusammen denken.
 
 ## Empfohlene Reihenfolge vor der ersten echten Erweiterung
 
-1. Bestehende Theme-Anpassungen aus `themes/kadence/functions.php` in ein eigenes Projekt-Plugin ueberfuehren.
-2. Entscheiden, ob fuer Frontend-Anpassungen zusaetzlich ein Child-Theme gebraucht wird.
+1. Bestehende Theme-Anpassungen aus `themes/kadence/functions.php` in ein eigenes Projekt-Plugin überfuehren.
+2. Entscheiden, ob für Frontend-Anpassungen zusätzlich ein Child-Theme gebraucht wird.
 3. Mehrsprachigkeitsreste und reale Sprachstrategie bereinigen.
-4. Fuer das naechste Release vorab festlegen, ob Modus A oder Modus B gilt.
+4. Für das nächste Release vorab festlegen, ob Modus A oder Modus B gilt.
 5. Bei neuen personenbezogenen Funktionen die rechtlichen Seiten im selben Arbeitspaket mit aktualisieren.
 
 ## Kurzfazit
 
 Das Projekt ist fachlich gut dokumentiert, technisch aber an einer Stelle noch unsauber vorbereitet: projektspezifische WooCommerce-Logik liegt direkt im Kadence-Theme.
 
-Bevor neue Features oder groessere Bugfixes umgesetzt werden, sollte ein eigener Projektcontainer fuer diese Logik geschaffen werden. Danach lassen sich neue Funktionen wie Kundenkonto-Erweiterungen, Benachrichtigungen, Support-Ansichten oder robustere Bugfixes deutlich sauberer und risikoaermer einbauen.
+Bevor neue Features oder größere Bugfixes umgesetzt werden, sollte ein eigener Projektcontainer für diese Logik geschaffen werden. Danach lassen sich neue Funktionen wie Kundenkonto-Erweiterungen, Benachrichtigungen, Support-Ansichten oder robustere Bugfixes deutlich sauberer und risikoärmer einbauen.

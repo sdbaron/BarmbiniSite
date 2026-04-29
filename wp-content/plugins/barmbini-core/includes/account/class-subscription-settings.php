@@ -18,7 +18,40 @@ class Barmbini_Core_Subscription_Settings {
 	const UNSUBSCRIBE_TOKEN_HASH  = 'barmbini_unsubscribe_token_hash';
 
 	public function get_supported_frequencies() {
-		return array( 'sofort', 'taeglich', 'woechentlich' );
+		return array( 'sofort', 'täglich', 'wöchentlich' );
+	}
+
+	public static function normalize_frequency_value( $value ) {
+		$value = trim( sanitize_text_field( (string) $value ) );
+
+		if ( function_exists( 'mb_strtolower' ) ) {
+			$value = mb_strtolower( $value, 'UTF-8' );
+		} else {
+			$value = strtolower( $value );
+		}
+
+		$frequency_map = array(
+			'sofort'       => 'sofort',
+			'taeglich'     => 'täglich',
+			'täglich'      => 'täglich',
+			'woechentlich' => 'wöchentlich',
+			'wöchentlich'  => 'wöchentlich',
+		);
+
+		return $frequency_map[ $value ] ?? 'sofort';
+	}
+
+	public static function get_frequency_aliases( $value ) {
+		$normalized = self::normalize_frequency_value( $value );
+
+		switch ( $normalized ) {
+			case 'täglich':
+				return array( 'täglich', 'taeglich' );
+			case 'wöchentlich':
+				return array( 'wöchentlich', 'woechentlich' );
+			default:
+				return array( 'sofort' );
+		}
 	}
 
 	public function get_defaults() {
@@ -133,13 +166,7 @@ class Barmbini_Core_Subscription_Settings {
 	}
 
 	protected function sanitize_frequency( $value ) {
-		$value = sanitize_key( $value );
-
-		if ( ! in_array( $value, $this->get_supported_frequencies(), true ) ) {
-			return 'sofort';
-		}
-
-		return $value;
+		return self::normalize_frequency_value( $value );
 	}
 
 	protected function sanitize_term_ids( $term_ids ) {

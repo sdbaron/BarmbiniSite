@@ -105,7 +105,7 @@ class Barmbini_Core_Event_Collector {
 			'event_key'   => 'discount-' . $product_id . '-' . gmdate( 'YmdHis' ),
 			'object_id'   => $product_id,
 			'object_type' => 'product',
-			'intro'       => 'Fuer einen Artikel bei Barmbini ist ein neuer Rabatt aktiv.',
+			'intro'       => 'Für einen Artikel bei Barmbini ist ein neuer Rabatt aktiv.',
 			'title'       => $product->get_name(),
 			'excerpt'     => wp_strip_all_tags( $product->get_short_description() ?: $product->get_description() ),
 			'url'         => get_permalink( $product_id ),

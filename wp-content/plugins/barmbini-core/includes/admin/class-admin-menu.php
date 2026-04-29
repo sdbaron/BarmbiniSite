@@ -80,12 +80,12 @@ class Barmbini_Core_Admin_Menu {
 						<th>Typ</th>
 						<th>Frequenz</th>
 						<th>Status</th>
-						<th>Geplant fuer</th>
+						<th>Geplant für</th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $recent_queue ) ) : ?>
-						<tr><td colspan="6">Keine Queue-Eintraege vorhanden.</td></tr>
+						<tr><td colspan="6">Keine Queue-Einträge vorhanden.</td></tr>
 					<?php else : ?>
 						<?php foreach ( $recent_queue as $item ) : ?>
 							<tr>

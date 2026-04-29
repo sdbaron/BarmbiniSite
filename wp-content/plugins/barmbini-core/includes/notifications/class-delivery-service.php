@@ -68,8 +68,8 @@ class Barmbini_Core_Delivery_Service {
 		}
 
 		$unsubscribe_url = $this->unsubscribe_service->get_unsubscribe_url( $user_id, 'all' );
-		$delivery_mode   = 'taeglich' === $frequency ? 'daily_digest' : 'weekly_digest';
-		$subject         = 'taeglich' === $frequency ? 'Ihr taeglicher Barmbini-Digest' : 'Ihr woechentlicher Barmbini-Digest';
+		$delivery_mode   = 'täglich' === $frequency ? 'daily_digest' : 'weekly_digest';
+		$subject         = 'täglich' === $frequency ? 'Ihr täglicher Barmbini-Digest' : 'Ihr wöchentlicher Barmbini-Digest';
 		$message         = $this->build_digest_message( $queue_items, $frequency, $unsubscribe_url );
 		$headers         = array( 'Content-Type: text/plain; charset=UTF-8' );
 		$sent            = wp_mail( $user->user_email, $subject, $message, $headers );
@@ -163,7 +163,7 @@ class Barmbini_Core_Delivery_Service {
 		$lines   = array();
 		$lines[] = 'Hallo,';
 		$lines[] = '';
-		$lines[] = 'Hier ist Ihr ' . ( 'taeglich' === $frequency ? 'taeglicher' : 'woechentlicher' ) . ' Ueberblick von Barmbini:';
+		$lines[] = 'Hier ist Ihr ' . ( 'täglich' === $frequency ? 'täglicher' : 'wöchentlicher' ) . ' Überblick von Barmbini:';
 		$lines[] = '';
 
 		foreach ( $queue_items as $item ) {

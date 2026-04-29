@@ -21,11 +21,12 @@ class Barmbini_Core_Queue_Repository {
 			'object_id'         => 0,
 			'object_type'       => '',
 			'subscription_type' => '',
-			'frequency'         => 'taeglich',
+			'frequency'         => 'täglich',
 			'payload'           => array(),
 		);
 
 		$data = wp_parse_args( $data, $defaults );
+		$data['frequency'] = Barmbini_Core_Subscription_Settings::normalize_frequency_value( $data['frequency'] );
 
 		if ( $this->has_queue_item( $data['user_id'], $data['event_type'], $data['event_key'], $data['frequency'] ) ) {
 			return false;
@@ -40,7 +41,7 @@ class Barmbini_Core_Queue_Repository {
 				'object_id'         => absint( $data['object_id'] ),
 				'object_type'       => sanitize_key( $data['object_type'] ),
 				'subscription_type' => sanitize_key( $data['subscription_type'] ),
-				'frequency'         => sanitize_key( $data['frequency'] ),
+				'frequency'         => $data['frequency'],
 				'scheduled_for'     => $this->calculate_scheduled_for( $data['frequency'] ),
 				'status'            => 'queued',
 				'payload'           => wp_json_encode( $data['payload'] ),
@@ -52,13 +53,14 @@ class Barmbini_Core_Queue_Repository {
 
 	public function get_due_items( $frequency, $limit = 200 ) {
 		global $wpdb;
+		$frequencies  = Barmbini_Core_Subscription_Settings::get_frequency_aliases( $frequency );
+		$placeholders = implode( ', ', array_fill( 0, count( $frequencies ), '%s' ) );
+		$params       = array_merge( $frequencies, array( current_time( 'mysql', true ), absint( $limit ) ) );
 
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$this->table_name()} WHERE frequency = %s AND status = 'queued' AND scheduled_for <= %s ORDER BY scheduled_for ASC, id ASC LIMIT %d",
-				sanitize_key( $frequency ),
-				current_time( 'mysql', true ),
-				absint( $limit )
+				"SELECT * FROM {$this->table_name()} WHERE frequency IN ({$placeholders}) AND status = 'queued' AND scheduled_for <= %s ORDER BY scheduled_for ASC, id ASC LIMIT %d",
+				$params
 			),
 			ARRAY_A
 		);
@@ -150,14 +152,21 @@ class Barmbini_Core_Queue_Repository {
 
 	protected function has_queue_item( $user_id, $event_type, $event_key, $frequency ) {
 		global $wpdb;
-
-		$existing = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT id FROM {$this->table_name()} WHERE user_id = %d AND event_type = %s AND event_key = %s AND frequency = %s AND status IN ('queued', 'processing', 'sent') LIMIT 1",
+		$frequencies  = Barmbini_Core_Subscription_Settings::get_frequency_aliases( $frequency );
+		$placeholders = implode( ', ', array_fill( 0, count( $frequencies ), '%s' ) );
+		$params       = array_merge(
+			array(
 				absint( $user_id ),
 				sanitize_key( $event_type ),
 				sanitize_text_field( $event_key ),
-				sanitize_key( $frequency )
+			),
+			$frequencies
+		);
+
+		$existing = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT id FROM {$this->table_name()} WHERE user_id = %d AND event_type = %s AND event_key = %s AND frequency IN ({$placeholders}) AND status IN ('queued', 'processing', 'sent') LIMIT 1",
+				$params
 			)
 		);
 
@@ -167,8 +176,9 @@ class Barmbini_Core_Queue_Repository {
 	protected function calculate_scheduled_for( $frequency ) {
 		$timezone = wp_timezone();
 		$now      = new DateTimeImmutable( 'now', $timezone );
+		$frequency = Barmbini_Core_Subscription_Settings::normalize_frequency_value( $frequency );
 
-		if ( 'woechentlich' === $frequency ) {
+		if ( 'wöchentlich' === $frequency ) {
 			$scheduled = $now->modify( 'monday this week' )->setTime( 6, 0 );
 
 			if ( $scheduled <= $now ) {
@@ -192,6 +202,7 @@ class Barmbini_Core_Queue_Repository {
 			$item['id']       = absint( $item['id'] );
 			$item['user_id']  = absint( $item['user_id'] );
 			$item['object_id'] = absint( $item['object_id'] );
+			$item['frequency'] = Barmbini_Core_Subscription_Settings::normalize_frequency_value( $item['frequency'] ?? '' );
 			$item['payload']  = json_decode( (string) $item['payload'], true );
 			$item['payload']  = is_array( $item['payload'] ) ? $item['payload'] : array();
 		}
