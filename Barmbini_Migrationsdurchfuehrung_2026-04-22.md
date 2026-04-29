@@ -236,3 +236,56 @@ Eine fruehere Arbeitsnotiz nannte `Polylang` als aktives Plugin. Der aktuelle lo
 2. Fuer kuenftige Updates mit zu erhaltenden Live-Daten den separaten Modus-B-Ablauf verwenden.
 3. Bei weiterem Betrieb Speicher vergroessern oder ungenutzte Inhalte gezielt abbauen.
 4. Vor einem Produktivbetrieb eine Domain und TLS nachziehen.
+
+## Dokumentierter Modus-B-Plugin-Deploy 2026-04-29
+
+Am `2026-04-29` wurde der lokal verifizierte Umlaut- und Frequenz-Stand fuer `wp-content/plugins/barmbini-core/` als Modus-B-Deploy auf dem Live-System bereitgestellt.
+
+### Entscheidungsprotokoll vor dem Lauf
+
+- Ziel: den bereits lokal verifizierten Umlaut- und Frequenz-Update fuer `wp-content/plugins/barmbini-core/` auf Live bereitstellen
+- gewaehlter Modus: `Modus B`
+- Begruendung: bestehende Live-Benutzer und produktiv entstandene Daten duerfen nicht durch einen SQL-Vollimport ersetzt werden
+
+### Angewandte Leitplanken
+
+- Backup der Live-Datenbank vor dem Lauf
+- Backup des bestehenden Live-Plugin-Verzeichnisses `wp-content/plugins/barmbini-core`
+- Datei-Deploy nur fuer das Plugin `barmbini-core`
+- Setzen korrekter Eigentumsrechte
+- optionales erneutes Aktivieren des Plugins per WP-CLI, falls fuer Hooks oder Tabellenpruefung noetig
+- kein Import von `local.sql`
+- kein Vollabgleich des gesamten `wp-content`
+- kein Loeschen oder Ersetzen von `wp-content/uploads`
+- keine unkontrollierten Datenbankeingriffe ausser Backup und lesender Validierung
+
+### Durchgefuehrte Schritte im Lauf
+
+- Backup-Verzeichnis `/root/barmbini-backup-2026-04-29-095939-umlaut-plugin` angelegt
+- Live-Datenbank als `live-before-umlaut-plugin.sql` gesichert
+- bestehendes Live-Plugin als `barmbini-core-before-umlaut-plugin.tar.gz` archiviert
+- lokales Plugin-Artefakt `barmbini-core-plugin.zip` gebaut und per `scp -O` nach `/root/barmbini-core-plugin.zip` uebertragen
+- WordPress-Wartungsmodus fuer den Austausch aktiviert
+- Live-Verzeichnis `wp-content/plugins/barmbini-core` ersetzt und anschliessend auf `www-data:www-data` gesetzt
+- Plugin per WP-CLI erneut geprueft und aktiv belassen
+- Deploy-Dateien direkt auf dem Server auf die Texte `Täglich` und `wöchentlich` geprueft
+- WordPress-Optionen `home` und `siteurl` erneut geprueft
+- WordPress-Wartungsmodus wieder deaktiviert
+- temporaeres Transferartefakt `/root/barmbini-core-plugin.zip` wieder entfernt
+
+### Validiertes Ergebnis des Laufs
+
+- die Deploy-Ausgabe bestaetigte `plugin-active`
+- die Deploy-Ausgabe bestaetigte `home` und `siteurl` weiterhin als `http://217.160.74.128`
+- der ausgelieferte Template-Stand enthaelt `Täglich`
+- die ausgelieferte Settings-Klasse enthaelt `wöchentlich`
+- ein serverseitiger HEAD-Check auf `http://127.0.0.1/mein-konto/abonnements/` mit Host `217.160.74.128` lieferte nach Ende des Wartungsmodus `HTTP/1.1 200 OK`
+- die externe Browser-Pruefung zeigte die Startseite weiter mit dem Titel `Sozialkaufhaus Barmbini - Sozialkaufhaus Barmbini`
+- die externe Browser-Pruefung zeigte fuer `http://217.160.74.128/mein-konto/abonnements/` den Titel `Ihr Konto - Sozialkaufhaus Barmbini` und das erwartete Anmeldeformular statt einer Fehler- oder Wartungsseite
+- es wurde bewusst kein SQL-Import und kein Vollabgleich des gesamten `wp-content` ausgefuehrt
+
+### Operative Hinweise aus dem Lauf
+
+- fuer Dateiuebertragungen auf diesen Server bleibt `scp -O` erforderlich
+- fuer zusammengesetzte Remote-Kommandos war ein per Base64 uebergebenes Bash-Skript robuster als langes Inline-Quoting in PowerShell
+- fuer nachtraegliche WP-CLI-Checks muss der WordPress-Pfad explizit gesetzt oder vorher in `/var/www/barmbini` gewechselt werden

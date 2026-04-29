@@ -284,3 +284,58 @@ Der Server ist aktuell:
 - frei von der konkret nachgewiesenen `.update`-Persistenz
 
 Gleichzeitig ist der Server aufgrund der gefundenen Manipulationen weiterhin als sicherheitskritisch einzustufen, bis eine vollstaendige Haertung oder Neuinstallation erfolgt ist.
+
+## Nachtraegliche Ressourcen- und Malware-Bereinigung 2026-04-29
+
+Am `2026-04-29` wurde der Server erneut gezielt auf Ressourcenverbrauch und verbliebene Schadartefakte geprueft, weil `/` wieder bei rund `88%` Auslastung lag und die CPU-Last nicht allein durch WordPress erklaert werden konnte.
+
+### Neue Befunde vor dem Eingriff
+
+- freier Speicher auf `/`: nur noch rund `1.1G`
+- `journalctl --disk-usage`: rund `397.6M`
+- alte Root-Backups belegten weiterhin nennenswert Speicher:
+   - `/root/barmbini-backup-2026-04-23-065957`: `129M`
+   - `/root/barmbini-backup-2026-04-28-140650-barmbini-core`: `165M`
+   - `/root/barmbini-backup-2026-04-29-095939-umlaut-plugin`: `2.9M`
+- unter `/root/.local/share/pnpm` lag ein nicht produktionsrelevanter Paket-Store von rund `1.2G`
+- `bot.service` war aktiv, enabled und startete `ExecStart=/etc/data/kinsing`
+- `bot.service` hatte zum Pruefzeitpunkt bereits rund `6d 20h 32min` CPU-Zeit verbraucht sowie rund `246M` RAM und `275M` Swap belegt
+- zusaetzlich verwies `/etc/ld.so.preload` noch auf `/etc/data/libsystem.so`
+
+### Durchgefuehrte Bereinigung am 2026-04-29
+
+- `bot.service` gestoppt, deaktiviert, maskiert und aus dem aktiven systemd-Pfad entfernt
+- die Unit-Datei zur Nachvollziehbarkeit unter `/root/malware-cleanup-2026-04-29-104919/bot.service` gesichert
+- Schadartefakte entfernt:
+   - `/etc/data/kinsing`
+   - `/etc/data/libsystem.so`
+   - `/dev/shm/kdevtmpfsi`
+   - `/dev/shm/.ICEd-unix`
+- den verbliebenen Loader-Hook aus `/etc/ld.so.preload` entfernt und den Vorzustand unter `/root/malware-cleanup-2026-04-29-ldpreload-105137/ld.so.preload.before` gesichert
+- alte Root-Backups geloescht, die fuer den aktuellen Betriebsstand nicht mehr benoetigt wurden:
+   - `/root/barmbini-backup-2026-04-23-065918`
+   - `/root/barmbini-backup-2026-04-23-065957`
+   - `/root/barmbini-backup-2026-04-28-140650-barmbini-core`
+- Root-seitige Paketreste geloescht:
+   - `/root/.local/share/pnpm`
+   - `/root/.cache/pnpm`
+   - `/root/.npm`
+- `apt-get clean` sowie Leeren von `/var/cache/apt/archives/*`
+- Journals auf rund `150M` Zielgroesse reduziert; dabei wurden rund `265.1M` archivierte Journaldaten entfernt
+
+### Validiertes Ergebnis nach der Bereinigung
+
+- `/etc/ld.so.preload` ist entfernt
+- `bot.service` ist `masked` und `inactive`
+- in den gezielten Nachpruefungen blieben keine Referenzen auf `libsystem.so`, `/etc/data/kinsing`, `kdevtmpfsi` oder `bot.service` mehr uebrig
+- Startseite antwortete nach der Bereinigung weiter mit `HTTP/1.1 200 OK`
+- `http://217.160.74.128/mein-konto/abonnements/` antwortete nach der Bereinigung weiter mit `HTTP/1.1 200 OK`
+- die externe Browser-Pruefung zeigte weiterhin den Titel `Sozialkaufhaus Barmbini - Sozialkaufhaus Barmbini`
+- die externe Browser-Pruefung zeigte fuer `http://217.160.74.128/mein-konto/abonnements/` weiterhin `Ihr Konto - Sozialkaufhaus Barmbini`
+- freier Speicher auf `/` stieg von rund `1.1G` auf rund `2.9G`
+- Dateisystemauslastung auf `/` sank von rund `88%` auf rund `67%`
+- `journalctl --disk-usage` sank von rund `397.6M` auf rund `132.5M`
+
+### Bewertung
+
+Die heutige Bereinigung hat sowohl einen realen Speicherengpass als auch einen verbliebenen aktiven Malware-Mechanismus beseitigt. Trotzdem bleibt die bereits zuvor dokumentierte Einschätzung bestehen: der Server muss weiterhin als sicherheitskritisch gelten, bis Haertung oder Neuaufbau vollstaendig abgeschlossen sind.
