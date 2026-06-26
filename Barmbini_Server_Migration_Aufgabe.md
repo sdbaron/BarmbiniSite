@@ -2,7 +2,7 @@
 
 ## Ziel
 
-Der Server `217.160.74.128` soll exklusiv fuer die Produktivumgebung der Website Sozialkaufhaus Barmbini vorbereitet werden. Danach soll WordPress installiert und die lokale Website aus `C:\Users\Teilnehmer\Local Sites\barmbini` auf den Server migriert werden.
+Der Server `217.160.74.128` soll exklusiv fuer die Produktivumgebung der Website Sozialkaufhaus Barmbini vorbereitet werden. Danach soll WordPress installiert und die lokale Website aus `D:\Local Sites\barmbini` auf den Server migriert werden.
 
 Die Aufgabe ist so zu bearbeiten, dass am Ende eine lauffaehige, DSGVO-konforme, deutschsprachige WordPress-Produktivseite mit Kadence-Theme auf dem Zielserver verfuegbar ist.
 
@@ -13,15 +13,15 @@ Die Aufgabe basiert auf:
 - `Barmbini_Technisches_Konzept_v2.5.md`
 - `Barmbini_Rechtliche_Seiten.md`
 - `Barmbini_Seiteninhalte.md`
-- lokaler WordPress-Installation unter `C:\Users\Teilnehmer\Local Sites\barmbini`
+- lokaler WordPress-Installation unter `D:\Local Sites\barmbini`
 
 ## Verifizierter Ist-Stand der lokalen Installation
 
 ### Lokaler Quellstand
 
-- WordPress-Dateien liegen unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`
-- SQL-Dump liegt unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\sql\local.sql`
-- All-in-One-Backup liegt unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content\ai1wm-backups\barmbini-local-20260305-143837-3cxpxokmsuk7.wpress`
+- WordPress-Dateien liegen unter `D:\Local Sites\barmbini\app\public`
+- SQL-Dump liegt unter `D:\Local Sites\barmbini\app\sql\local.sql`
+- All-in-One-Backup liegt unter `D:\Local Sites\barmbini\app\public\wp-content\ai1wm-backups\barmbini-local-20260305-143837-3cxpxokmsuk7.wpress`
 - `wp-config.php` zeigt eine Local-Installation mit `DB_NAME=local`, `DB_USER=root`, `DB_PASSWORD=root`, `DB_HOST=localhost`
 - WordPress-Core-Dateien stehen auf `6.9.4`
 
@@ -305,7 +305,7 @@ Die Aufgabe ist abgeschlossen, wenn alle folgenden Punkte erfuellt sind:
 - Der Server wurde inventarisiert, gesichert und bereinigt.
 - Nur die fuer WordPress benoetigte Serverumgebung ist aktiv.
 - WordPress laeuft produktiv auf `217.160.74.128` unter HTTPS.
-- Die lokale Site aus `C:\Users\Teilnehmer\Local Sites\barmbini` wurde erfolgreich migriert.
+- Die lokale Site aus `D:\Local Sites\barmbini` wurde erfolgreich migriert.
 - Es gibt keine Verweise mehr auf `barmbini.local`.
 - Die rechtlichen Seiten sind vorhanden.
 - Kontaktformular, Navigation, Permalinks und Medien funktionieren.

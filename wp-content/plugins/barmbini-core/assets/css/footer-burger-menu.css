@@ -1,0 +1,194 @@
+/**
+ * Footer Burger Menu – Responsive Styles
+ *
+ * Lässt das Footer-Menü auf Mobilgeräten und Tablets in ein
+ * Burger-Menü wechseln – exakt nach dem Muster des Header-Menüs
+ * im Kadence-Theme.
+ *
+ * Der Burger-Button trägt Kadences .menu-toggle-Klasse und wird
+ * per PHP (wp_nav_menu-Filter) ins HTML injiziert. Nur das
+ * Toggle-Verhalten wird per JS gesteuert.
+ *
+ * Breakpoint: 1024px (Kadence-Tablet-Breakpoint).
+ */
+
+/* --------------------------------------------------------------------------
+   1. Basis: Burger-Button im Footer standardmässig ausblenden
+   -------------------------------------------------------------------------- */
+
+.barmbini-footer-burger-toggle {
+	display: none;
+	align-items: center;
+	gap: 0.5rem;
+	width: 100%;
+	padding: 0.75rem 1rem;
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--global-palette3, #333);
+	background: var(--global-palette7, #f7f5f0);
+	border: 1px solid var(--global-palette6, #d8d0c8);
+	border-radius: 6px;
+	cursor: pointer;
+	text-align: left;
+	line-height: 1.4;
+}
+
+.barmbini-footer-burger-toggle:hover {
+	background: var(--global-palette6, #ede7dc);
+}
+
+.barmbini-footer-burger-toggle:focus-visible {
+	outline: 2px solid var(--global-palette1, #2271b1);
+	outline-offset: 2px;
+}
+
+/* Burger-Icon (drei Striche) – identisch zum Kadence-Header-Toggle */
+.barmbini-footer-burger-icon {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	width: 24px;
+	height: 18px;
+	flex-shrink: 0;
+}
+
+.barmbini-footer-burger-icon span {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background: var(--global-palette3, #333);
+	border-radius: 2px;
+	transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animation: drei Striche → X */
+.barmbini-footer-burger-toggle[aria-expanded="true"]
+	.barmbini-footer-burger-icon
+	span:nth-child(1) {
+	transform: translateY(6px) rotate(45deg);
+}
+
+.barmbini-footer-burger-toggle[aria-expanded="true"]
+	.barmbini-footer-burger-icon
+	span:nth-child(2) {
+	opacity: 0;
+}
+
+.barmbini-footer-burger-toggle[aria-expanded="true"]
+	.barmbini-footer-burger-icon
+	span:nth-child(3) {
+	transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Label-Text neben dem Burger-Icon */
+.barmbini-footer-burger-label {
+	flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   2. Container und Menü-Liste
+   -------------------------------------------------------------------------- */
+
+.barmbini-footer-burger-container {
+	position: relative;
+}
+
+.barmbini-footer-burger-container .menu {
+	transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   3. Desktop (≥ 1025px): normales Inline-Menü
+   -------------------------------------------------------------------------- */
+
+@media screen and (min-width: 1025px) {
+	.barmbini-footer-burger-toggle {
+		display: none;
+	}
+
+	.barmbini-footer-burger-container .menu {
+		display: flex;
+		max-height: none;
+		opacity: 1;
+		overflow: visible;
+	}
+}
+
+/* --------------------------------------------------------------------------
+   4. Tablet / Mobile (≤ 1024px): Burger-Menü
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 1024px) {
+	.barmbini-footer-burger-toggle {
+		display: flex;
+	}
+
+	/* Geschlossen: Menü unsichtbar */
+	.barmbini-footer-burger-container .menu {
+		display: block;
+		max-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	/* Geöffnet: Menü eingeblendet */
+	.barmbini-footer-burger-container.is-open .menu {
+		max-height: 600px;
+		opacity: 1;
+		padding: 0.5rem 0 0 0;
+	}
+
+	/* Menüpunkte vertikal stapeln */
+	.barmbini-footer-burger-container .menu li {
+		display: block;
+		width: 100%;
+	}
+
+	.barmbini-footer-burger-container .menu li a {
+		display: block;
+		padding: 0.6rem 1rem;
+		font-size: 0.95rem;
+		border-bottom: 1px solid var(--global-palette7, #e8e2d6);
+		color: var(--global-palette3, #333);
+		text-decoration: none;
+	}
+
+	.barmbini-footer-burger-container .menu li a:hover {
+		background: var(--global-palette7, #f7f5f0);
+		color: var(--global-palette1, #000);
+	}
+
+	.barmbini-footer-burger-container .menu li:last-child a {
+		border-bottom: none;
+	}
+}
+		padding: 0.5rem 0 0 0;
+	}
+
+	/* Menüpunkte untereinander stapeln */
+	.barmbini-footer-burger-container .menu li {
+		display: block;
+		width: 100%;
+	}
+
+	.barmbini-footer-burger-container .menu li a {
+		display: block;
+		padding: 0.6rem 1rem;
+		font-size: 0.95rem;
+		border-bottom: 1px solid #e8e2d6;
+		color: #333;
+		text-decoration: none;
+	}
+
+	.barmbini-footer-burger-container .menu li a:hover {
+		background: #f7f5f0;
+		color: #000;
+	}
+
+	.barmbini-footer-burger-container .menu li:last-child a {
+		border-bottom: none;
+	}
+}

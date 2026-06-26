@@ -23,6 +23,7 @@ require_once BARMBINI_CORE_PATH . 'includes/account/class-account-endpoint.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-breadcrumbs.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-category-display.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-catalog-hooks.php';
+require_once BARMBINI_CORE_PATH . 'includes/catalog/class-footer-menu.php';
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-log-repository.php';
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-queue-repository.php';
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-unsubscribe-service.php';

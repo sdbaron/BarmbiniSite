@@ -20,6 +20,7 @@ class Barmbini_Core_Plugin {
 	protected function __construct() {
 		$this->loader = new Barmbini_Core_Loader();
 		$this->register_catalog_module();
+		$this->register_footer_menu_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
@@ -35,6 +36,12 @@ class Barmbini_Core_Plugin {
 		$this->loader->add_filter( 'woocommerce_get_breadcrumb', $breadcrumbs, 'inject_sortiment_crumb' );
 		$this->loader->add_filter( 'woocommerce_subcategory_count_html', $catalog_hooks, 'remove_subcategory_count' );
 		$this->loader->add_action( 'woocommerce_after_subcategory_title', $category_display, 'render_subcategory_description', 10, 1 );
+	}
+
+	protected function register_footer_menu_module() {
+		$footer_menu = new Barmbini_Core_Footer_Menu();
+
+		$footer_menu->register();
 	}
 
 	protected function register_account_module() {

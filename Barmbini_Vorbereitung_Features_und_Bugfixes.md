@@ -24,11 +24,11 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 
 - `wp-content-workdir/` ist ein entpackter, editierbarer Arbeitsstand für technische Pruefung und Änderungen.
 - `barmbini-wp-content.zip` ist das Transport- und Import-Archiv für den dokumentierten Update-Prozess auf den Server.
-- Beide Artefakte duerfen lokal gelöscht werden, wenn der gleiche Stand weiterhin in `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content` vorhanden ist.
+- Beide Artefakte duerfen lokal gelöscht werden, wenn der gleiche Stand weiterhin in `D:\Local Sites\barmbini\app\public\wp-content` vorhanden ist.
 
 #### Fester Ablauf zum sicheren Neuerzeugen
 
-1. Quelle ist der lokale WordPress-Bestand unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content`.
+1. Quelle ist der lokale WordPress-Bestand unter `D:\Local Sites\barmbini\app\public\wp-content`.
 2. Für einen Remote-Transfer wird daraus ein neues `barmbini-wp-content.zip` erzeugt.
 3. `wp-content-workdir/` wird nur bei Bedarf aus diesem Archiv neu entpackt.
 4. Für den Server-Import ist das ZIP erforderlich, `wp-content-workdir/` dagegen optional.
@@ -36,10 +36,10 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 Beispiel in PowerShell:
 
 ```powershell
-Set-Location 'C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content'
-Compress-Archive -Path plugins,themes,uploads,languages,index.php -DestinationPath 'C:\Users\Teilnehmer\Dev\Website\barmbini-wp-content.zip' -Force
+Set-Location 'D:\Local Sites\barmbini\app\public\wp-content'
+Compress-Archive -Path plugins,themes,uploads,languages,index.php -DestinationPath 'D:\Dev\Website\barmbini-wp-content.zip' -Force
 
-Set-Location 'C:\Users\Teilnehmer\Dev\Website'
+Set-Location 'D:\Dev\Website'
 Expand-Archive -Path '.\barmbini-wp-content.zip' -DestinationPath '.\wp-content-workdir' -Force
 ```
 
@@ -95,6 +95,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
+- Responsives Footer-Burger-Menü (analog zum Header-Menü, bricht ab 1024px auf Toggle-Button um)
 
 Dort wurden bereits unter anderem umgesetzt:
 
@@ -107,7 +108,7 @@ Das ist der wichtigste technische Hebel für kommende Arbeiten.
 
 ## Aktueller Validierungsstand für das Feature-Abonnementssystem
 
-Der neue Stand wurde lokal gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\public` verifiziert.
+Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifiziert.
 
 - Das Plugin `barmbini-core` laesst sich in WordPress laden und aktivieren.
 - Die Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue` wurden lokal angelegt.
@@ -240,7 +241,7 @@ Für Performance- oder Cache-Bugfixes ist `WP Fastest Cache` als realer Ist-Stan
 
 ### 3. Hosting-Modell
 
-- Konzept v2.5 spricht von `IONOS WordPress Hosting Start`.
+- Konzept v2.5 spricht von `IONOS VPS Linux S+`.
 - Die aktuelle Betriebsdokumentation beschreibt einen selbst administrierten Server mit `nginx`, `php8.3-fpm` und `mariadb`.
 
 Folgerung:

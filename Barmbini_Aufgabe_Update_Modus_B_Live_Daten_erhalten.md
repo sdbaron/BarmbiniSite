@@ -57,9 +57,9 @@ Besonders schuetzenswert sind unter anderem:
 
 ### Lokal
 
-- WordPress-Root: `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`
-- lokaler SQL-Dump: `C:\Users\Teilnehmer\Local Sites\barmbini\app\sql\local.sql`
-- lokaler Content-Ordner: `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content`
+- WordPress-Root: `D:\Local Sites\barmbini\app\public`
+- lokaler SQL-Dump: `D:\Local Sites\barmbini\app\sql\local.sql`
+- lokaler Content-Ordner: `D:\Local Sites\barmbini\app\public\wp-content`
 
 ### Server
 
@@ -129,8 +129,8 @@ Standardmaessig nicht im Code-Archiv enthalten:
 Beispiel in PowerShell:
 
 ```powershell
-$src = 'C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content'
-$zip = 'C:\Users\Teilnehmer\Desktop\Website\barmbini-wp-content-code-only.zip'
+$src = 'D:\Local Sites\barmbini\app\public\wp-content'
+$zip = 'D:\Dev\Website\barmbini-wp-content-code-only.zip'
 
 if (Test-Path $zip) { Remove-Item $zip -Force }
 
@@ -158,8 +158,8 @@ Vorgehen:
 Beispiel in PowerShell fuer ausgewaehlte Medien:
 
 ```powershell
-$src = 'C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content'
-$zip = 'C:\Users\Teilnehmer\Desktop\Website\barmbini-media-selected.zip'
+$src = 'D:\Local Sites\barmbini\app\public\wp-content'
+$zip = 'D:\Dev\Website\barmbini-media-selected.zip'
 
 if (Test-Path $zip) { Remove-Item $zip -Force }
 
@@ -211,8 +211,8 @@ Beispiel lokal in PowerShell:
 ```powershell
 ssh root@217.160.74.128 "mkdir -p /root/barmbini-import"
 
-scp -O "C:\Users\Teilnehmer\Desktop\Website\barmbini-wp-content-code-only.zip" root@217.160.74.128:/root/barmbini-import/
-scp -O "C:\Users\Teilnehmer\Desktop\Website\barmbini-media-selected.zip" root@217.160.74.128:/root/barmbini-import/
+scp -O "D:\Dev\Website\barmbini-wp-content-code-only.zip" root@217.160.74.128:/root/barmbini-import/
+scp -O "D:\Dev\Website\barmbini-media-selected.zip" root@217.160.74.128:/root/barmbini-import/
 ```
 
 Die zweite `scp`-Zeile wird nur verwendet, wenn wirklich ein Medienarchiv existiert.

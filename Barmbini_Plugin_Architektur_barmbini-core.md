@@ -49,7 +49,8 @@ wp-content/plugins/barmbini-core/
 |   |-- catalog/
 |   |   |-- class-breadcrumbs.php
 |   |   |-- class-category-display.php
-|   |   `-- class-catalog-hooks.php
+|   |   |-- class-catalog-hooks.php
+|   |   `-- class-footer-menu.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -81,8 +82,11 @@ wp-content/plugins/barmbini-core/
 |       |-- daily-digest.php
 |       `-- weekly-digest.php
 `-- assets/
-    `-- css/
-        `-- account-subscriptions.css
+    |-- css/
+    |   |-- account-subscriptions.css
+    |   `-- footer-burger-menu.css
+    `-- js/
+        `-- footer-burger-menu.js
 ```
 
 ## Bootstrap-Konzept
@@ -123,11 +127,13 @@ Zweck:
 - Breadcrumb-Anpassungen für `Sortiment`
 - Ausblenden von Unterkategorie-Anzahlen
 - Kategoriebeschreibung unter Unterkategorien
+- Responsives Footer-Burger-Menü (analog zum Header-Menü)
 
 Wichtig:
 
 - Dieses Modul reduziert Theme-Abhaengigkeit.
 - Es enthaelt keine kundenspezifische Benachrichtigungslogik.
+- `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS und wird auf allen Frontend-Seiten eingebunden.
 
 ### 2. Account-Modul
 

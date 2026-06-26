@@ -551,7 +551,7 @@ Bereits umgesetzt im Projekt-Plugin `wp-content/plugins/barmbini-core/`:
 - Versandlog, Digest-Queue und Scheduler für `täglich` und `wöchentlich`
 - tokenbasierte Abmeldung sowie Datenschutz-Export/Löschintegration
 
-Lokal verifiziert gegen `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`:
+Lokal verifiziert gegen `D:\Local Sites\barmbini\app\public`:
 
 - Browser-Test mit Kundenlogin: Der neue Konto-Menuepunkt `Abonnements` ist sichtbar und der Endpoint laedt.
 - Formularspeicherung: Abo-Einstellungen werden gespeichert; Einwilligungs- und Aktualisierungszeitstempel werden angezeigt.
@@ -575,7 +575,7 @@ Die folgenden Testfixtures sind für die lokale Entwicklungs- und Verifikationsu
 
 ### Geltungsbereich
 
-- lokale WordPress-Installation unter `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`
+- lokale WordPress-Installation unter `D:\Local Sites\barmbini\app\public`
 - Plugin `wp-content/plugins/barmbini-core/` ist lokal aktiv
 - PHP-CLI-Checks erfolgen mit der Local-PHP-Installation und der site-spezifischen `php.ini`
 

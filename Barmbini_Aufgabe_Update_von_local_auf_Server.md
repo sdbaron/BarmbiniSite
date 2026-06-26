@@ -2,7 +2,7 @@
 
 ## Ziel
 
-Die bereits laufende Website Sozialkaufhaus Barmbini auf dem Server `217.160.74.128` soll kontrolliert und reproduzierbar aus dem lokalen WordPress-Stand unter `C:\Users\Teilnehmer\Local Sites\barmbini` aktualisiert werden.
+Die bereits laufende Website Sozialkaufhaus Barmbini auf dem Server `217.160.74.128` soll kontrolliert und reproduzierbar aus dem lokalen WordPress-Stand unter `D:\Local Sites\barmbini` aktualisiert werden.
 
 Die Aufgabe beschreibt den Standardprozess fuer ein inhaltliches oder funktionales Update von lokal nach live, ohne die Server-Basis neu aufzusetzen.
 
@@ -15,7 +15,7 @@ Diese Aufgabe gilt fuer den aktuell aufgebauten Zielstand:
 - Server-Webroot: `/var/www/barmbini`
 - Server-Datenbankzugang liegt in: `/root/barmbini-db.txt`
 - Server-Webstack: `nginx`, `php8.3-fpm`, `mariadb-server`, `wp-cli`
-- Lokaler Quellstand liegt in `Local Sites\barmbini`
+- Lokaler Quellstand liegt in `D:\Local Sites\barmbini`
 
 ## Grundprinzip
 
@@ -110,11 +110,11 @@ Folgende Dateien und Einstellungen werden im Standardfall nicht lokal erzeugt un
 ### Lokal
 
 - WordPress-Root:
-  - `C:\Users\Teilnehmer\Local Sites\barmbini\app\public`
+  - `D:\Local Sites\barmbini\app\public`
 - Lokaler SQL-Dump:
-  - `C:\Users\Teilnehmer\Local Sites\barmbini\app\sql\local.sql`
+  - `D:\Local Sites\barmbini\app\sql\local.sql`
 - Lokaler `wp-content`:
-  - `C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content`
+  - `D:\Local Sites\barmbini\app\public\wp-content`
 
 ### Server
 
@@ -177,8 +177,8 @@ Nicht mit uebertragen im Standardfall:
 Beispiel in PowerShell fuer ein Transfer-Archiv:
 
 ```powershell
-$src = 'C:\Users\Teilnehmer\Local Sites\barmbini\app\public\wp-content'
-$zip = 'C:\Users\Teilnehmer\Desktop\Website\barmbini-wp-content.zip'
+$src = 'D:\Local Sites\barmbini\app\public\wp-content'
+$zip = 'D:\Dev\Website\barmbini-wp-content.zip'
 
 if (Test-Path $zip) { Remove-Item $zip -Force }
 
@@ -191,10 +191,10 @@ Compress-Archive -Path $items -DestinationPath $zip -Force
 Optionaler Kontrollschritt:
 
 ```powershell
-Get-Item 'C:\Users\Teilnehmer\Local Sites\barmbini\app\sql\local.sql' |
+Get-Item 'D:\Local Sites\barmbini\app\sql\local.sql' |
   Select-Object FullName,Length,LastWriteTime
 
-Get-Item 'C:\Users\Teilnehmer\Desktop\Website\barmbini-wp-content.zip' |
+Get-Item 'D:\Dev\Website\barmbini-wp-content.zip' |
   Select-Object FullName,Length,LastWriteTime
 ```
 
@@ -245,8 +245,8 @@ Arbeitsschritte lokal in PowerShell:
 ```powershell
 ssh root@217.160.74.128 "mkdir -p /root/barmbini-import"
 
-scp -O "C:\Users\Teilnehmer\Local Sites\barmbini\app\sql\local.sql" root@217.160.74.128:/root/barmbini-import/
-scp -O "C:\Users\Teilnehmer\Desktop\Website\barmbini-wp-content.zip" root@217.160.74.128:/root/barmbini-import/
+scp -O "D:\Local Sites\barmbini\app\sql\local.sql" root@217.160.74.128:/root/barmbini-import/
+scp -O "D:\Dev\Website\barmbini-wp-content.zip" root@217.160.74.128:/root/barmbini-import/
 ```
 
 Kontrolle auf dem Server:
