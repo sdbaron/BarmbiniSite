@@ -15,7 +15,7 @@ Der Sortiment-Bereich nutzt WooCommerce als reinen Produktkatalog ohne Kaufabwic
 | | |
 |---|---|
 | Entwicklung | Lokal mit Local (Nginx) |
-| Hosting | IONOS WordPress Hosting Start |
+| Hosting | IONOS VPS Linux S+ |
 | Datenbank | MariaDB |
 | PHP | 8.1+ |
 
@@ -29,9 +29,9 @@ Der Sortiment-Bereich nutzt WooCommerce als reinen Produktkatalog ohne Kaufabwic
 | PHP | 8.1+ |
 | Webserver (lokal) | Nginx |
 | Datenbank | MariaDB |
-| Hosting | IONOS WordPress Hosting Start |
-| SSL | Inklusive |
-| Speicher | 25 GB SSD |
+| Hosting | IONOS VPS Linux S+ |
+| SSL | ein kostenloses SSL-Zertifikat (z. B. Let's Encrypt) |
+| Speicher | 80 GB NVMe SSD |
 | Serverstandort | Deutschland |
 | Permalink-Struktur | Beitragsname (`/%postname%/`) |
 | Migration | All-in-One WP Migration |

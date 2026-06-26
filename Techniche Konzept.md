@@ -12,7 +12,7 @@ Kein Online-Shop.
 Fokus: Information, Vertrauen, Spenden & Besuch vor Ort.
 
 Entwicklung lokal mit Local (Nginx).
-Hosting später über IONOS WordPress Hosting Start.
+Hosting später über IONOS VPS Linux S+.
 
 ---
 
@@ -25,13 +25,12 @@ Datenbank: MySQL
 
 Hosting (Produktiv):
 
-* IONOS WordPress Hosting Start
+* IONOS VPS Linux S+
 * 1 Domain
-* SSL inklusive
-* 25 GB SSD
+* ein kostenloses SSL-Zertifikat (z. B. Let's Encrypt)
+* 80 GB NVMe SSD
 * 1 Website
 * Serverstandort Deutschland
-* Automatische WordPress-Core-Updates durch Hoster
 * SSH / SFTP / WP-CLI verfügbar
 
 Migration:
@@ -59,19 +58,13 @@ Migration:
 Polylang (kostenlose Version)
 
 ## 4.2 Sprachstruktur
-
-* Deutsch = Standardsprache (ohne Sprachpräfix)
-* Englisch = /en/
-* Russisch = /ru/
+Die Website ist einsprachig: Deutsch. Es wird keine Mehrsprachigkeit eingerichtet und es werden keine Sprachpräfixe verwendet.
 
 URL-Struktur:
 
 example.de/
-example.de/en/
-example.de/ru/
 
-Polylang-Einstellung:
-„Standard-Sprache nicht im URL anzeigen“
+Hinweis: Mehrsprachigkeits-Plugins (z. B. Polylang) sind nicht erforderlich.
 
 ## 4.3 Übersetzungsstrategie
 

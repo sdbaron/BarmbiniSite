@@ -20,6 +20,7 @@ user-invocable: true
 
 - Decide whether it is docs-only, local-only, or changes the live server.
 - If it touches the live server, continue with the full check.
+ - If classification is ambiguous, default to treating the task as touching the live server and list the ambiguity as an open question requiring user confirmation before proceeding.
 
 2. Choose the deployment mode.
 
@@ -31,7 +32,7 @@ user-invocable: true
 - Confirm the local WordPress source exists.
 - Confirm backup and rollback steps are defined.
 - Use a full SQL dump only for Mode A.
-- Use a code-only archive for Mode B when appropriate.
+ - Use a code-only archive for Mode B unless the task explicitly requires transferring media or plugin assets not present on the live server.
 
 4. Block unsafe operations.
 
@@ -44,14 +45,9 @@ user-invocable: true
 - Use `Barmbini_Aufgabe_Update_von_local_auf_Server.md` for the standard update path.
 - Use `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` when live data must survive.
 - Use `Barmbini_Migrationsdurchfuehrung_2026-04-22.md` for validated production facts.
+ - If a referenced document is not available in context, explicitly list it as an open question in the output and do not assume its contents.
 
-6. Produce a deployment decision record.
-
-- Chosen mode
-- Allowed operations
-- Blocked operations
-- Backup and rollback plan
-- Post-deploy validation checklist
+6. Produce a deployment decision record using the structure defined in "Expected Output" below.
 
 ## Project-Specific Checks
 

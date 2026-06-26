@@ -100,7 +100,6 @@ class Barmbini_Core_Footer_Menu {
 		$button .= '<span class="barmbini-footer-burger-icon" aria-hidden="true">';
 		$button .= '<span></span><span></span><span></span>';
 		$button .= '</span>';
-		$button .= '<span class="barmbini-footer-burger-label">Menü</span>';
 		$button .= '</button>';
 
 		return '<div class="barmbini-footer-burger-container">'
