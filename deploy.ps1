@@ -102,7 +102,15 @@ if ($Full) {
         exit 1
     }
     $sqlSize = "{0:N1} MB" -f ((Get-Item $localSQL).Length / 1MB)
-    Write-Host "       SQL-Dump: $localSQL ($sqlSize)" -ForegroundColor Gray
+    $sqlAge  = [DateTime]::Now - (Get-Item $localSQL).LastWriteTime
+    $sqlAgeStr = "{0} Std {1} Min" -f [Math]::Floor($sqlAge.TotalHours), $sqlAge.Minutes
+    if ($sqlAge.TotalHours -gt 24) {
+        Write-Warning "       SQL-Dump ist $sqlAgeStr alt! >24h – bitte in Local App neu exportieren:"
+        Write-Warning "         Local -> Sites -> barmbini -> Database -> Export"
+        Write-Warning "         (Tipp: zum Ueberspringen -NoBackup verwenden oder Dump aktualisieren)"
+    } else {
+        Write-Host "       SQL-Dump: $localSQL ($sqlSize, Alter: $sqlAgeStr)" -ForegroundColor Gray
+    }
 }
 Write-Host '       OK' -ForegroundColor Green
 Write-Host ''
