@@ -179,30 +179,31 @@ Write-Host ''
 # ---------- 5. Entpacken und Rechte setzen ----------
 Write-Host '[5/6] Installiere auf dem Server ...' -ForegroundColor Yellow
 
+$tmpScript = Join-Path $env:TEMP 'barmbini-install.sh'
+
 if ($Full) {
     # Modus A: volles wp-content ersetzen + SQL import + URL-Update
-    $installScript = @"
+    @"
 #!/bin/bash
 set -e
 cd $serverWebroot
-rm -rf wp-content/languages wp-content/plugins wp-content/themes wp-content/uploads wp-content/index.php
+rm -rf $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
-# SQL import
-DB_NAME=\$(awk -F= '/^DB_NAME=/{print \$2}' $serverDBFile)
-mariadb "\$DB_NAME" < /root/barmbini-import/local.sql
-# URL ersetzen
+DB_NAME=`$(awk -F= '/^DB_NAME=/{print `$2}' $serverDBFile)
+mariadb "`$DB_NAME" < $serverImport/local.sql
 wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@
-    # Sende lokalen SQL-Dump zusaetzlich
-    scp -O $localSQL root@${Target}:/root/barmbini-import/local.sql
-    $installScript | ssh root@$Target 'cat > /root/install.sh && bash /root/install.sh && rm /root/install.sh'
+"@ | Set-Content -Path $tmpScript -Encoding ASCII
+
+    scp -O $localSQL root@${Target}:${serverImport}/local.sql
+    scp -O $tmpScript root@${Target}:/root/install.sh
+    ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
 } else {
     # Modus B: nur Code ersetzen
-    $installScript = @"
+    @"
 #!/bin/bash
 set -e
 cd $serverImport
@@ -210,15 +211,13 @@ unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@
-    $installScript | ssh root@$Target 'cat > /root/install.sh && bash /root/install.sh && rm /root/install.sh'
+"@ | Set-Content -Path $tmpScript -Encoding ASCII
+
+    scp -O $tmpScript root@${Target}:/root/install.sh
+    ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
 }
 
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Deployment auf dem Server fehlgeschlagen."
-    exit 1
-}
-Write-Host '       OK' -ForegroundColor Green
+Remove-Item $tmpScript -Force -ErrorAction SilentlyContinue
 Write-Host ''
 
 # ---------- 6. Cache leeren ----------
