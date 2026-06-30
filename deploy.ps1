@@ -180,31 +180,38 @@ Write-Host ''
 Write-Host '[5/6] Installiere auf dem Server ...' -ForegroundColor Yellow
 
 if ($Full) {
-    # Modus A: volles wp-content ersetzen + SQL import
-    ssh root@$Target @"
+    # Modus A: volles wp-content ersetzen + SQL import + URL-Update
+    $installScript = @"
+#!/bin/bash
+set -e
 cd $serverWebroot
-rm -rf wp-content/wp-fastest-cache 2>/dev/null
-cp -r wp-content/wp-fastest-cache \$TMPDIR 2>/dev/null || true
 rm -rf wp-content/languages wp-content/plugins wp-content/themes wp-content/uploads wp-content/index.php
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
-chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null
-rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null
+chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null || true
+rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 # SQL import
-mariadb \$(awk -F= '/^DB_NAME=/{print \$2}' $serverDBFile) < $localSQL
+DB_NAME=\$(awk -F= '/^DB_NAME=/{print \$2}' $serverDBFile)
+mariadb "\$DB_NAME" < /root/barmbini-import/local.sql
 # URL ersetzen
-wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null
+wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
 "@
+    # Sende lokalen SQL-Dump zusaetzlich
+    scp -O $localSQL root@${Target}:/root/barmbini-import/local.sql
+    $installScript | ssh root@$Target 'cat > /root/install.sh && bash /root/install.sh && rm /root/install.sh'
 } else {
     # Modus B: nur Code ersetzen
-    ssh root@$Target @"
+    $installScript = @"
+#!/bin/bash
+set -e
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
-chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null
-rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null
+chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
+rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
 "@
+    $installScript | ssh root@$Target 'cat > /root/install.sh && bash /root/install.sh && rm /root/install.sh'
 }
 
 if ($LASTEXITCODE -ne 0) {
@@ -224,7 +231,7 @@ Write-Host ''
 
 # ---------- Aufraeumen ----------
 Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
-ssh root@$Target "rm -f $serverImport/deploy.zip" 2>$null
+ssh root@$Target "rm -f $serverImport/deploy.zip $serverImport/local.sql" 2>$null
 
 # ---------- Fertig ----------
 Write-Host '================================================================' -ForegroundColor Green
