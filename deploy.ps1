@@ -143,7 +143,8 @@ Write-Host ''
 if (-not $NoBackup) {
     Write-Host '[3/6] Erstelle Server-Backup ...' -ForegroundColor Yellow
 
-    $backupScript = @'
+    $tmpBackup = Join-Path $env:TEMP 'barmbini-backup.sh'
+    ToUnix (@'
 #!/bin/bash
 set -e
 BACKUP_DIR="/root/barmbini-backup-$(date +%F-%H%M%S)"
@@ -152,8 +153,11 @@ DB_NAME=$(awk -F= '"'"'/^DB_NAME=/{print $2}'"'"' /root/barmbini-db.txt)
 mariadb-dump "$DB_NAME" > "$BACKUP_DIR/live-before-deploy.sql"
 tar -czf "$BACKUP_DIR/wp-content-before-deploy.tar.gz" -C /var/www/barmbini wp-content
 echo "$BACKUP_DIR"
-'@
-    ToUnix $backupScript | ssh root@$Target 'cat > /root/backup.sh && bash /root/backup.sh && rm /root/backup.sh'
+'@) | Set-Content -Path $tmpBackup -NoNewline
+
+    scp -O $tmpBackup root@${Target}:/root/backup.sh
+    ssh root@$Target 'bash /root/backup.sh && rm /root/backup.sh'
+    Remove-Item $tmpBackup -Force -ErrorAction SilentlyContinue
     
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "       Backup fehlgeschlagen! Deployment wird abgebrochen."
@@ -221,6 +225,30 @@ echo 'DEPLOY_OK'
 }
 
 Remove-Item $tmpScript -Force -ErrorAction SilentlyContinue
+Write-Host ''
+
+# ---------- 5.5. Sanity-Check ----------
+Write-Host '[5a] Sanity-Check: aktives Theme + Plugin ...' -ForegroundColor Yellow
+
+$checkOk = $true
+$checks = @(
+    @{Label='Kadence-Theme';     Cmd="test -d $serverWebroot/wp-content/themes/kadence"}
+    @{Label='barmbini-core';    Cmd="test -f $serverWebroot/wp-content/plugins/barmbini-core/barmbini-core.php"}
+    @{Label='WordPress-Index';  Cmd="test -f $serverWebroot/index.php"}
+)
+foreach ($c in $checks) {
+    $result = ssh root@$Target "$($c.Cmd) && echo 'OK' || echo 'FEHLT'" 2>$null
+    if ($result -match 'OK') {
+        Write-Host "       $($c.Label): OK" -ForegroundColor Green
+    } else {
+        Write-Host "       $($c.Label): FEHLT!" -ForegroundColor Red
+        $checkOk = $false
+    }
+}
+
+if (-not $checkOk) {
+    Write-Warning "       Sanity-Check fehlgeschlagen! Deployment ist moeglicherweise unvollstaendig."
+}
 Write-Host ''
 
 # ---------- 6. Cache leeren ----------
