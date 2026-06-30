@@ -37,14 +37,23 @@
 			toggleBtn.addEventListener('click', function () {
 				var isOpen = container.classList.contains('is-open');
 
+				// Finde das umschliessende Grid-Column-Element (Kadence Footer-Section)
+				var footerSection = toggleBtn.closest('.site-footer-section');
+
 				if (isOpen) {
 					container.classList.remove('is-open');
 					toggleBtn.setAttribute('aria-expanded', 'false');
 					toggleBtn.setAttribute('aria-label', 'Footer-Menü öffnen');
+					if (footerSection) {
+						footerSection.classList.remove('barmbini-footer-open');
+					}
 				} else {
 					container.classList.add('is-open');
 					toggleBtn.setAttribute('aria-expanded', 'true');
 					toggleBtn.setAttribute('aria-label', 'Footer-Menü schliessen');
+					if (footerSection) {
+						footerSection.classList.add('barmbini-footer-open');
+					}
 				}
 			});
 		});
