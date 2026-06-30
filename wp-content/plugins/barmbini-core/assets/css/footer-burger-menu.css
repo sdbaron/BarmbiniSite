@@ -139,7 +139,7 @@
 		align-items: center;
 	}
 
-	/* Beide Spalten intern zentrieren */
+	/* ---- Desktop: Vertikalzentrierung NUR für Top-Footer ---- */
 	.site-top-footer-inner-wrap > .site-footer-section {
 		display: flex;
 		align-items: center;
@@ -169,9 +169,9 @@
 		padding: 0.25rem 0 0 0;
 	}
 
-	/* ---- 4e. Geöffnet: Footer-Section spannt alle Grid-Spalten ---- */
-	.site-footer-section.barmbini-footer-open {
-		grid-column: 1 / -1;
+	/* ---- 4e. Geöffnet: Grid auf 1 Spalte (alle Sections volle Breite) ---- */
+	.barmbini-footer-grid-open {
+		grid-template-columns: 1fr !important;
 	}
 
 	/* ---- 4f. Menüpunkte vertikal stapeln ---- */
