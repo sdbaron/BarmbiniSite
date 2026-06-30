@@ -56,6 +56,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# ---------- Helper: Unix-Zeilenenden (LF statt CRLF) ----------
+function ToUnix($s) { return $s -replace "`r`n", "`n" }
+
 # ---------- Konfiguration ----------
 $localRoot      = 'D:\Local Sites\barmbini\app\public'
 $localWPContent = "$localRoot\wp-content"
@@ -150,7 +153,7 @@ mariadb-dump "$DB_NAME" > "$BACKUP_DIR/live-before-deploy.sql"
 tar -czf "$BACKUP_DIR/wp-content-before-deploy.tar.gz" -C /var/www/barmbini wp-content
 echo "$BACKUP_DIR"
 '@
-    $backupScript | ssh root@$Target 'cat > /root/backup.sh && bash /root/backup.sh && rm /root/backup.sh'
+    ToUnix $backupScript | ssh root@$Target 'cat > /root/backup.sh && bash /root/backup.sh && rm /root/backup.sh'
     
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "       Backup fehlgeschlagen! Deployment wird abgebrochen."
@@ -183,7 +186,7 @@ $tmpScript = Join-Path $env:TEMP 'barmbini-install.sh'
 
 if ($Full) {
     # Modus A: volles wp-content ersetzen + SQL import + URL-Update
-    @"
+    ToUnix (@"
 #!/bin/bash
 set -e
 cd $serverWebroot
@@ -196,14 +199,14 @@ DB_NAME=`$(awk -F= '/^DB_NAME=/{print `$2}' $serverDBFile)
 mariadb "`$DB_NAME" < $serverImport/local.sql
 wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@ | Set-Content -Path $tmpScript -Encoding ASCII
+"@) | Set-Content -Path $tmpScript -NoNewline
 
     scp -O $localSQL root@${Target}:${serverImport}/local.sql
     scp -O $tmpScript root@${Target}:/root/install.sh
     ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
 } else {
     # Modus B: nur Code ersetzen
-    @"
+    ToUnix (@"
 #!/bin/bash
 set -e
 cd $serverImport
@@ -211,7 +214,7 @@ unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@ | Set-Content -Path $tmpScript -Encoding ASCII
+"@) | Set-Content -Path $tmpScript -NoNewline
 
     scp -O $tmpScript root@${Target}:/root/install.sh
     ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
