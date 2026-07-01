@@ -62,12 +62,44 @@ class Barmbini_Core_Address_Shortcode {
 	/**
 	 * Rendert den Adressblock – identisch zum Format auf /barrierefreiheit/.
 	 *
-	 * @param array  $atts    Shortcode-Attribute (ungenutzt).
+	 * Unterstützte Attribute:
+	 *   show="phone,email"  – nur diese Felder anzeigen
+	 *   hide="address2"     – diese Felder ausblenden
+	 *   Beide kombinierbar, show hat Vorrang.
+	 *
+	 * @param array  $atts    Shortcode-Attribute.
 	 * @param string $content Eingeschlossener Inhalt (ungenutzt).
 	 * @return string HTML des Adressblocks.
 	 */
 	public function render( $atts = array(), $content = '' ) {
-		return self::render_html( $this->get_data() );
+		$atts = shortcode_atts( array(
+			'show' => '',
+			'hide' => '',
+		), $atts );
+
+		$data   = $this->get_data();
+		$show   = $atts['show'] ? array_map( 'trim', explode( ',', $atts['show'] ) ) : array();
+		$hide   = $atts['hide'] ? array_map( 'trim', explode( ',', $atts['hide'] ) ) : array();
+
+		// show hat Vorrang: nur diese Felder behalten
+		if ( ! empty( $show ) ) {
+			$filtered = array();
+			foreach ( $show as $key ) {
+				if ( array_key_exists( $key, $data ) ) {
+					$filtered[ $key ] = $data[ $key ];
+				}
+			}
+			$data = $filtered;
+		}
+
+		// hide: angegebene Felder entfernen
+		if ( ! empty( $hide ) ) {
+			foreach ( $hide as $key ) {
+				unset( $data[ $key ] );
+			}
+		}
+
+		return self::render_html( $data );
 	}
 
 	/**
@@ -81,36 +113,44 @@ class Barmbini_Core_Address_Shortcode {
 	public static function render_html( $data ) {
 		$lines = array();
 
-		$line1 = '';
-		if ( ! empty( $data['shortname'] ) ) {
-			$line1 .= '<strong>' . esc_html( $data['shortname'] ) . '</strong>';
-		}
-		if ( ! empty( $data['name'] ) ) {
-			$line1 .= '&nbsp;' . esc_html( $data['name'] );
-		}
-		if ( $line1 !== '' ) {
-			$lines[] = $line1;
+		// Kopfzeile (nur wenn Name/Shortname vorhanden)
+		if ( ! empty( $data['shortname'] ) || ! empty( $data['name'] ) ) {
+			$line1 = '';
+			if ( ! empty( $data['shortname'] ) ) {
+				$line1 .= '<strong>' . esc_html( $data['shortname'] ) . '</strong>';
+			}
+			if ( ! empty( $data['name'] ) ) {
+				$line1 .= ( $line1 !== '' ? '&nbsp;' : '' ) . esc_html( $data['name'] );
+			}
+			if ( $line1 !== '' ) {
+				$lines[] = $line1;
+				$lines[] = ''; // Leerzeile nach Kopf
+			}
 		}
 
-		$lines[] = '';
-
+		// Adresszeilen
 		if ( ! empty( $data['street'] ) ) {
 			$lines[] = esc_html( $data['street'] );
 		}
 		if ( ! empty( $data['address2'] ) ) {
 			$lines[] = esc_html( $data['address2'] );
 		}
-
 		$city_line = trim( ( $data['zip'] ?? '' ) . ' ' . ( $data['city'] ?? '' ) );
 		if ( $city_line !== '' ) {
 			$lines[] = esc_html( $city_line );
 		}
 
+		// Kontaktdaten
 		if ( ! empty( $data['phone'] ) ) {
 			$lines[] = '📞 ' . esc_html( $data['phone'] );
 		}
 		if ( ! empty( $data['email'] ) ) {
 			$lines[] = '✉️&nbsp;<a href="mailto:' . esc_attr( $data['email'] ) . '">' . esc_html( $data['email'] ) . '</a>';
+		}
+
+		// Falls alle Felder ausgeblendet wurden – nichts rendern
+		if ( empty( $lines ) ) {
+			return '';
 		}
 
 		return '<p class="wp-block-paragraph barmbini-address-block">' . implode( '<br>', $lines ) . '</p>';
