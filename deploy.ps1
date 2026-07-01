@@ -27,8 +27,9 @@
 .PARAMETER NoBrowser
     Oeffnet nach dem Deployment keinen Browser-Tab.
 
-.PARAMETER Target
-    Server-Adresse. Default: 217.160.74.128
+.PARAMETER ForceOldDump
+    Erzwingt Deployment auch mit veraltetem SQL-Dump (ueberspringt die
+    24h-Alterspruefung). Nur fuer Notfaelle.
 
 .EXAMPLE
     .\deploy.ps1                  # Modus B: Nur Code deployen
@@ -51,6 +52,7 @@ param(
     [switch]$Full,
     [switch]$NoBackup,
     [switch]$NoBrowser,
+    [switch]$ForceOldDump,
     [string]$Target = '217.160.74.128'
 )
 
@@ -105,12 +107,18 @@ if ($Full) {
     $sqlAge  = [DateTime]::Now - (Get-Item $localSQL).LastWriteTime
     $sqlAgeStr = "{0} Std {1} Min" -f [Math]::Floor($sqlAge.TotalHours), $sqlAge.Minutes
     if ($sqlAge.TotalHours -gt 24) {
-        Write-Warning "       SQL-Dump ist $sqlAgeStr alt! >24h – bitte in Local App neu exportieren:"
-        Write-Warning "         Local -> Sites -> barmbini -> Database -> Export"
-        Write-Warning "         (Tipp: zum Ueberspringen -NoBackup verwenden oder Dump aktualisieren)"
-    } else {
-        Write-Host "       SQL-Dump: $localSQL ($sqlSize, Alter: $sqlAgeStr)" -ForegroundColor Gray
+        if ($ForceOldDump) {
+            Write-Warning "       SQL-Dump ist $sqlAgeStr alt, wird wegen -ForceOldDump trotzdem verwendet."
+        } else {
+            Write-Error "SQL-Dump ist $sqlAgeStr alt! Maximal 24h erlaubt. Deployment ABGEBROCHEN."
+            Write-Host "  -> Bitte in der Local-App aktualisieren:" -ForegroundColor Yellow
+            Write-Host "     Local > Sites > barmbini > Database > Export" -ForegroundColor Yellow
+            Write-Host "     Speichern als: $localSQL" -ForegroundColor Yellow
+            Write-Host "  -> Oder mit -ForceOldDump erzwingen." -ForegroundColor DarkGray
+            exit 1
+        }
     }
+    Write-Host "       SQL-Dump: $localSQL ($sqlSize, Alter: $sqlAgeStr)" -ForegroundColor Gray
 }
 Write-Host '       OK' -ForegroundColor Green
 Write-Host ''
