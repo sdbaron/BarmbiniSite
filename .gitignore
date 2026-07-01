@@ -1,4 +1,8 @@
 wp-content-workdir/
 barmbini-wp-content.zip
 barmbini-deploy.zip
+barmbini-wp-content-code-only.zip
+dump-db.php
+server-backup.sh
+*.zip
 Images/

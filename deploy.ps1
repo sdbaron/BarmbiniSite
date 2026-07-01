@@ -27,13 +27,16 @@
 .PARAMETER NoBrowser
     Oeffnet nach dem Deployment keinen Browser-Tab.
 
-.PARAMETER ForceOldDump
-    Erzwingt Deployment auch mit veraltetem SQL-Dump (ueberspringt die
-    24h-Alterspruefung). Nur fuer Notfaelle.
+.PARAMETER Force
+    Erzwingt Deployment mit FRISCHEM SQL-Dump: ruft vor dem Deployment
+    das dump-db.php-Script auf dem lokalen Webserver auf, um einen
+    aktuellen Dump der lokalen DB zu erstellen. Ueberspringt die
+    Alterspruefung.
 
 .EXAMPLE
     .\deploy.ps1                  # Modus B: Nur Code deployen
     .\deploy.ps1 -Full            # Modus A: Vollabgleich mit SQL
+    .\deploy.ps1 -Full -Force     # Modus A: mit frischem Dump (empfohlen!)
     .\deploy.ps1 -NoBackup        # Deployment ohne vorheriges Backup
     .\deploy.ps1 -Full -NoBrowser # Modus A, kein Browser oeffnen
 
@@ -53,6 +56,7 @@ param(
     [switch]$NoBackup,
     [switch]$NoBrowser,
     [switch]$ForceOldDump,
+    [switch]$Force,
     [string]$Target = '217.160.74.128'
 )
 
@@ -82,6 +86,21 @@ Write-Host "  Barmbini Deployment – Modus $modeLabel" -ForegroundColor Cyan
 Write-Host "  Ziel: $Target" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
 Write-Host ''
+
+# ---------- 0. Force: frischen Dump erstellen ----------
+if ($Force -and $Full) {
+    Write-Host '[0/6] Erstelle frischen SQL-Dump von der lokalen DB ...' -ForegroundColor Yellow
+    $dumpUrl = 'https://barmbini.local/dump-db.php'
+    $result = curl.exe -k -s -S --max-time 120 $dumpUrl 2>&1
+    if ($LASTEXITCODE -ne 0 -or $result -notmatch '^OK') {
+        Write-Error "Dump fehlgeschlagen: $result"
+        exit 1
+    }
+    Write-Host "       $result" -ForegroundColor Green
+    Write-Host ''
+    # Nach erfolgreichem Dump Alterspruefung ueberspringen
+    $ForceOldDump = $true
+}
 
 # ---------- 1. Quellen pruefen ----------
 Write-Host '[1/6] Pruefe lokale Quellen ...' -ForegroundColor Yellow
