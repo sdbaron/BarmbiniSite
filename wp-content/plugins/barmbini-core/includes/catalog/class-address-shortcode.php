@@ -24,16 +24,18 @@ class Barmbini_Core_Address_Shortcode {
 	const OPTION_KEY = 'barmbini_address_data';
 
 	/**
-	 * Standard-Adressdaten.
+	 * Standard-Adressdaten – entsprechen dem Format auf /barrierefreiheit/.
 	 */
 	public static function get_defaults() {
 		return array(
-			'name'     => 'Sozialkaufhaus Barmbini',
-			'street'   => 'Alter Teichweg 11',
-			'zip'      => '22081',
-			'city'     => 'Hamburg',
-			'phone'    => '040 / 42945339',
-			'email'    => 'info@barmbini.de',
+			'shortname' => 'Barmbini',
+			'name'      => 'Sozialkaufhaus Barmbek',
+			'street'    => 'Alter Teichweg 11',
+			'address2'  => 'Im Hinterhof',
+			'zip'       => '22081',
+			'city'      => 'Hamburg',
+			'phone'     => '040 / 4294 5339',
+			'email'     => 'info@barmbini.de',
 		);
 	}
 
@@ -58,7 +60,7 @@ class Barmbini_Core_Address_Shortcode {
 	}
 
 	/**
-	 * Rendert den Adressblock.
+	 * Rendert den Adressblock – identisch zum Format auf /barrierefreiheit/.
 	 *
 	 * @param array  $atts    Shortcode-Attribute (ungenutzt).
 	 * @param string $content Eingeschlossener Inhalt (ungenutzt).
@@ -67,30 +69,51 @@ class Barmbini_Core_Address_Shortcode {
 	public function render( $atts = array(), $content = '' ) {
 		$data = $this->get_data();
 
-		$full_address = trim( $data['street'] . ', ' . $data['zip'] . ' ' . $data['city'] );
+		$lines = array();
 
-		ob_start();
-		?>
-		<div class="barmbini-address-block">
-			<h3 class="barmbini-address-block__heading"><?php echo esc_html__( 'Adresse', 'barmbini-core' ); ?></h3>
-			<p class="barmbini-address-block__address">
-				<strong><?php echo esc_html( $data['name'] ); ?></strong>
-				<br>
-				<?php echo esc_html( $full_address ); ?>
-			</p>
+		// Zeile 1: Barmbini (fett) + Name
+		$line1 = '';
+		if ( ! empty( $data['shortname'] ) ) {
+			$line1 .= '<strong>' . esc_html( $data['shortname'] ) . '</strong>';
+		}
+		if ( ! empty( $data['name'] ) ) {
+			$line1 .= '&nbsp;' . esc_html( $data['name'] );
+		}
+		if ( $line1 !== '' ) {
+			$lines[] = $line1;
+		}
 
-			<h3 class="barmbini-address-block__heading"><?php echo esc_html__( 'Kontakt', 'barmbini-core' ); ?></h3>
-			<p class="barmbini-address-block__contact">
-				<?php if ( ! empty( $data['phone'] ) ) : ?>
-					📞 <?php echo esc_html( $data['phone'] ); ?>
-					<?php if ( ! empty( $data['email'] ) ) : ?>
-						&ensp;✉️
-						<a href="mailto:<?php echo esc_attr( $data['email'] ); ?>"><?php echo esc_html( $data['email'] ); ?></a>
-					<?php endif; ?>
-				<?php endif; ?>
-			</p>
-		</div>
-		<?php
-		return ob_get_clean();
+		// Leerzeile
+		$lines[] = '';
+
+		// Strasse
+		if ( ! empty( $data['street'] ) ) {
+			$lines[] = esc_html( $data['street'] );
+		}
+
+		// Zusatzzeile (z. B. "Im Hinterhof")
+		if ( ! empty( $data['address2'] ) ) {
+			$lines[] = esc_html( $data['address2'] );
+		}
+
+		// PLZ + Stadt
+		$city_line = trim( ( $data['zip'] ?? '' ) . ' ' . ( $data['city'] ?? '' ) );
+		if ( $city_line !== '' ) {
+			$lines[] = esc_html( $city_line );
+		}
+
+		// Telefon
+		if ( ! empty( $data['phone'] ) ) {
+			$lines[] = '📞 ' . esc_html( $data['phone'] );
+		}
+
+		// E-Mail
+		if ( ! empty( $data['email'] ) ) {
+			$lines[] = '✉️&nbsp;<a href="mailto:' . esc_attr( $data['email'] ) . '">' . esc_html( $data['email'] ) . '</a>';
+		}
+
+		$inner = '<strong>' . implode( '<br>', $lines ) . '</strong>';
+
+		return '<p class="wp-block-paragraph barmbini-address-block">' . $inner . '</p>';
 	}
 }
