@@ -47,8 +47,16 @@ class Barmbini_Core_Plugin {
 
 	protected function register_address_shortcode_module() {
 		$address_shortcode = new Barmbini_Core_Address_Shortcode();
-
 		$address_shortcode->register();
+
+		add_action( 'widgets_init', array( $this, 'register_address_widget' ) );
+	}
+
+	/**
+	 * Registriert das Adressblock-Widget (Callback für widgets_init).
+	 */
+	public function register_address_widget() {
+		register_widget( 'Barmbini_Core_Address_Widget' );
 	}
 
 	protected function register_account_module() {

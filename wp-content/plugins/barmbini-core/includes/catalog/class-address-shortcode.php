@@ -67,11 +67,20 @@ class Barmbini_Core_Address_Shortcode {
 	 * @return string HTML des Adressblocks.
 	 */
 	public function render( $atts = array(), $content = '' ) {
-		$data = $this->get_data();
+		return self::render_html( $this->get_data() );
+	}
 
+	/**
+	 * Baut das HTML für einen Adressblock aus einem Daten-Array.
+	 *
+	 * Wird vom Shortcode UND vom Widget verwendet.
+	 *
+	 * @param array $data Adressdaten.
+	 * @return string HTML.
+	 */
+	public static function render_html( $data ) {
 		$lines = array();
 
-		// Zeile 1: Barmbini (fett) + Name
 		$line1 = '';
 		if ( ! empty( $data['shortname'] ) ) {
 			$line1 .= '<strong>' . esc_html( $data['shortname'] ) . '</strong>';
@@ -83,37 +92,27 @@ class Barmbini_Core_Address_Shortcode {
 			$lines[] = $line1;
 		}
 
-		// Leerzeile
 		$lines[] = '';
 
-		// Strasse
 		if ( ! empty( $data['street'] ) ) {
 			$lines[] = esc_html( $data['street'] );
 		}
-
-		// Zusatzzeile (z. B. "Im Hinterhof")
 		if ( ! empty( $data['address2'] ) ) {
 			$lines[] = esc_html( $data['address2'] );
 		}
 
-		// PLZ + Stadt
 		$city_line = trim( ( $data['zip'] ?? '' ) . ' ' . ( $data['city'] ?? '' ) );
 		if ( $city_line !== '' ) {
 			$lines[] = esc_html( $city_line );
 		}
 
-		// Telefon
 		if ( ! empty( $data['phone'] ) ) {
 			$lines[] = '📞 ' . esc_html( $data['phone'] );
 		}
-
-		// E-Mail
 		if ( ! empty( $data['email'] ) ) {
 			$lines[] = '✉️&nbsp;<a href="mailto:' . esc_attr( $data['email'] ) . '">' . esc_html( $data['email'] ) . '</a>';
 		}
 
-		$inner = '<strong>' . implode( '<br>', $lines ) . '</strong>';
-
-		return '<p class="wp-block-paragraph barmbini-address-block">' . $inner . '</p>';
+		return '<p class="wp-block-paragraph barmbini-address-block">' . implode( '<br>', $lines ) . '</p>';
 	}
 }
