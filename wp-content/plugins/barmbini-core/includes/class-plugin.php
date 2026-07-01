@@ -21,6 +21,7 @@ class Barmbini_Core_Plugin {
 		$this->loader = new Barmbini_Core_Loader();
 		$this->register_catalog_module();
 		$this->register_footer_menu_module();
+		$this->register_address_shortcode_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
@@ -42,6 +43,12 @@ class Barmbini_Core_Plugin {
 		$footer_menu = new Barmbini_Core_Footer_Menu();
 
 		$footer_menu->register();
+	}
+
+	protected function register_address_shortcode_module() {
+		$address_shortcode = new Barmbini_Core_Address_Shortcode();
+
+		$address_shortcode->register();
 	}
 
 	protected function register_account_module() {

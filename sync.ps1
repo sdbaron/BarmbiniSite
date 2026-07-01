@@ -70,34 +70,12 @@ if (-not (Test-Path $destination)) {
     New-Item -ItemType Directory -Path $destination -Force | Out-Null
 }
 
-# ---------- File list ----------
+# ---------- File list (auto-discover) ----------
+Push-Location $source
 $files = @(
-    'barmbini-core.php',
-    'uninstall.php',
-    'includes\class-loader.php',
-    'includes\class-activator.php',
-    'includes\class-deactivator.php',
-    'includes\class-plugin.php',
-    'includes\account\class-account-endpoint.php',
-    'includes\account\class-subscription-settings.php',
-    'includes\admin\class-admin-menu.php',
-    'includes\catalog\class-breadcrumbs.php',
-    'includes\catalog\class-catalog-hooks.php',
-    'includes\catalog\class-category-display.php',
-    'includes\catalog\class-footer-menu.php',
-    'includes\notifications\class-delivery-service.php',
-    'includes\notifications\class-digest-scheduler.php',
-    'includes\notifications\class-event-collector.php',
-    'includes\notifications\class-log-repository.php',
-    'includes\notifications\class-queue-repository.php',
-    'includes\notifications\class-unsubscribe-service.php',
-    'includes\privacy\class-consent-recorder.php',
-    'includes\privacy\class-privacy-exporter.php',
-    'templates\account\subscriptions.php',
-    'assets\css\account-subscriptions.css',
-    'assets\css\footer-burger-menu.css',
-    'assets\js\footer-burger-menu.js'
+    (Get-ChildItem -Recurse -File -Include '*.php','*.css','*.js' | Resolve-Path -Relative) -replace '^\.\\', ''
 )
+Pop-Location
 
 # ---------- Sync ----------
 $copied  = 0
