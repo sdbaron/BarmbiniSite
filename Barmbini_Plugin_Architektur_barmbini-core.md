@@ -2,9 +2,9 @@
 
 ## Ziel
 
-Dieses Dokument leitet aus der Aufgabenbeschreibung für Kundenkonto, Abonnements, Benachrichtigungen und Kündigung eine konkrete Plugin-Architektur für `wp-content/plugins/barmbini-core/` ab.
+Dieses Dokument beschreibt die aktuelle Architektur des Plugins `wp-content/plugins/barmbini-core/` (Stand Juli 2026).
 
-Das Plugin soll die zentrale Stelle für projektspezifische Fachlogik werden, damit neue Logik nicht weiter direkt im Vendor-Theme `kadence` umgesetzt wird.
+Das Plugin ist die zentrale Stelle für projektspezifische Fachlogik, Kataloganpassungen, Account-Funktionen, Benachrichtigungen, Datenschutz und wiederverwendbare Shortcode-Komponenten.
 
 ## Zielbild
 
@@ -50,7 +50,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-breadcrumbs.php
 |   |   |-- class-category-display.php
 |   |   |-- class-catalog-hooks.php
-|   |   `-- class-footer-menu.php
+|   |   |-- class-footer-menu.php
+|   |   `-- class-address-shortcode.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -127,13 +128,15 @@ Zweck:
 - Breadcrumb-Anpassungen für `Sortiment`
 - Ausblenden von Unterkategorie-Anzahlen
 - Kategoriebeschreibung unter Unterkategorien
-- Responsives Footer-Burger-Menü (analog zum Header-Menü)
+- Responsives Footer-Burger-Menü (analog zum Header-Menü, Grid-basiert)
+- Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]`
 
 Wichtig:
 
 - Dieses Modul reduziert Theme-Abhaengigkeit.
 - Es enthaelt keine kundenspezifische Benachrichtigungslogik.
-- `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS und wird auf allen Frontend-Seiten eingebunden.
+- `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
+- `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
 
 ### 2. Account-Modul
 
@@ -496,3 +499,26 @@ Die Architektur ist passend, wenn folgende Punkte erfuellt sind:
 4. Sofort-, Daily- und Weekly-Versand können ohne Architekturbruch gemeinsam betrieben werden.
 5. Bestehende Kataloganpassungen können kontrolliert aus dem Theme in das Plugin übernommen werden.
 6. Datenschutz, Dubletten-Schutz und Support-Sicht sind technisch berücksichtigt.
+
+## Deployment-Tooling
+
+Zum Workspace gehören drei PowerShell-Skripte für den Entwicklungs-Workflow:
+
+| Skript | Zweck | Befehl |
+|---|---|---|
+| `sync.ps1` | Lokaler Sync (Workspace ↔ Local) | `.\sync.ps1` (Push), `.\sync.ps1 -Pull` |
+| `deploy.ps1` | Deployment auf den Server | `.\deploy.ps1` (Modus B), `.\deploy.ps1 -Full -Force` |
+| `dump-db.php` | Datenbank-Dump per HTTP | `curl -k https://barmbini.local/dump-db.php` |
+
+`deploy.ps1` unterstützt folgende Flags:
+- `-Full`: Modus A (Code + SQL-Vollimport)
+- `-Force`: Erstellt vor dem Deployment einen frischen SQL-Dump via `dump-db.php`
+- `-NoBackup`: Überspringt das Server-Backup
+- `-NoBrowser`: Kein Browser-Tab nach Deployment
+
+`sync.ps1` erkennt neue Dateien automatisch (auto-discover via `Get-ChildItem`).
+
+## Adressblock-Shortcode
+
+`[barmbini_address]` gibt einen formatierten Adressblock aus (identisch zur Seite /barrierefreiheit/). Die Daten sind zentral in `wp_options` (`barmbini_address_data`) gespeichert:
+- `shortname`, `name`, `street`, `address2`, `zip`, `city`, `phone`, `email`

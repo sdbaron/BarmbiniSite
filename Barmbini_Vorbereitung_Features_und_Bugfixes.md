@@ -95,7 +95,9 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
-- Responsives Footer-Burger-Menü (analog zum Header-Menü, bricht ab 1024px auf Toggle-Button um)
+- Responsives Footer-Burger-Menü (Grid-basiert, breakpoint 1024px, Toggle-Klasse `.barmbini-footer-grid-open`)
+- Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]` (Daten in `wp_options`, Format wie /barrierefreiheit/)
+- Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 
 Dort wurden bereits unter anderem umgesetzt:
 
@@ -113,9 +115,10 @@ Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifizier
 - Das Plugin `barmbini-core` laesst sich in WordPress laden und aktivieren.
 - Die Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue` wurden lokal angelegt.
 - Der Konto-Endpoint `Mein Konto -> Abonnements` ist im Browser sichtbar und speichert Einstellungen erfolgreich.
-- Der News-Trigger erzeugt bei `sofort` einen direkten Log-Eintrag.
-- Der Produkt-Trigger erzeugt bei `täglich` einen Queue-Eintrag und wird im Daily-Digest korrekt als `daily_digest` protokolliert.
-- Der Rabatt-Trigger wurde lokal über den produktbezogenen WordPress-Hook auf ein Produkt im aktiven Sale-Zustand erfolgreich verifiziert.
+- Footer-Burger-Menü funktioniert auf Desktop (2-Spalten-Grid) und Mobile (Toggle + Grid-Wechsel).
+- Shortcode `[barmbini_address]` gibt Adressblock im korrekten Format aus.
+- `sync.ps1` synchronisiert Workspace ↔ Local (auto-discover).
+- `deploy.ps1 -Full -Force -NoBackup` deployed Code + DB auf den Server (217.160.74.128).
 
 ## Schlussfolgerung für neue Implementierungen
 
