@@ -62,10 +62,16 @@ class Barmbini_Core_Address_Shortcode {
 	/**
 	 * Rendert den Adressblock – identisch zum Format auf /barrierefreiheit/.
 	 *
-	 * Unterstützte Attribute:
-	 *   show="phone,email"  – nur diese Felder anzeigen
-	 *   hide="address2"     – diese Felder ausblenden
-	 *   Beide kombinierbar, show hat Vorrang.
+	 * Parameter (alle optional):
+	 *   shortname, name, street, address2, zip, city, phone, email
+	 *     -> überschreiben den zentral gespeicherten Wert
+	 *   show="phone,email" -> nur diese Felder anzeigen
+	 *   hide="address2"    -> diese Felder ausblenden
+	 *   show hat Vorrang vor hide.
+	 *
+	 * Beispiele:
+	 *   [barmbini_address phone="030 / 123456"]
+	 *   [barmbini_address show="name,phone" name="Anderer Name"]
 	 *
 	 * @param array  $atts    Shortcode-Attribute.
 	 * @param string $content Eingeschlossener Inhalt (ungenutzt).
@@ -77,11 +83,20 @@ class Barmbini_Core_Address_Shortcode {
 			'hide' => '',
 		), $atts );
 
-		$data   = $this->get_data();
-		$show   = $atts['show'] ? array_map( 'trim', explode( ',', $atts['show'] ) ) : array();
-		$hide   = $atts['hide'] ? array_map( 'trim', explode( ',', $atts['hide'] ) ) : array();
+		$data = $this->get_data();
 
-		// show hat Vorrang: nur diese Felder behalten
+		// Einzelne Felder aus den Attributen überschreiben
+		// (nur wenn der User sie explizit gesetzt hat)
+		foreach ( array_keys( self::get_defaults() ) as $key ) {
+			if ( isset( $atts[ $key ] ) && $atts[ $key ] !== '' ) {
+				$data[ $key ] = sanitize_text_field( $atts[ $key ] );
+			}
+		}
+
+		// show/hide filtern
+		$show = $atts['show'] ? array_map( 'trim', explode( ',', $atts['show'] ) ) : array();
+		$hide = $atts['hide'] ? array_map( 'trim', explode( ',', $atts['hide'] ) ) : array();
+
 		if ( ! empty( $show ) ) {
 			$filtered = array();
 			foreach ( $show as $key ) {
@@ -92,7 +107,6 @@ class Barmbini_Core_Address_Shortcode {
 			$data = $filtered;
 		}
 
-		// hide: angegebene Felder entfernen
 		if ( ! empty( $hide ) ) {
 			foreach ( $hide as $key ) {
 				unset( $data[ $key ] );
