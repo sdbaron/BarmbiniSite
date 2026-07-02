@@ -64,14 +64,16 @@ class Barmbini_Core_Address_Shortcode {
 	 *
 	 * Parameter (alle optional):
 	 *   shortname, name, street, address2, zip, city, phone, email
-	 *     -> überschreiben den zentral gespeicherten Wert
+	 *     -> überschreiben den zentral gespeicherten Wert (immer, auch bei hide)
 	 *   show="phone,email" -> nur diese Felder anzeigen
 	 *   hide="address2"    -> diese Felder ausblenden
-	 *   show hat Vorrang vor hide.
+	 *   Einzelparameter gewinnen immer gegen show/hide.
 	 *
 	 * Beispiele:
-	 *   [barmbini_address phone="030 / 123456"]
-	 *   [barmbini_address show="name,phone" name="Anderer Name"]
+	 *   [barmbini_address hide="name,shortname" shortname="Adresse"]
+	 *   -> zeigt "Adresse" an (shortname= gewinnt gegen hide)
+	 *   [barmbini_address show="phone,email" phone="030 / 123"]
+	 *   -> zeigt nur Telefon mit überschriebener Nummer
 	 *
 	 * @param array  $atts    Shortcode-Attribute.
 	 * @param string $content Eingeschlossener Inhalt (ungenutzt).
@@ -85,15 +87,7 @@ class Barmbini_Core_Address_Shortcode {
 
 		$data = $this->get_data();
 
-		// Einzelne Felder aus den Attributen überschreiben
-		// (nur wenn der User sie explizit gesetzt hat)
-		foreach ( array_keys( self::get_defaults() ) as $key ) {
-			if ( isset( $atts[ $key ] ) && $atts[ $key ] !== '' ) {
-				$data[ $key ] = sanitize_text_field( $atts[ $key ] );
-			}
-		}
-
-		// show/hide filtern
+		// 1. show/hide filtern (zuerst, damit Overrides gewinnen)
 		$show = $atts['show'] ? array_map( 'trim', explode( ',', $atts['show'] ) ) : array();
 		$hide = $atts['hide'] ? array_map( 'trim', explode( ',', $atts['hide'] ) ) : array();
 
@@ -110,6 +104,14 @@ class Barmbini_Core_Address_Shortcode {
 		if ( ! empty( $hide ) ) {
 			foreach ( $hide as $key ) {
 				unset( $data[ $key ] );
+			}
+		}
+
+		// 2. Einzelne Felder aus den Attributen überschreiben
+		//    (gewinnt immer – auch gegen show/hide)
+		foreach ( array_keys( self::get_defaults() ) as $key ) {
+			if ( isset( $atts[ $key ] ) && $atts[ $key ] !== '' ) {
+				$data[ $key ] = sanitize_text_field( $atts[ $key ] );
 			}
 		}
 
