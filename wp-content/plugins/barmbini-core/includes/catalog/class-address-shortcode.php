@@ -80,6 +80,9 @@ class Barmbini_Core_Address_Shortcode {
 	 * @return string HTML des Adressblocks.
 	 */
 	public function render( $atts = array(), $content = '' ) {
+		// Roh-Attribute vor shortcode_atts sichern (diese loescht unbekannte Keys)
+		$raw_atts = is_array( $atts ) ? $atts : array();
+
 		$atts = shortcode_atts( array(
 			'show' => '',
 			'hide' => '',
@@ -87,7 +90,7 @@ class Barmbini_Core_Address_Shortcode {
 
 		$data = $this->get_data();
 
-		// 1. show/hide filtern (zuerst, damit Overrides gewinnen)
+		// 1. show/hide filtern
 		$show = $atts['show'] ? array_map( 'trim', explode( ',', $atts['show'] ) ) : array();
 		$hide = $atts['hide'] ? array_map( 'trim', explode( ',', $atts['hide'] ) ) : array();
 
@@ -100,18 +103,16 @@ class Barmbini_Core_Address_Shortcode {
 			}
 			$data = $filtered;
 		}
-
 		if ( ! empty( $hide ) ) {
 			foreach ( $hide as $key ) {
 				unset( $data[ $key ] );
 			}
 		}
 
-		// 2. Einzelne Felder aus den Attributen überschreiben
-		//    (gewinnt immer – auch gegen show/hide)
+		// 2. Einzelfelder aus Roh-Attributen ueberschreiben (gewinnt immer)
 		foreach ( array_keys( self::get_defaults() ) as $key ) {
-			if ( isset( $atts[ $key ] ) && $atts[ $key ] !== '' ) {
-				$data[ $key ] = sanitize_text_field( $atts[ $key ] );
+			if ( isset( $raw_atts[ $key ] ) && $raw_atts[ $key ] !== '' ) {
+				$data[ $key ] = sanitize_text_field( $raw_atts[ $key ] );
 			}
 		}
 
