@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="tests/bootstrap.php"
+    colors="true"
+    testdox="true"
+    failOnRisky="false"
+    beStrictAboutChangesToGlobalState="false"
+>
+    <testsuites>
+        <testsuite name="Barmbini Core – Address">
+            <directory>tests</directory>
+            <exclude>tests/bootstrap.php</exclude>
+        </testsuite>
+    </testsuites>
+    <php>
+        <ini name="error_reporting" value="E_ALL"/>
+        <ini name="display_errors" value="1"/>
+    </php>
+</phpunit>

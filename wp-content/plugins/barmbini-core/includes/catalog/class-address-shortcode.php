@@ -112,7 +112,7 @@ class Barmbini_Core_Address_Shortcode {
 		// 2. Einzelfelder aus Roh-Attributen ueberschreiben (gewinnt immer)
 		foreach ( array_keys( self::get_defaults() ) as $key ) {
 			if ( isset( $raw_atts[ $key ] ) && $raw_atts[ $key ] !== '' ) {
-				$data[ $key ] = sanitize_text_field( $raw_atts[ $key ] );
+				$data[ $key ] = wp_kses( $raw_atts[ $key ], array( 'strong' => array(), 'br' => array() ) );
 			}
 		}
 
@@ -134,14 +134,14 @@ class Barmbini_Core_Address_Shortcode {
 		if ( ! empty( $data['shortname'] ) || ! empty( $data['name'] ) ) {
 			$line1 = '';
 			if ( ! empty( $data['shortname'] ) ) {
-				$line1 .= '<strong>' . esc_html( $data['shortname'] ) . '</strong>';
+				$line1 .= '<strong>' . $data['shortname'] . '</strong>';
 			}
 			if ( ! empty( $data['name'] ) ) {
-				$line1 .= ( $line1 !== '' ? '&nbsp;' : '' ) . esc_html( $data['name'] );
+				$line1 .= ( $line1 !== '' ? '&nbsp;' : '' ) . $data['name'];
 			}
 			if ( $line1 !== '' ) {
 				$lines[] = $line1;
-				$lines[] = ''; // Leerzeile nach Kopf
+				// $lines[] = ''; // Leerzeile nach Kopf
 			}
 		}
 
