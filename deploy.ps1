@@ -235,9 +235,8 @@ rm -rf $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $se
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null || true
-# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
-find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
-find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner (X=execute nur fuer Ordner)
+chmod -R u+rwX,go+rX,go-w $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 wp --path=$serverWebroot db import $serverImport/local.sql --allow-root
 wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
@@ -256,9 +255,8 @@ set -e
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
-# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
-find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
-find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner (X=execute nur fuer Ordner)
+chmod -R u+rwX,go+rX,go-w $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
 "@)
