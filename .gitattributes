@@ -1,0 +1,11 @@
+# Bash-Skripte immer mit LF-Zeilenenden (Unix)
+*.sh text eol=lf
+
+# PowerShell-Skripte mit CRLF (Windows)
+*.ps1 text eol=crlf
+
+# PHP-Dateien mit LF
+*.php text eol=lf
+
+# Markdown mit LF
+*.md text eol=lf
