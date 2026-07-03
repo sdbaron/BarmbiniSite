@@ -312,6 +312,9 @@ rm -rf $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $
 cd $SERVER_IMPORT
 unzip -o deploy.zip -d $SERVER_WEBROOT/wp-content/
 chown -R www-data:www-data $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes $SERVER_WEBROOT/wp-content/uploads $SERVER_WEBROOT/wp-content/index.php 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
+find $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
+find $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
 rm -rf $SERVER_WEBROOT/wp-content/__MACOSX 2>/dev/null || true
 wp --path=$SERVER_WEBROOT db import $SERVER_IMPORT/local.sql --allow-root
 wp --path=$SERVER_WEBROOT search-replace 'barmbini.local' '$TARGET' --all-tables --allow-root 2>/dev/null || true
@@ -329,6 +332,9 @@ set -e
 cd $SERVER_IMPORT
 unzip -o deploy.zip -d $SERVER_WEBROOT/wp-content/
 chown -R www-data:www-data $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes $SERVER_WEBROOT/wp-content/index.php 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
+find $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
+find $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
 rm -rf $SERVER_WEBROOT/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
 INSTALLEOF

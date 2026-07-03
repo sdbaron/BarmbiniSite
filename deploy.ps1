@@ -93,7 +93,7 @@ if ($Force -and $Full) {
     Write-Host '[0/6] Erstelle frischen SQL-Dump von der lokalen DB ...' -ForegroundColor Yellow
     $dumpUrl = 'https://barmbini.local/dump-db.php'
     # cmd /c verhindert, dass 2>&1 den PowerShell-Output-Stream korrumpiert (PS 5.1 Bug)
-    $result = cmd /c "curl.exe -k -s -S --max-time 120 $dumpUrl 2>&1"
+    $result = cmd /c "curl.exe -k -s -S --max-time 12 $dumpUrl 2>&1"
     if ($LASTEXITCODE -ne 0 -or $result -notmatch '^OK') {
         Write-Error "Dump fehlgeschlagen: $result"
         exit 1
@@ -235,6 +235,9 @@ rm -rf $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $se
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
+find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
+find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 wp --path=$serverWebroot db import $serverImport/local.sql --allow-root
 wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
@@ -253,6 +256,9 @@ set -e
 cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
+# Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner
+find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type d -exec chmod 755 {} \; 2>/dev/null || true
+find $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes -type f -exec chmod 644 {} \; 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
 "@)
