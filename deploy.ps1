@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
     Deployt die Barmbini-Website vom lokalen Stand auf den Server 217.160.74.128.
+    PowerShell-Version (Windows). Fuer macOS/Linux siehe deploy.sh.
 
 .DESCRIPTION
     Vollautomatisches Deployment-Skript. Fuehrt alle Schritte aus:
