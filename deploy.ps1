@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Deployt die Barmbini-Website vom lokalen Stand auf den Server 217.160.74.128.
     PowerShell-Version (Windows). Fuer macOS/Linux siehe deploy.sh.
@@ -92,7 +92,8 @@ Write-Host ''
 if ($Force -and $Full) {
     Write-Host '[0/6] Erstelle frischen SQL-Dump von der lokalen DB ...' -ForegroundColor Yellow
     $dumpUrl = 'https://barmbini.local/dump-db.php'
-    $result = curl.exe -k -s -S --max-time 120 $dumpUrl 2>&1
+    # cmd /c verhindert, dass 2>&1 den PowerShell-Output-Stream korrumpiert (PS 5.1 Bug)
+    $result = cmd /c "curl.exe -k -s -S --max-time 120 $dumpUrl 2>&1"
     if ($LASTEXITCODE -ne 0 -or $result -notmatch '^OK') {
         Write-Error "Dump fehlgeschlagen: $result"
         exit 1
