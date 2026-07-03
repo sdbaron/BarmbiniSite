@@ -173,8 +173,7 @@ echo ""
 if $FORCE && $FULL; then
     echo -e "${YELLOW}[0/6] Erstelle frischen SQL-Dump von der lokalen DB ...${NC}"
 
-    RESULT=$(curl -k -s -S --max-time 120 "$DUMP_URL" 2>&1) || true
-    CURL_EXIT=$?
+    RESULT=$(curl -k -s -S --max-time 120 "$DUMP_URL" 2>&1) && CURL_EXIT=0 || CURL_EXIT=$?
 
     if [ $CURL_EXIT -ne 0 ] || [[ "$RESULT" != OK* ]]; then
         die "Dump fehlgeschlagen: $RESULT"
@@ -267,11 +266,11 @@ echo "$BACKUP_DIR"
 BACKUPEOF
 
     scp -O "$BACKUP_SCRIPT" "root@${TARGET}:/root/backup.sh"
-    ssh "root@$TARGET" 'bash /root/backup.sh && rm /root/backup.sh'
-    SCP_EXIT=$?
-    rm -f "$BACKUP_SCRIPT"
-
-    if [ $SCP_EXIT -ne 0 ]; then
+    if ssh "root@$TARGET" 'bash /root/backup.sh && rm /root/backup.sh'; then
+        rm -f "$BACKUP_SCRIPT"
+        :  # Backup erfolgreich
+    else
+        rm -f "$BACKUP_SCRIPT"
         warn "Backup fehlgeschlagen! Deployment wird abgebrochen."
         warn "Pruefe SSH-Verbindung oder fuehre mit --nobackup aus."
         exit 1
@@ -288,9 +287,9 @@ echo ""
 echo -e "${YELLOW}[4/6] Uebertrage Archiv per SCP ...${NC}"
 
 ssh "root@$TARGET" "mkdir -p $SERVER_IMPORT"
-scp -O "$ZIP_PATH" "root@${TARGET}:${SERVER_IMPORT}/deploy.zip"
-
-if [ $? -ne 0 ]; then
+if scp -O "$ZIP_PATH" "root@${TARGET}:${SERVER_IMPORT}/deploy.zip"; then
+    :  # Upload erfolgreich
+else
     die "SCP-Upload fehlgeschlagen."
 fi
 ok
