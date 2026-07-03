@@ -178,17 +178,17 @@ Write-Host ''
 if (-not $NoBackup) {
     Write-Host '[3/6] Erstelle Server-Backup ...' -ForegroundColor Yellow
 
-    $tmpBackup = Join-Path $env:TEMP 'barmbini-backup.sh'
-    ToUnix (@'
+    $backupScript = ToUnix (@'
 #!/bin/bash
 set -e
 BACKUP_DIR="/root/barmbini-backup-$(date +%F-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
-DB_NAME=$(awk -F= '"'"'/^DB_NAME=/{print $2}'"'"' /root/barmbini-db.txt)
-mariadb-dump "$DB_NAME" > "$BACKUP_DIR/live-before-deploy.sql"
+wp --path=/var/www/barmbini db export "$BACKUP_DIR/live-before-deploy.sql" --allow-root
 tar -czf "$BACKUP_DIR/wp-content-before-deploy.tar.gz" -C /var/www/barmbini wp-content
 echo "$BACKUP_DIR"
-'@) | Set-Content -Path $tmpBackup -NoNewline
+'@)
+    $tmpBackup = Join-Path $env:TEMP 'barmbini-backup.sh'
+    [System.IO.File]::WriteAllText($tmpBackup, $backupScript, [System.Text.UTF8Encoding]::new($false))
 
     scp -O $tmpBackup root@${Target}:/root/backup.sh
     ssh root@$Target 'bash /root/backup.sh && rm /root/backup.sh'
@@ -225,7 +225,7 @@ $tmpScript = Join-Path $env:TEMP 'barmbini-install.sh'
 
 if ($Full) {
     # Modus A: volles wp-content ersetzen + SQL import + URL-Update
-    ToUnix (@"
+    $installScript = ToUnix (@"
 #!/bin/bash
 set -e
 cd $serverWebroot
@@ -234,18 +234,18 @@ cd $serverImport
 unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/uploads $serverWebroot/wp-content/index.php 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
-DB_NAME=`$(awk -F= '/^DB_NAME=/{print `$2}' $serverDBFile)
-mariadb "`$DB_NAME" < $serverImport/local.sql
+wp --path=$serverWebroot db import $serverImport/local.sql --allow-root
 wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@) | Set-Content -Path $tmpScript -NoNewline
+"@)
+    [System.IO.File]::WriteAllText($tmpScript, $installScript, [System.Text.UTF8Encoding]::new($false))
 
     scp -O $localSQL root@${Target}:${serverImport}/local.sql
     scp -O $tmpScript root@${Target}:/root/install.sh
     ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
 } else {
     # Modus B: nur Code ersetzen
-    ToUnix (@"
+    $installScript = ToUnix (@"
 #!/bin/bash
 set -e
 cd $serverImport
@@ -253,7 +253,8 @@ unzip -o deploy.zip -d $serverWebroot/wp-content/
 chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes $serverWebroot/wp-content/index.php 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 echo 'DEPLOY_OK'
-"@) | Set-Content -Path $tmpScript -NoNewline
+"@)
+    [System.IO.File]::WriteAllText($tmpScript, $installScript, [System.Text.UTF8Encoding]::new($false))
 
     scp -O $tmpScript root@${Target}:/root/install.sh
     ssh root@$Target 'bash /root/install.sh && rm /root/install.sh'
