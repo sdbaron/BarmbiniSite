@@ -310,7 +310,7 @@ set -e
 cd $SERVER_WEBROOT
 rm -rf $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes $SERVER_WEBROOT/wp-content/uploads $SERVER_WEBROOT/wp-content/index.php
 cd $SERVER_IMPORT
-unzip -o deploy.zip -d $SERVER_WEBROOT/wp-content/
+unzip -o deploy.zip -d $SERVER_WEBROOT/
 chown -R www-data:www-data $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes $SERVER_WEBROOT/wp-content/uploads $SERVER_WEBROOT/wp-content/index.php 2>/dev/null || true
 # Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner (X=execute nur fuer Ordner)
 chmod -R u+rwX,go+rX,go-w $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes 2>/dev/null || true
@@ -329,7 +329,7 @@ else
 #!/bin/bash
 set -e
 cd $SERVER_IMPORT
-unzip -o deploy.zip -d $SERVER_WEBROOT/wp-content/
+unzip -o deploy.zip -d $SERVER_WEBROOT/
 chown -R www-data:www-data $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes $SERVER_WEBROOT/wp-content/index.php 2>/dev/null || true
 # Korrigiere Dateirechte: Windows-ZIP verliert Execute-Bits fuer Ordner (X=execute nur fuer Ordner)
 chmod -R u+rwX,go+rX,go-w $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes 2>/dev/null || true
