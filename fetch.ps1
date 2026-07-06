@@ -98,7 +98,8 @@ if ($Full) {
     Write-Host '[1/6] Exportiere Datenbank vom Server ...' -ForegroundColor Yellow
 
     # DB-Name vom Server auslesen
-    $dbName = ssh root@$Target "awk -F= '/^DB_NAME=/{print \$2}' $serverDBFile" 2>$null
+    # Hinweis: grep+cut statt awk, weil PowerShell $2 in Doppelquotes expandieren wuerde
+    $dbName = ssh root@$Target "grep '^DB_NAME=' $serverDBFile | cut -d= -f2" 2>$null
     if (-not $dbName) {
         Write-Error "Konnte DB-Name nicht vom Server auslesen ($serverDBFile)"
         exit 1
