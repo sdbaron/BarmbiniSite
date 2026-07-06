@@ -13,7 +13,7 @@
 
     Ablauf:
     1. Server-Datenbank dumpen und per SCP abholen
-    2. Server-wp-content als ZIP per SCP abholen
+    2. Server-wp-content als tar.gz per SCP abholen
     3. Lokales Backup erstellen (optional via -NoBackup ueberspringbar)
     4. Lokale Datenbank importieren (nur Modus A)
     5. Lokales wp-content entpacken
@@ -75,9 +75,7 @@ $localSQLBackup = "$localRoot\..\sql\local-before-fetch.sql"
 $workspace      = 'D:\Dev\Website'
 $archivePath    = "$workspace\barmbini-fetch.tar.gz"
 $serverImport   = '/root/barmbini-import'
-$serverWebroot  = '/var/www/barmbini'
 $serverDBFile   = '/root/barmbini-db.txt'
-$liveUrl         = "http://$Target/kontakt/"
 $localUrl        = 'https://barmbini.local/kontakt/'
 
 # Modus-Label
@@ -141,6 +139,9 @@ Write-Host ''
 Write-Host '[2/6] Erstelle Archiv vom Server-wp-content ...' -ForegroundColor Yellow
 
 $serverArchivePath = "$serverImport/fetch-content.tar.gz"
+
+# Import-Verzeichnis auf dem Server anlegen (falls nicht vorhanden)
+ssh root@$Target "mkdir -p $serverImport"
 
 if ($Full) {
     # Modus A: komplettes wp-content
@@ -261,7 +262,7 @@ if ($Full) {
         Write-Host '    Die lokale Datenbank wird durch den Server-Dump ERSETZT.' -ForegroundColor Yellow
         Write-Host '    Druecke J zum Fortfahren, eine andere Taste zum Abbrechen.' -ForegroundColor Yellow
         $key = [Console]::ReadKey($true)
-        if ($key.Key -ne 'J') {
+        if ($key.Key -ne [System.ConsoleKey]::J) {
             Write-Host ''
             Write-Host '       Import ABGEBROCHEN.' -ForegroundColor Red
             exit 1
