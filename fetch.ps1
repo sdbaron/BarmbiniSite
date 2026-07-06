@@ -275,7 +275,7 @@ if ($Full) {
     Write-Host "       (dies kann je nach Datenbankgroesse einen Moment dauern)" -ForegroundColor Gray
 
     # Versuche wp-cli zuerst
-    $wpCliResult = cmd /c "wp --path=`"$localRoot`" db import `"$localSQL`" 2>&1"
+    cmd /c "wp --path=`"$localRoot`" db import `"$localSQL`" 2>&1"
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "       wp-cli-Import fehlgeschlagen, versuche direkten mariadb-Import ..."
         Write-Host "       Hinweis: Stelle sicher, dass mariadb im PATH ist oder Local laeuft." -ForegroundColor DarkYellow
@@ -369,7 +369,7 @@ Write-Host '[6/6] URL-Umschreibung + Cache leeren ...' -ForegroundColor Yellow
 if ($Full) {
     # search-replace: Server-IP -> barmbini.local
     Write-Host "       Ersetze '$Target' -> 'barmbini.local' ..." -ForegroundColor Gray
-    $srResult = cmd /c "wp --path=`"$localRoot`" search-replace 'http://$Target' 'https://barmbini.local' --all-tables --skip-columns=guid 2>&1"
+    cmd /c "wp --path=`"$localRoot`" search-replace 'http://$Target' 'https://barmbini.local' --all-tables --skip-columns=guid 2>&1"
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "       search-replace fehlgeschlagen. Bitte manuell ausfuehren:"
         Write-Host "       wp --path=$localRoot search-replace 'http://$Target' 'https://barmbini.local' --all-tables --skip-columns=guid" -ForegroundColor DarkYellow
