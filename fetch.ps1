@@ -236,6 +236,15 @@ if (-not $NoBackup) {
 
     Write-Host "       Backup-Verzeichnis: $backupDir" -ForegroundColor Gray
     Write-Host '       OK' -ForegroundColor Green
+
+    # Nur die letzten 2 lokalen Backups behalten
+    $allBackups = Get-ChildItem -Path $workspace -Directory -Filter 'barmbini-backup-*' | Sort-Object Name -Descending
+    if ($allBackups.Count -gt 2) {
+        $allBackups | Select-Object -Skip 2 | ForEach-Object {
+            Remove-Item $_.FullName -Recurse -Force
+            Write-Host "       Altes Backup entfernt: $($_.Name)" -ForegroundColor Gray
+        }
+    }
 } else {
     Write-Host '[3/6] Lokales Backup UEBERSPRUNGEN (--NoBackup)' -ForegroundColor DarkYellow
 }

@@ -292,6 +292,14 @@ if ! $NOBACKUP; then
     fi
 
     info "Backup-Verzeichnis: $BACKUP_DIR"
+
+    # Nur die letzten 2 lokalen Backups behalten
+    OLD_BACKUPS=$(ls -d "$WORKSPACE"/barmbini-backup-* 2>/dev/null | sort | head -n -2)
+    if [ -n "$OLD_BACKUPS" ]; then
+        echo "$OLD_BACKUPS" | xargs rm -rf
+        info "Alte Backups entfernt"
+    fi
+
     ok
 else
     echo -e "${YELLOW}[3/6] Lokales Backup UEBERSPRUNGEN (--nobackup)${NC}"

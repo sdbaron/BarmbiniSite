@@ -187,6 +187,12 @@ BACKUP_DIR="/root/barmbini-backup-$(date +%F-%H%M%S)"
 mkdir -p "$BACKUP_DIR"
 wp --path=/var/www/barmbini db export "$BACKUP_DIR/live-before-deploy.sql" --allow-root
 tar -czf "$BACKUP_DIR/wp-content-before-deploy.tar.gz" -C /var/www/barmbini wp-content
+# Nur die letzten 2 Backups behalten
+OLD_BACKUPS=$(ls -d /root/barmbini-backup-* 2>/dev/null | sort | head -n -2)
+if [ -n "$OLD_BACKUPS" ]; then
+    echo "$OLD_BACKUPS" | xargs rm -rf
+    echo "Alte Backups entfernt"
+fi
 echo "$BACKUP_DIR"
 '@)
     $tmpBackup = Join-Path $env:TEMP 'barmbini-backup.sh'
