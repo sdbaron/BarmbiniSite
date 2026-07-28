@@ -51,7 +51,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-category-display.php
 |   |   |-- class-catalog-hooks.php
 |   |   |-- class-footer-menu.php
-|   |   `-- class-address-shortcode.php
+|   |   |-- class-address-shortcode.php
+|   |   `-- class-latest-news-shortcode.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -85,7 +86,8 @@ wp-content/plugins/barmbini-core/
 `-- assets/
     |-- css/
     |   |-- account-subscriptions.css
-    |   `-- footer-burger-menu.css
+    |   |-- footer-burger-menu.css
+    |   `-- latest-news.css
     `-- js/
         `-- footer-burger-menu.js
 ```
@@ -130,6 +132,7 @@ Zweck:
 - Kategoriebeschreibung unter Unterkategorien
 - Responsives Footer-Burger-Menü (analog zum Header-Menü, Grid-basiert)
 - Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]`
+- Shortcode `[barmbini_latest_news]` für die letzten Neuigkeiten-Beiträge
 
 Wichtig:
 
@@ -137,6 +140,7 @@ Wichtig:
 - Es enthaelt keine kundenspezifische Benachrichtigungslogik.
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
+- `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
 
 ### 2. Account-Modul
 

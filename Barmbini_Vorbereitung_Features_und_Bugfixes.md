@@ -97,6 +97,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
 - Responsives Footer-Burger-Menü (Grid-basiert, breakpoint 1024px, Toggle-Klasse `.barmbini-footer-grid-open`)
 - Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]` (Daten in `wp_options`, Format wie /barrierefreiheit/)
+- Shortcode `[barmbini_latest_news]` für die letzten drei Neuigkeiten-Beiträge (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`)
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 
 Dort wurden bereits unter anderem umgesetzt:
@@ -117,6 +118,7 @@ Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifizier
 - Der Konto-Endpoint `Mein Konto -> Abonnements` ist im Browser sichtbar und speichert Einstellungen erfolgreich.
 - Footer-Burger-Menü funktioniert auf Desktop (2-Spalten-Grid) und Mobile (Toggle + Grid-Wechsel).
 - Shortcode `[barmbini_address]` gibt Adressblock im korrekten Format aus.
+- Shortcode `[barmbini_latest_news]` gibt die letzten Neuigkeiten-Beiträge aus.
 - `sync.ps1` synchronisiert Workspace ↔ Local (auto-discover).
 - `deploy.ps1 -Full -Force -NoBackup` deployed Code + DB auf den Server (217.160.74.128).
 

@@ -2,6 +2,29 @@
 
 ---
 
+## Startseite
+
+Auf der Startseite wird über den Gutenberg-Editor ein Shortcode-Block mit folgendem Inhalt platziert:
+
+```
+[barmbini_latest_news]
+```
+
+Dieser Shortcode gibt die letzten drei veröffentlichten Beiträge aus der Kategorie „Neuigkeiten" aus, jeweils mit Titel (als Link), Datum und Kurztext.
+
+Optionale Attributvarianten:
+
+| Shortcode | Wirkung |
+|-----------|---------|
+| `[barmbini_latest_news count="5"]` | Zeigt 5 Beiträge an |
+| `[barmbini_latest_news show_date="0"]` | Datum ausblenden |
+| `[barmbini_latest_news show_excerpt="0"]` | Kurztext ausblenden |
+| `[barmbini_latest_news empty_message="Aktuell keine Neuigkeiten."]` | Text bei leerer Liste |
+
+Weitere Details siehe `Barmbini_Aufgabe_Startseite_Letzte_Neuigkeiten.md`.
+
+---
+
 ## FAQ
 
 **Was ist das Sozialkaufhaus Barmbini?**
