@@ -23,6 +23,7 @@ class Barmbini_Core_Plugin {
 		$this->register_footer_menu_module();
 		$this->register_address_shortcode_module();
 		$this->register_latest_news_module();
+		$this->register_promotion_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
@@ -63,6 +64,20 @@ class Barmbini_Core_Plugin {
 	protected function register_latest_news_module() {
 		$latest_news = new Barmbini_Core_Latest_News_Shortcode();
 		$latest_news->register();
+	}
+
+	/**
+	 * Registriert den CPT "Aktion" und den Shortcode [barmbini_promotion].
+	 *
+	 * Der CPT setzt seine Hooks (init, add_meta_boxes, save_post) selbst
+	 * und wird bewusst nicht über den Loader registriert.
+	 */
+	protected function register_promotion_module() {
+		$post_type = new Barmbini_Core_Promotion_Post_Type();
+		$post_type->register();
+
+		$shortcode = new Barmbini_Core_Promotion_Shortcode();
+		$shortcode->register();
 	}
 
 	protected function register_account_module() {

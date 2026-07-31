@@ -25,6 +25,33 @@ Weitere Details siehe `Barmbini_Aufgabe_Startseite_Letzte_Neuigkeiten.md`.
 
 ---
 
+## Aktionen
+
+Auf der Startseite können zusätzlich aktuell gültige Aktionen eingeblendet werden. Dafür wird ein Shortcode-Block mit folgendem Inhalt platziert:
+
+```
+[barmbini_promotion]
+```
+
+Dieser Shortcode gibt alle Aktionen aus dem Custom Post Type `barmbini_aktion` aus, deren Gültigkeitszeitraum (Start-/Enddatum) das heutige Datum umfasst. Jede Aktion zeigt Flyer-Bild, Titel, Beschreibung, Gültigkeitszeitraum und optional einen Link-Button.
+
+Aktionen werden im Admin unter dem Menüpunkt „Aktionen" gepflegt. Redakteure legen dort Titel, Beschreibung, Flyer-Bild (Beitragsbild), Startdatum, Enddatum und optional einen Link an. Abgelaufene und noch nicht begonnene Aktionen erscheinen automatisch nicht.
+
+Optionale Attributvarianten:
+
+| Shortcode | Wirkung |
+|-----------|---------|
+| `[barmbini_promotion show_image="0"]` | Flyer-Bild ausblenden |
+| `[barmbini_promotion show_date="0"]` | Gültigkeitszeitraum ausblenden |
+| `[barmbini_promotion show_description="0"]` | Beschreibung ausblenden |
+| `[barmbini_promotion empty_message="Aktuell keine Aktionen."]` | Text bei keiner gültigen Aktion |
+
+Weitere Details siehe `Barmbini_Aufgabe_Startseite_Aktionen.md`.
+
+Eine praktische Kurzanleitung für Redakteure und Administratoren findet sich in `Barmbini_Anleitung_Aktionen_Admin.md`.
+
+---
+
 ## FAQ
 
 **Was ist das Sozialkaufhaus Barmbini?**

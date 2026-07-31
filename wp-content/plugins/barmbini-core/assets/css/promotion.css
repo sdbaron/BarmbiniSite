@@ -1,0 +1,94 @@
+/* Barmbini Core – Aktionen (Startseite) */
+
+.barmbini-promotions {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+	margin: 0 0 2rem;
+}
+
+.barmbini-promotions--empty {
+	display: block;
+}
+
+.barmbini-promotions--empty p {
+	margin: 0;
+}
+
+.barmbini-promotion-item {
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.barmbini-promotion-image {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	margin-bottom: 1rem;
+}
+
+.barmbini-promotion-title {
+	margin: 0 0 0.5rem;
+	font-size: 1.25rem;
+	line-height: 1.3;
+}
+
+.barmbini-promotion-title a {
+	color: #2d6a4f;
+	text-decoration: none;
+}
+
+.barmbini-promotion-title a:hover,
+.barmbini-promotion-title a:focus {
+	text-decoration: underline;
+}
+
+.barmbini-promotion-dates {
+	margin: 0 0 0.75rem;
+	font-size: 0.875rem;
+	color: #555;
+}
+
+.barmbini-promotion-description {
+	margin: 0 0 1rem;
+	font-size: 1rem;
+	line-height: 1.5;
+}
+
+.barmbini-promotion-description > :first-child {
+	margin-top: 0;
+}
+
+.barmbini-promotion-description > :last-child {
+	margin-bottom: 0;
+}
+
+.barmbini-promotion-link {
+	display: inline-block;
+	align-self: flex-start;
+	margin-top: auto;
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	color: #fff;
+	background-color: #2d6a4f;
+	border-radius: 3px;
+	text-decoration: none;
+}
+
+.barmbini-promotion-link:hover,
+.barmbini-promotion-link:focus {
+	background-color: #1b4332;
+	color: #fff;
+	text-decoration: none;
+}
+
+@media (min-width: 768px) {
+	.barmbini-promotions {
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	}
+}

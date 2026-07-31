@@ -52,7 +52,9 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-catalog-hooks.php
 |   |   |-- class-footer-menu.php
 |   |   |-- class-address-shortcode.php
-|   |   `-- class-latest-news-shortcode.php
+|   |   |-- class-latest-news-shortcode.php
+|   |   |-- class-promotion-post-type.php
+|   |   `-- class-promotion-shortcode.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -133,6 +135,8 @@ Zweck:
 - Responsives Footer-Burger-Menü (analog zum Header-Menü, Grid-basiert)
 - Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]`
 - Shortcode `[barmbini_latest_news]` für die letzten Neuigkeiten-Beiträge
+- Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild, optionaler Link)
+- Shortcode `[barmbini_promotion]` für aktuell gültige Aktionen auf der Startseite
 
 Wichtig:
 
@@ -141,6 +145,8 @@ Wichtig:
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
+- `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` mit Metaboxen für Gültigkeitszeitraum und Link.
+- `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst.
 
 ### 2. Account-Modul
 

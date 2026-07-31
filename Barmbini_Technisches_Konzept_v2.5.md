@@ -111,6 +111,7 @@ Die Website ist einsprachig auf Deutsch. Keine Mehrsprachigkeit geplant.
 * Adresse + Öffnungszeiten
 * Statische Karte (Bild) + Button „In Google Maps öffnen"
 * Letzte 3 Blogbeiträge
+* Aktuelle Aktionen (Custom Post Type `barmbini_aktion`, Shortcode `[barmbini_promotion]`)
 
 ### 7.2 Über uns
 
