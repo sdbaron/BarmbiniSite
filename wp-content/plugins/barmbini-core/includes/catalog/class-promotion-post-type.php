@@ -40,6 +40,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		add_action( 'pre_get_posts', array( $this, 'filter_admin_list' ) );
 		add_filter( 'the_content', array( $this, 'add_promotion_meta_to_content' ) );
 		add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 20 );
+		add_action( 'admin_init', array( $this, 'remove_legacy_category' ) );
 	}
 
 	/**
@@ -423,5 +424,25 @@ class Barmbini_Core_Promotion_Post_Type {
 			flush_rewrite_rules();
 			update_option( 'barmbini_promotion_rewrite_version', BARMBINI_CORE_VERSION );
 		}
+	}
+
+	/**
+	 * Entfernt einmalig die Standard-Kategorie "Aktion", um Verwechslungen
+	 * mit dem CPT barmbini_aktion zu vermeiden.
+	 *
+	 * @return void
+	 */
+	public function remove_legacy_category() {
+		if ( get_option( 'barmbini_legacy_category_removed' ) ) {
+			return;
+		}
+
+		$term = get_term_by( 'name', 'Aktion', 'category' );
+
+		if ( $term && ! is_wp_error( $term ) ) {
+			wp_delete_term( $term->term_id, 'category' );
+		}
+
+		update_option( 'barmbini_legacy_category_removed', '1' );
 	}
 }
