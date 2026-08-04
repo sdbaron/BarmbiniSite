@@ -22,9 +22,12 @@ class Barmbini_Core_Promotion_Post_Type {
 
 	/**
 	 * Meta-Keys für Start- und Enddatum.
+	/**
+	 * Meta-Keys für Start- und Enddatum sowie Anzeigeoptionen.
 	 */
-	const META_START_DATE = '_barmbini_promotion_start_date';
-	const META_END_DATE   = '_barmbini_promotion_end_date';
+	const META_START_DATE       = '_barmbini_promotion_start_date';
+	const META_END_DATE         = '_barmbini_promotion_end_date';
+	const META_SHOW_DESCRIPTION = '_barmbini_promotion_show_description';
 
 	/**
 	 * Registriert alle Hooks für den CPT.
