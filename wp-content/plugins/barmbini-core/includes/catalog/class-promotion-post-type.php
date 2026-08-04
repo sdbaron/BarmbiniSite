@@ -39,6 +39,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		add_filter( 'views_edit-' . self::POST_TYPE, array( $this, 'add_archive_views' ) );
 		add_action( 'pre_get_posts', array( $this, 'filter_admin_list' ) );
 		add_filter( 'template_include', array( $this, 'load_single_template' ) );
+		add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 20 );
 	}
 
 	/**
@@ -78,6 +79,7 @@ class Barmbini_Core_Promotion_Post_Type {
 			'show_in_rest'       => true,
 			'capability_type'    => array( 'barmbini_aktion', 'barmbini_aktions' ),
 			'map_meta_cap'       => true,
+			'rewrite'            => array( 'slug' => 'aktion' ),
 		);
 
 		register_post_type( self::POST_TYPE, $args );
@@ -385,5 +387,23 @@ class Barmbini_Core_Promotion_Post_Type {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Spült die Rewrite-Regeln einmalig, wenn nötig.
+	 *
+	 * Verhindert 404-Fehler nach Änderungen an publicly_queryable oder rewrite-Slug.
+	 * Wird nur ausgeführt, wenn die gespeicherte Flush-Version nicht der
+	 * aktuellen Plugin-Version entspricht.
+	 *
+	 * @return void
+	 */
+	public function maybe_flush_rewrite_rules() {
+		$flushed_version = get_option( 'barmbini_promotion_rewrite_version', '' );
+
+		if ( BARMBINI_CORE_VERSION !== $flushed_version ) {
+			flush_rewrite_rules();
+			update_option( 'barmbini_promotion_rewrite_version', BARMBINI_CORE_VERSION );
+		}
 	}
 }
