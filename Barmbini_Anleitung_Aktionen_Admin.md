@@ -48,19 +48,7 @@ In der rechten Seitenleiste finden Sie die Box **„Gültigkeitszeitraum"**. Hie
 
 ---
 
-## 4. Link zu einer Seite (optional)
-
-In der Box **„Link"** können Sie eine Ziel-URL eintragen, z. B.:
-
-- `/sortiment/` — zur Sortiment-Seite
-- `/helfen-spenden/` — zur Spenden-Seite
-- `https://...` — eine externe Website
-
-Wenn ein Link gesetzt ist, wird der Titel der Aktion **anklickbar** und ein Button **„Mehr erfahren"** erscheint. Ohne Link bleibt der Titel reiner Text ohne Button.
-
----
-
-## 5. Aktion veröffentlichen
+## 4. Aktion veröffentlichen
 
 1. Sind Titel, Beschreibung, Flyer-Bild und Daten ausgefüllt?
 2. Klicken Sie rechts oben auf **„Veröffentlichen"**.
@@ -68,7 +56,7 @@ Wenn ein Link gesetzt ist, wird der Titel der Aktion **anklickbar** und ein Butt
 
 ---
 
-## 6. Aktion auf der Startseite einblenden (einmalig)
+## 5. Aktion auf der Startseite einblenden (einmalig)
 
 Damit Aktionen überhaupt auf der Startseite erscheinen, muss der Shortcode dort platziert sein. Das ist eine einmalige Einrichtung:
 
@@ -98,7 +86,7 @@ Sie können einzelne Elemente der Aktion ausblenden:
 
 ---
 
-## 7. Mehrere gleichzeitige Aktionen
+## 6. Mehrere gleichzeitige Aktionen
 
 Sie können mehrere Aktionen anlegen, die sich zeitlich überlappen. Alle gültigen Aktionen erscheinen nebeneinander auf der Startseite — üblicherweise ein bis drei Stück.
 
@@ -106,14 +94,14 @@ Sortiert wird nach Startdatum: Die **neueste Aktion zuerst**.
 
 ---
 
-## 8. Aktion bearbeiten oder löschen
+## 7. Aktion bearbeiten oder löschen
 
 - **Bearbeiten:** In der Übersicht auf den Titel klicken. Änderungen speichern.
 - **Löschen:** In der Übersicht auf „Papierkorb" klicken. Gelöschte Aktionen können 30 Tage lang wiederhergestellt werden.
 
 ---
 
-## 9. Archiv: Abgelaufene Aktionen
+## 8. Archiv: Abgelaufene Aktionen
 
 Sobald das Enddatum einer Aktion überschritten ist, wird sie automatisch aus der aktiven Ansicht entfernt und erscheint im **Archiv**. Das passiert ohne Ihr Zutun — Sie müssen nichts manuell verschieben.
 
@@ -131,7 +119,7 @@ Ein Klick auf **„Archiv"** listet alle abgelaufenen Aktionen. Sie können jede
 
 ---
 
-## 10. Aktion vorzeitig beenden
+## 9. Aktion vorzeitig beenden
 
 Es gibt zwei Wege:
 
@@ -139,6 +127,23 @@ Es gibt zwei Wege:
 |-----|----------|
 | **Empfohlen** | Aktion bearbeiten und das **Enddatum auf gestern** setzen → verschwindet sofort |
 | **Alternativ** | Aktion in den Papierkorb legen → nicht wiederherstellbar nach 30 Tagen |
+
+---
+
+## 10. Einzelansicht der Aktion
+
+Jede Aktion ist unter ihrer eigenen Adresse im Internet erreichbar, z. B.:
+
+```
+https://barmbini.de/aktion/sommerschlussverkauf/
+```
+
+Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den Gültigkeitszeitraum und die vollständige Beschreibung. Abgelaufene Aktionen zeigen einen Hinweis **„Diese Aktion ist beendet"**, bleiben aber weiterhin abrufbar.
+
+### Wie kommen Besucher dorthin?
+
+- Auf der Startseite sind **Flyer-Bild und Titel jeder Aktion anklickbar** — ein Klick führt direkt zur Einzelansicht.
+- Sie können den Link auch manuell teilen (z. B. in sozialen Medien oder per E-Mail).
 
 ---
 
@@ -159,7 +164,6 @@ Es gibt zwei Wege:
 3. **Flyer-Bild** auswählen (rechte Seitenleiste)
 4. **Beschreibung** schreiben
 5. **Start- und Enddatum** setzen (rechts: „Gültigkeitszeitraum")
-6. Optional: **Link** eintragen (rechts: „Link")
-7. **Veröffentlichen**
+6. **Veröffentlichen**
 
 🎉 Fertig. Die Aktion erscheint automatisch zum Startdatum.

@@ -830,6 +830,37 @@ wp-content/plugins/barmbini-core/
 
 ---
 
+## Nachtrag: Einzelansicht und Entfernung des externen Links (2026-08-04)
+
+Die Aktionen erhielten eine eigene Einzelansicht, erreichbar unter `/aktion/{slug}/`. Das externe Link-Feld wurde komplett entfernt.
+
+### Änderungen
+
+| Bereich | Vorher | Nachher |
+|--------|--------|---------|
+| `publicly_queryable` | `false` | `true` |
+| Link-Metabox | Vorhanden | Entfernt |
+| `META_LINK_URL`-Konstante | Vorhanden | Entfernt |
+| Shortcode Flyer-Bild | `<img>` ohne Link | `<a href="permalink"><img></a>` |
+| Shortcode Titel | Link auf externe URL _oder_ Text | Immer Link auf `get_permalink()` |
+| Shortcode Button | „Mehr erfahren" | Entfernt |
+| Template | Keines (Theme-Fallback) | `templates/single-barmbini_aktion.php` via `template_include` |
+| Einzelansicht | 404 | Volle Seite mit Flyer, Titel, Datum, Inhalt, Beendet-Hinweis |
+
+### Neue Dateien
+
+- `templates/single-barmbini_aktion.php` – Einzelansicht-Template
+
+### Neue Hooks in der CPT-Klasse
+
+- `template_include`-Filter → `load_single_template()`
+
+### Detaildokument
+
+Siehe `Barmbini_Aufgabe_Aktionen_Einzelansicht.md`.
+
+---
+
 ## Nachtrag: Archiv-Ansicht (2026-07-31)
 
 Die Admin-Übersicht der Aktionen wurde um drei gefilterte Ansichten ergänzt:

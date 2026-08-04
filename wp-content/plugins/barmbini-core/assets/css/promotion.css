@@ -68,27 +68,59 @@
 	margin-bottom: 0;
 }
 
-.barmbini-promotion-link {
-	display: inline-block;
-	align-self: flex-start;
-	margin-top: auto;
-	padding: 0.5rem 1rem;
-	font-size: 1rem;
-	color: #fff;
-	background-color: #2d6a4f;
-	border-radius: 3px;
-	text-decoration: none;
+.barmbini-promotion-image-link {
+	display: block;
+	margin-bottom: 1rem;
 }
 
-.barmbini-promotion-link:hover,
-.barmbini-promotion-link:focus {
-	background-color: #1b4332;
-	color: #fff;
-	text-decoration: none;
+.barmbini-promotion-image-link:hover .barmbini-promotion-image,
+.barmbini-promotion-image-link:focus .barmbini-promotion-image {
+	opacity: 0.9;
 }
 
 @media (min-width: 768px) {
 	.barmbini-promotions {
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	}
+}
+
+/* Einzelansicht */
+.barmbini-single-promotion {
+	max-width: 800px;
+	margin: 2rem auto;
+	padding: 0 1rem;
+}
+
+.barmbini-single-promotion__image img {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+	margin-bottom: 1.5rem;
+}
+
+.barmbini-single-promotion__title {
+	margin: 0 0 0.75rem;
+	font-size: 2rem;
+	line-height: 1.2;
+}
+
+.barmbini-single-promotion__dates {
+	margin: 0 0 1rem;
+	font-size: 0.9rem;
+	color: #555;
+}
+
+.barmbini-single-promotion__expired {
+	margin: 0 0 1rem;
+	padding: 0.75rem 1rem;
+	background: #fff3cd;
+	border: 1px solid #ffc107;
+	border-radius: 4px;
+	font-size: 0.9rem;
+}
+
+.barmbini-single-promotion__content {
+	font-size: 1rem;
+	line-height: 1.6;
 }

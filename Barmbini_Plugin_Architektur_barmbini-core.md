@@ -79,12 +79,13 @@ wp-content/plugins/barmbini-core/
 |-- templates/
 |   |-- account/
 |   |   `-- subscriptions.php
-|   `-- emails/
-|       |-- immediate-news.php
-|       |-- immediate-product.php
-|       |-- immediate-discount.php
-|       |-- daily-digest.php
-|       `-- weekly-digest.php
+|   |-- emails/
+|   |   |-- immediate-news.php
+|   |   |-- immediate-product.php
+|   |   |-- immediate-discount.php
+|   |   |-- daily-digest.php
+|   |   `-- weekly-digest.php
+|   `-- single-barmbini_aktion.php
 `-- assets/
     |-- css/
     |   |-- account-subscriptions.css
@@ -145,8 +146,8 @@ Wichtig:
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
-- `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` mit Metaboxen für Gültigkeitszeitraum und Link.
-- `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst.
+- `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` mit Metabox für den Gültigkeitszeitraum, Archiv-Filtern und Template-Ladung für die Einzelansicht.
+- `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst. Flyer und Titel verlinken auf die Einzelansicht.
 
 ### 2. Account-Modul
 

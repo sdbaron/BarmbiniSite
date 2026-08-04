@@ -3,7 +3,7 @@
  * Barmbini Core – Custom Post Type "Aktion"
  *
  * Registriert den Inhaltstyp barmbini_aktion für zeitlich begrenzte
- * Aktionen mit Start-/Enddatum, optionalem Link und Flyer-Bild.
+ * Aktionen mit Start-/Enddatum und Flyer-Bild.
  *
  * @package Barmbini_Core
  * @since 0.3.0
@@ -21,11 +21,10 @@ class Barmbini_Core_Promotion_Post_Type {
 	const POST_TYPE = 'barmbini_aktion';
 
 	/**
-	 * Meta-Keys für Start-, Enddatum und Link.
+	 * Meta-Keys für Start- und Enddatum.
 	 */
 	const META_START_DATE = '_barmbini_promotion_start_date';
 	const META_END_DATE   = '_barmbini_promotion_end_date';
-	const META_LINK_URL   = '_barmbini_promotion_link_url';
 
 	/**
 	 * Registriert alle Hooks für den CPT.
@@ -39,6 +38,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		add_action( 'save_post_' . self::POST_TYPE, array( $this, 'save_metaboxes' ), 10, 1 );
 		add_filter( 'views_edit-' . self::POST_TYPE, array( $this, 'add_archive_views' ) );
 		add_action( 'pre_get_posts', array( $this, 'filter_admin_list' ) );
+		add_filter( 'template_include', array( $this, 'load_single_template' ) );
 	}
 
 	/**
@@ -69,7 +69,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		$args = array(
 			'labels'             => $labels,
 			'public'             => true,
-			'publicly_queryable' => false,
+			'publicly_queryable' => true,
 			'has_archive'        => false,
 			'show_in_menu'       => true,
 			'menu_position'      => 25,
@@ -121,7 +121,7 @@ class Barmbini_Core_Promotion_Post_Type {
 	}
 
 	/**
-	 * Registriert die Metaboxen für Zeitraum und Link.
+	 * Registriert die Metabox für den Gültigkeitszeitraum.
 	 *
 	 * @return void
 	 */
@@ -130,15 +130,6 @@ class Barmbini_Core_Promotion_Post_Type {
 			'barmbini_promotion_dates',
 			'Gültigkeitszeitraum',
 			array( $this, 'render_dates_metabox' ),
-			self::POST_TYPE,
-			'side',
-			'default'
-		);
-
-		add_meta_box(
-			'barmbini_promotion_link',
-			'Link',
-			array( $this, 'render_link_metabox' ),
 			self::POST_TYPE,
 			'side',
 			'default'
@@ -176,29 +167,6 @@ class Barmbini_Core_Promotion_Post_Type {
 	}
 
 	/**
-	 * Rendert die Link-Metabox.
-	 *
-	 * @param WP_Post $post Aktueller Beitrag.
-	 * @return void
-	 */
-	public function render_link_metabox( $post ) {
-		$link_url = get_post_meta( $post->ID, self::META_LINK_URL, true );
-		?>
-		<p>
-			<label for="barmbini_promotion_link_url">Ziel-URL</label>
-			<input type="url" id="barmbini_promotion_link_url"
-				name="barmbini_promotion_link_url"
-				class="widefat"
-				placeholder="https://..."
-				value="<?php echo esc_attr( $link_url ); ?>">
-		</p>
-		<p class="description">
-			Optional. Wenn gesetzt, wird die Aktion im Frontend mit einem Link versehen.
-		</p>
-		<?php
-	}
-
-	/**
 	 * Speichert die Metabox-Daten.
 	 *
 	 * @param int $post_id Beitrags-ID.
@@ -226,13 +194,8 @@ class Barmbini_Core_Promotion_Post_Type {
 			? sanitize_text_field( wp_unslash( $_POST['barmbini_promotion_end_date'] ) )
 			: '' );
 
-		$link_url = isset( $_POST['barmbini_promotion_link_url'] )
-			? esc_url_raw( wp_unslash( $_POST['barmbini_promotion_link_url'] ) )
-			: '';
-
 		$this->save_meta_value( $post_id, self::META_START_DATE, $start_date );
 		$this->save_meta_value( $post_id, self::META_END_DATE, $end_date );
-		$this->save_meta_value( $post_id, self::META_LINK_URL, $link_url );
 	}
 
 	/**
@@ -402,5 +365,25 @@ class Barmbini_Core_Promotion_Post_Type {
 			'archived' => $archived,
 			'all'      => $all,
 		);
+	}
+
+	/**
+	 * Lädt das Plugin-eigene Single-Template für Aktionen.
+	 *
+	 * @param string $template Vom Theme vorgeschlagenes Template.
+	 * @return string
+	 */
+	public function load_single_template( $template ) {
+		if ( ! is_singular( self::POST_TYPE ) ) {
+			return $template;
+		}
+
+		$plugin_template = BARMBINI_CORE_PATH . 'templates/single-barmbini_aktion.php';
+
+		if ( file_exists( $plugin_template ) ) {
+			return $plugin_template;
+		}
+
+		return $template;
 	}
 }

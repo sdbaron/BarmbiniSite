@@ -119,8 +119,7 @@ class Barmbini_Core_Promotion_Shortcode {
 	 * @return string HTML der Aktion.
 	 */
 	protected function render_item( $show_image, $show_date, $show_description ) {
-		$post_id  = get_the_ID();
-		$link_url = get_post_meta( $post_id, Barmbini_Core_Promotion_Post_Type::META_LINK_URL, true );
+		$post_id = get_the_ID();
 
 		$output = '<article class="barmbini-promotion-item">';
 
@@ -128,15 +127,11 @@ class Barmbini_Core_Promotion_Shortcode {
 			$output .= $this->render_image( $post_id );
 		}
 
-		if ( $link_url ) {
-			$title = sprintf(
-				'<a href="%s">%s</a>',
-				esc_url( $link_url ),
-				esc_html( get_the_title() )
-			);
-		} else {
-			$title = esc_html( get_the_title() );
-		}
+		$title = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( get_permalink() ),
+			esc_html( get_the_title() )
+		);
 
 		$output .= sprintf( '<h3 class="barmbini-promotion-title">%s</h3>', $title );
 
@@ -146,13 +141,6 @@ class Barmbini_Core_Promotion_Shortcode {
 
 		if ( $show_description ) {
 			$output .= $this->render_description();
-		}
-
-		if ( $link_url ) {
-			$output .= sprintf(
-				'<a class="barmbini-promotion-link button" href="%s">Mehr erfahren</a>',
-				esc_url( $link_url )
-			);
 		}
 
 		$output .= '</article>';
@@ -176,7 +164,8 @@ class Barmbini_Core_Promotion_Shortcode {
 		}
 
 		return sprintf(
-			'<img class="barmbini-promotion-image" src="%s" alt="%s">',
+			'<a href="%s" class="barmbini-promotion-image-link"><img class="barmbini-promotion-image" src="%s" alt="%s"></a>',
+			esc_url( get_permalink( $post_id ) ),
 			esc_url( $image_url ),
 			esc_attr( $image_alt )
 		);

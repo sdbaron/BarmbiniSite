@@ -98,7 +98,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Responsives Footer-Burger-Menü (Grid-basiert, breakpoint 1024px, Toggle-Klasse `.barmbini-footer-grid-open`)
 - Wiederverwendbarer Adressblock-Shortcode `[barmbini_address]` (Daten in `wp_options`, Format wie /barrierefreiheit/)
 - Shortcode `[barmbini_latest_news]` für die letzten drei Neuigkeiten-Beiträge (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`)
-- Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild, optionaler Link) inkl. Shortcode `[barmbini_promotion]`
+- Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild) mit Einzelansicht unter `/aktion/{slug}/`, Shortcode `[barmbini_promotion]`, Archiv-Filtern im Admin
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 
 Dort wurden bereits unter anderem umgesetzt:
