@@ -24,6 +24,7 @@ Nach dem Einloggen im WordPress-Admin sehen Sie in der linken Seitenleiste den M
 | **Titel** | Der Name der Aktion, z. B. _„Sommerschlussverkauf"_. Erscheint fett auf der Startseite. |
 | **Beschreibung** | Der große Textbereich. Hier beschreiben Sie die Aktion — was es gibt, warum es sich lohnt, wichtige Details. |
 | **Flyer-Bild** | In der rechten Seitenleiste unter „Flyer-Bild". Klicken Sie auf „Flyer-Bild auswählen" und laden Sie Ihren Flyer hoch. **Das ist meist das Wichtigste** — ein guter Flyer spricht für sich. |
+| **Block-Editor** | Darunter: der gewohnte Gutenberg-Editor. Sie können Text, Bilder, Überschriften und alle anderen Blöcke wie bei normalen Beiträgen nutzen. |
 
 ---
 
@@ -48,7 +49,22 @@ In der rechten Seitenleiste finden Sie die Box **„Gültigkeitszeitraum"**. Hie
 
 ---
 
-## 4. Aktion veröffentlichen
+## 4. Startseiten-Anzeige festlegen
+
+In der Box **„Startseiten-Anzeige"** (rechte Seitenleiste) finden Sie eine Checkbox:
+
+> ☑ **Beschreibung auf der Startseite anzeigen**
+
+| Einstellung | Ergebnis auf der Startseite |
+|-------------|-----------------------------|
+| ☑ Aktiv (Standard) | Flyer-Bild + Titel + Zeitraum **+ Text** |
+| ☐ Deaktiviert | Nur Flyer-Bild + Titel + Zeitraum |
+
+Diese Einstellung gilt **pro Aktion**. Sie können z. B. eine Aktion mit langem Text auf der Startseite verkürzt darstellen, während eine andere Aktion ihren vollen Text zeigt.
+
+---
+
+## 5. Aktion veröffentlichen
 
 1. Sind Titel, Beschreibung, Flyer-Bild und Daten ausgefüllt?
 2. Klicken Sie rechts oben auf **„Veröffentlichen"**.
@@ -56,7 +72,7 @@ In der rechten Seitenleiste finden Sie die Box **„Gültigkeitszeitraum"**. Hie
 
 ---
 
-## 5. Aktion auf der Startseite einblenden (einmalig)
+## 6. Aktion auf der Startseite einblenden (einmalig)
 
 Damit Aktionen überhaupt auf der Startseite erscheinen, muss der Shortcode dort platziert sein. Das ist eine einmalige Einrichtung:
 
@@ -86,7 +102,7 @@ Sie können einzelne Elemente der Aktion ausblenden:
 
 ---
 
-## 6. Mehrere gleichzeitige Aktionen
+## 7. Mehrere gleichzeitige Aktionen
 
 Sie können mehrere Aktionen anlegen, die sich zeitlich überlappen. Alle gültigen Aktionen erscheinen nebeneinander auf der Startseite — üblicherweise ein bis drei Stück.
 
@@ -94,14 +110,14 @@ Sortiert wird nach Startdatum: Die **neueste Aktion zuerst**.
 
 ---
 
-## 7. Aktion bearbeiten oder löschen
+## 8. Aktion bearbeiten oder löschen
 
 - **Bearbeiten:** In der Übersicht auf den Titel klicken. Änderungen speichern.
 - **Löschen:** In der Übersicht auf „Papierkorb" klicken. Gelöschte Aktionen können 30 Tage lang wiederhergestellt werden.
 
 ---
 
-## 8. Archiv: Abgelaufene Aktionen
+## 9. Archiv: Abgelaufene Aktionen
 
 Sobald das Enddatum einer Aktion überschritten ist, wird sie automatisch aus der aktiven Ansicht entfernt und erscheint im **Archiv**. Das passiert ohne Ihr Zutun — Sie müssen nichts manuell verschieben.
 
@@ -119,7 +135,7 @@ Ein Klick auf **„Archiv"** listet alle abgelaufenen Aktionen. Sie können jede
 
 ---
 
-## 9. Aktion vorzeitig beenden
+## 10. Aktion vorzeitig beenden
 
 Es gibt zwei Wege:
 
@@ -130,7 +146,7 @@ Es gibt zwei Wege:
 
 ---
 
-## 10. Einzelansicht der Aktion
+## 11. Einzelansicht und Archivseite
 
 Jede Aktion ist unter ihrer eigenen Adresse im Internet erreichbar, z. B.:
 
@@ -147,8 +163,9 @@ Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den 
 
 ---
 
-## 11. Wichtige Hinweise
+## 12. Wichtige Hinweise
 
+- **Aktionen sind wie normale Beiträge bearbeitbar.** Sie können Gutenberg-Blöcke, Bilder und Formatierungen nutzen.
 - **Keine Aktion ohne Enddatum anlegen.** Ohne Enddatum erscheint die Aktion nicht auf der Startseite — das System verlangt einen definierten Zeitraum.
 - **Flyer-Bilder sollten nicht zu groß sein.** Empfohlene Größe: 800–1200 px Breite. Größere Bilder werden automatisch skaliert, verlangsamen aber die Seite.
 - **Der Gutenberg-Editor funktioniert ganz normal.** Sie können Absätze, Listen, Überschriften und alles andere verwenden, was Sie aus Beiträgen und Seiten kennen.
@@ -162,8 +179,9 @@ Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den 
 1. **Aktionen → Neue Aktion**
 2. **Titel** eintragen
 3. **Flyer-Bild** auswählen (rechte Seitenleiste)
-4. **Beschreibung** schreiben
+4. **Beschreibung** schreiben (Block-Editor)
 5. **Start- und Enddatum** setzen (rechts: „Gültigkeitszeitraum")
-6. **Veröffentlichen**
+6. Optional: **Beschreibung auf Startseite** deaktivieren (rechts: „Startseiten-Anzeige")
+7. **Veröffentlichen**
 
 🎉 Fertig. Die Aktion erscheint automatisch zum Startdatum.

@@ -33,7 +33,7 @@ Auf der Startseite können zusätzlich aktuell gültige Aktionen eingeblendet we
 [barmbini_promotion]
 ```
 
-Dieser Shortcode gibt alle Aktionen aus dem Custom Post Type `barmbini_aktion` aus, deren Gültigkeitszeitraum (Start-/Enddatum) das heutige Datum umfasst. Jede Aktion zeigt Flyer-Bild, Titel, Beschreibung und Gültigkeitszeitraum. Flyer und Titel sind auf die Einzelansicht der Aktion verlinkt (z. B. `/aktion/sommerschlussverkauf/`).
+Dieser Shortcode gibt alle Aktionen aus dem Custom Post Type `barmbini_aktion` aus, deren Gültigkeitszeitraum (Start-/Enddatum) das heutige Datum umfasst. Jede Aktion zeigt Flyer-Bild, Titel und Gültigkeitszeitraum. Flyer und Titel sind auf die Einzelansicht der Aktion verlinkt (z. B. `/aktion/sommerschlussverkauf/`). Der Beschreibungstext kann pro Aktion über eine Checkbox im Admin ein- oder ausgeblendet werden.
 
 Aktionen werden im Admin unter dem Menüpunkt „Aktionen" gepflegt. Redakteure legen dort Titel, Beschreibung, Flyer-Bild (Beitragsbild), Startdatum und Enddatum an. Abgelaufene und noch nicht begonnene Aktionen erscheinen automatisch nicht.
 

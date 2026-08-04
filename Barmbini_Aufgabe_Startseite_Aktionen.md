@@ -861,6 +861,18 @@ Siehe `Barmbini_Aufgabe_Aktionen_Einzelansicht.md`.
 
 ---
 
+## Nachtrag: Pro-Aktion-Beschreibung + Archivseite + Gutenberg-Fix (2026-08-04)
+
+| Änderung | Beschreibung |
+|----------|-------------|
+| Pro-Aktion-Checkbox | Metabox „Startseiten-Anzeige" mit ☑ „Beschreibung auf der Startseite anzeigen". Shortcode prüft `_barmbini_promotion_show_description` pro Aktion. Globaler `show_description`-Parameter wirkt als Override. |
+| Archivseite | `has_archive` auf `true` → `/aktion/` als Übersichtsseite |
+| Gutenberg-Fix | `capability_type` von Array auf `'post'` → Block-Editor funktioniert |
+| Kadence-Layout | Eigenes Template entfernt, `the_content`-Filter blendet Flyer-Bild + Meta ein |
+| Kategorie-Cleanup | `remove_legacy_category()` löscht Standard-Kategorie "Aktion" einmalig |
+
+---
+
 ## Nachtrag: Archiv-Ansicht (2026-07-31)
 
 Die Admin-Übersicht der Aktionen wurde um drei gefilterte Ansichten ergänzt:
