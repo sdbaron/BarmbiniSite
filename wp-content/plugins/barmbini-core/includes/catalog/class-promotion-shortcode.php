@@ -139,7 +139,7 @@ class Barmbini_Core_Promotion_Shortcode {
 			$output .= $this->render_dates( $post_id );
 		}
 
-		if ( $show_description ) {
+		if ( $show_description && $this->is_description_enabled( $post_id ) ) {
 			$output .= $this->render_description();
 		}
 
@@ -207,6 +207,23 @@ class Barmbini_Core_Promotion_Shortcode {
 		}
 
 		return '<div class="barmbini-promotion-description">' . $content . '</div>';
+	}
+
+	/**
+	 * Prüft, ob die Beschreibung dieser Aktion auf der Startseite erscheinen soll.
+	 *
+	 * @param int $post_id Beitrags-ID.
+	 * @return bool
+	 */
+	protected function is_description_enabled( $post_id ) {
+		$value = get_post_meta( $post_id, Barmbini_Core_Promotion_Post_Type::META_SHOW_DESCRIPTION, true );
+
+		// Standard: true (Beschreibung anzeigen), wenn das Feld nie gesetzt wurde.
+		if ( '' === $value ) {
+			return true;
+		}
+
+		return '1' === $value;
 	}
 
 	/**

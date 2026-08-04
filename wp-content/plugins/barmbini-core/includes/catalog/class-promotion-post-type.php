@@ -118,6 +118,20 @@ class Barmbini_Core_Promotion_Post_Type {
 				},
 			)
 		);
+
+		register_post_meta(
+			self::POST_TYPE,
+			self::META_SHOW_DESCRIPTION,
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'default'       => '1',
+				'auth_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
 	}
 
 	/**
@@ -130,6 +144,15 @@ class Barmbini_Core_Promotion_Post_Type {
 			'barmbini_promotion_dates',
 			'Gültigkeitszeitraum',
 			array( $this, 'render_dates_metabox' ),
+			self::POST_TYPE,
+			'side',
+			'default'
+		);
+
+		add_meta_box(
+			'barmbini_promotion_display',
+			'Startseiten-Anzeige',
+			array( $this, 'render_display_metabox' ),
 			self::POST_TYPE,
 			'side',
 			'default'
@@ -167,6 +190,31 @@ class Barmbini_Core_Promotion_Post_Type {
 	}
 
 	/**
+	 * Rendert die Checkbox "Beschreibung auf der Startseite anzeigen".
+	 *
+	 * @param WP_Post $post Aktueller Beitrag.
+	 * @return void
+	 */
+	public function render_display_metabox( $post ) {
+		$show_description = get_post_meta( $post->ID, self::META_SHOW_DESCRIPTION, true );
+
+		// Standard: true (Beschreibung anzeigen).
+		if ( '' === $show_description ) {
+			$show_description = '1';
+		}
+		?>
+		<label>
+			<input type="checkbox" name="barmbini_promotion_show_description"
+				value="1" <?php checked( '1', $show_description ); ?>>
+			Beschreibung auf der Startseite anzeigen
+		</label>
+		<p class="description">
+			Wenn aktiv, erscheint der Text der Aktion unter dem Flyer-Bild auf der Startseite.
+		</p>
+		<?php
+	}
+
+	/**
 	 * Speichert die Metabox-Daten.
 	 *
 	 * @param int $post_id Beitrags-ID.
@@ -194,8 +242,11 @@ class Barmbini_Core_Promotion_Post_Type {
 			? sanitize_text_field( wp_unslash( $_POST['barmbini_promotion_end_date'] ) )
 			: '' );
 
+		$show_description = isset( $_POST['barmbini_promotion_show_description'] ) ? '1' : '0';
+
 		$this->save_meta_value( $post_id, self::META_START_DATE, $start_date );
 		$this->save_meta_value( $post_id, self::META_END_DATE, $end_date );
+		update_post_meta( $post_id, self::META_SHOW_DESCRIPTION, $show_description );
 	}
 
 	/**
