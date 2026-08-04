@@ -38,7 +38,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		add_action( 'save_post_' . self::POST_TYPE, array( $this, 'save_metaboxes' ), 10, 1 );
 		add_filter( 'views_edit-' . self::POST_TYPE, array( $this, 'add_archive_views' ) );
 		add_action( 'pre_get_posts', array( $this, 'filter_admin_list' ) );
-		add_filter( 'template_include', array( $this, 'load_single_template' ) );
+		add_filter( 'the_content', array( $this, 'add_promotion_meta_to_content' ) );
 		add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 20 );
 	}
 
@@ -367,23 +367,37 @@ class Barmbini_Core_Promotion_Post_Type {
 	}
 
 	/**
-	 * Lädt das Plugin-eigene Single-Template für Aktionen.
+	 * Blendet Gültigkeitszeitraum und Beendet-Hinweis im Content der Einzelansicht ein.
 	 *
-	 * @param string $template Vom Theme vorgeschlagenes Template.
+	 * Kadence rendert Layout, Header und Footer – dieser Filter ergänzt nur die
+	 * aktionsspezifischen Metadaten am Anfang des Beitragsinhalts.
+	 *
+	 * @param string $content Der Original-Inhalt.
 	 * @return string
 	 */
-	public function load_single_template( $template ) {
-		if ( ! is_singular( self::POST_TYPE ) ) {
-			return $template;
+	public function add_promotion_meta_to_content( $content ) {
+		if ( ! is_singular( self::POST_TYPE ) || ! in_the_loop() || ! is_main_query() ) {
+			return $content;
 		}
 
-		$plugin_template = BARMBINI_CORE_PATH . 'templates/single-barmbini_aktion.php';
+		$meta  = '';
+		$start = get_post_meta( get_the_ID(), self::META_START_DATE, true );
+		$end   = get_post_meta( get_the_ID(), self::META_END_DATE, true );
+		$today = current_time( 'Y-m-d' );
 
-		if ( file_exists( $plugin_template ) ) {
-			return $plugin_template;
+		if ( $start && $end ) {
+			$meta .= sprintf(
+				'<p class="barmbini-single-promotion__dates">Gültig vom %s bis zum %s</p>',
+				esc_html( date_i18n( 'j. F Y', strtotime( $start ) ) ),
+				esc_html( date_i18n( 'j. F Y', strtotime( $end ) ) )
+			);
 		}
 
-		return $template;
+		if ( $end && $end < $today ) {
+			$meta .= '<div class="barmbini-single-promotion__expired"><strong>Hinweis:</strong> Diese Aktion ist beendet.</div>';
+		}
+
+		return $meta . $content;
 	}
 
 	/**

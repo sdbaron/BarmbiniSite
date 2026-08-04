@@ -84,27 +84,7 @@
 	}
 }
 
-/* Einzelansicht */
-.barmbini-single-promotion {
-	max-width: 800px;
-	margin: 2rem auto;
-	padding: 0 1rem;
-}
-
-.barmbini-single-promotion__image img {
-	display: block;
-	width: 100%;
-	max-width: 100%;
-	height: auto;
-	margin-bottom: 1.5rem;
-}
-
-.barmbini-single-promotion__title {
-	margin: 0 0 0.75rem;
-	font-size: 2rem;
-	line-height: 1.2;
-}
-
+/* Einzelansicht: Metadaten (Layout rendert Kadence) */
 .barmbini-single-promotion__dates {
 	margin: 0 0 1rem;
 	font-size: 0.9rem;
@@ -118,9 +98,4 @@
 	border: 1px solid #ffc107;
 	border-radius: 4px;
 	font-size: 0.9rem;
-}
-
-.barmbini-single-promotion__content {
-	font-size: 1rem;
-	line-height: 1.6;
 }
