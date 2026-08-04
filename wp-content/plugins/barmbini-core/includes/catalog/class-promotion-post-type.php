@@ -33,7 +33,7 @@ class Barmbini_Core_Promotion_Post_Type {
 	 */
 	public function register() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'init', array( $this, 'add_editor_capabilities' ), 11 );
+		add_action( 'init', array( $this, 'register_meta_fields' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post_' . self::POST_TYPE, array( $this, 'save_metaboxes' ), 10, 1 );
 		add_filter( 'views_edit-' . self::POST_TYPE, array( $this, 'add_archive_views' ) );
@@ -77,8 +77,7 @@ class Barmbini_Core_Promotion_Post_Type {
 			'menu_icon'          => 'dashicons-megaphone',
 			'supports'           => array( 'title', 'editor', 'thumbnail' ),
 			'show_in_rest'       => true,
-			'capability_type'    => array( 'barmbini_aktion', 'barmbini_aktions' ),
-			'map_meta_cap'       => true,
+			'capability_type'    => 'post',
 			'rewrite'            => array( 'slug' => 'aktion' ),
 		);
 
@@ -86,44 +85,42 @@ class Barmbini_Core_Promotion_Post_Type {
 	}
 
 	/**
-	 * Weist der Redakteur- und Administrator-Rolle die CPT-Capabilities zu.
+	 * Registriert die Meta-Felder für die REST-API (Gutenberg-Kompatibilität).
 	 *
-	 * Läuft mit Priority 11, also nach register_post_type (Priority 10).
+	 * Ohne register_post_meta() sind die Felder im Block-Editor nicht sichtbar.
 	 *
 	 * @return void
 	 */
-	public function add_editor_capabilities() {
-		$caps = array(
-			'edit_barmbini_aktion',
-			'read_barmbini_aktion',
-			'delete_barmbini_aktion',
-			'edit_barmbini_aktions',
-			'edit_others_barmbini_aktions',
-			'publish_barmbini_aktions',
-			'read_private_barmbini_aktions',
-			'delete_barmbini_aktions',
-			'delete_private_barmbini_aktions',
-			'delete_published_barmbini_aktions',
-			'delete_others_barmbini_aktions',
-			'edit_private_barmbini_aktions',
-			'edit_published_barmbini_aktions',
+	public function register_meta_fields() {
+		register_post_meta(
+			self::POST_TYPE,
+			self::META_START_DATE,
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'auth_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
 		);
 
-		foreach ( array( 'editor', 'administrator' ) as $role_name ) {
-			$role = get_role( $role_name );
-
-			if ( ! $role ) {
-				continue;
-			}
-
-			foreach ( $caps as $cap ) {
-				$role->add_cap( $cap );
-			}
-		}
+		register_post_meta(
+			self::POST_TYPE,
+			self::META_END_DATE,
+			array(
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'auth_callback' => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			)
+		);
 	}
 
 	/**
-	 * Registriert die Metabox für den Gültigkeitszeitraum.
+	 * Registriert die Meta-Felder für die REST-API (Gutenberg-Kompatibilität).
 	 *
 	 * @return void
 	 */
