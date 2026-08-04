@@ -85,6 +85,16 @@
 }
 
 /* Einzelansicht: Metadaten (Layout rendert Kadence) */
+.barmbini-single-promotion__image {
+	margin-bottom: 1.5rem;
+}
+
+.barmbini-single-promotion__image img {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	height: auto;
+}
 .barmbini-single-promotion__dates {
 	margin: 0 0 1rem;
 	font-size: 0.9rem;

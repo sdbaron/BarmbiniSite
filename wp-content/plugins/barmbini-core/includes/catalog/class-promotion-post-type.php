@@ -381,6 +381,13 @@ class Barmbini_Core_Promotion_Post_Type {
 		}
 
 		$meta  = '';
+
+		if ( has_post_thumbnail() ) {
+			$meta .= '<div class="barmbini-single-promotion__image">'
+				. get_the_post_thumbnail( null, 'large' )
+				. '</div>';
+		}
+
 		$start = get_post_meta( get_the_ID(), self::META_START_DATE, true );
 		$end   = get_post_meta( get_the_ID(), self::META_END_DATE, true );
 		$today = current_time( 'Y-m-d' );
