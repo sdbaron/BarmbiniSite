@@ -71,7 +71,7 @@ class Barmbini_Core_Promotion_Post_Type {
 			'labels'             => $labels,
 			'public'             => true,
 			'publicly_queryable' => true,
-			'has_archive'        => false,
+			'has_archive'        => true,
 			'show_in_menu'       => true,
 			'menu_position'      => 25,
 			'menu_icon'          => 'dashicons-megaphone',

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Barmbini Core
  * Description: Projektspezifische Fachlogik für Sozialkaufhaus Barmbini.
- * Version: 0.2.0
+ * Version: 0.4.0
  * Author: Barmbini
  */
 
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BARMBINI_CORE_VERSION', '0.2.0' );
+define( 'BARMBINI_CORE_VERSION', '0.4.0' );
 define( 'BARMBINI_CORE_FILE', __FILE__ );
 define( 'BARMBINI_CORE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BARMBINI_CORE_URL', plugin_dir_url( __FILE__ ) );
