@@ -54,7 +54,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-address-shortcode.php
 |   |   |-- class-latest-news-shortcode.php
 |   |   |-- class-promotion-post-type.php
-|   |   `-- class-promotion-shortcode.php
+|   |   |-- class-promotion-shortcode.php
+|   |   `-- class-top-product-categories-shortcode.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -138,6 +139,7 @@ Zweck:
 - Shortcode `[barmbini_latest_news]` für die letzten Neuigkeiten-Beiträge
 - Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild, optionaler Link)
 - Shortcode `[barmbini_promotion]` für aktuell gültige Aktionen auf der Startseite
+- Shortcode `[barmbini_top_product_categories]` für die Sortiment-Seite (Top-Level-Produktkategorien als gruppiertes Grid)
 
 Wichtig:
 
@@ -148,6 +150,7 @@ Wichtig:
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
 - `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` (capability_type='post', rewrite-Slug 'aktion', has_archive=true) mit Metaboxen für Gültigkeitszeitraum und Startseiten-Anzeige, Archiv-Filtern (Aktiv/Archiv/Alle), Template-freier Einzelansicht (the_content-Filter), Rewrite-Flush und Kategorie-Cleanup.
 - `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst. Flyer und Titel verlinken auf die Einzelansicht.
+- `class-top-product-categories-shortcode.php` stellt den Shortcode `[barmbini_top_product_categories]` bereit (Attribute: `columns`, `hide_empty`, `exclude`, `move_last`, `parent`, `orderby`, `order`). Er rendert die Top-Level-Produktkategorien als gruppierte Grids, jeweils mit Unterkategorien und/oder der Kategorie selbst, in Sektionen mit Überschrift und Trenner. Wurde aus dem MU-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php` ins Plugin migriert. Auf der Seite „Sortiment" wird er mit `[barmbini_top_product_categories columns="4" hide_empty="0" exclude="60"]` verwendet.
 
 ### 2. Account-Modul
 

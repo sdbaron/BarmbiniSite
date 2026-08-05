@@ -142,9 +142,12 @@ Der Sortiment-Bereich basiert auf WooCommerce als reinem Produktkatalog ohne War
 
 * Hauptkategorien als Abschnitte mit Überschrift
 * Unter jeder Hauptkategorie: Unterkategorien via WooCommerce-Shortcode
-* Shortcode-Beispiel: `[product_categories parent="61" columns="4"]`
+* Umsetzung seit 2026-08-05 über den Plugin-Shortcode `[barmbini_top_product_categories]`:
+  `[barmbini_top_product_categories columns="4" hide_empty="0" exclude="60"]`
+  (in `barmbini-core`/`class-top-product-categories-shortcode.php`, ersetzt das frühere MU-Plugin)
+* Das Rendering beruht intern auf dem WooCommerce-Shortcode `[product_categories ids="…" columns="…" hide_empty="…"]`
 * Klick auf Unterkategorie → WooCommerce Archivseite `/produkt-kategorie/{slug}/`
-* Hover über Unterkategorie zeigt Beschreibung (via functions.php + CSS)
+* Hover über Unterkategorie zeigt Beschreibung (Kategoriebeschreibung)
 
 **Breadcrumb-Struktur:**
 

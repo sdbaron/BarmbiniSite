@@ -52,6 +52,44 @@ Eine praktische Kurzanleitung für Redakteure und Administratoren findet sich in
 
 ---
 
+## Sortiment
+
+Auf der Seite **Sortiment** wird über den Gutenberg-Editor ein Shortcode-Block mit folgendem Inhalt platziert:
+
+```
+[barmbini_top_product_categories columns="4" hide_empty="0" exclude="60"]
+```
+
+Dieser Shortcode gibt alle Top-Level-Produktkategorien aus dem WooCommerce-Katalog aus. Jede Hauptkategorie wird als eigene Sektion mit Überschrift gerendert; darin erscheinen ihre Unterkategorien als Grid (bzw. bei Kategorien ohne Unterkategorien die Kategorie selbst). Die Sektionen werden durch eine Trennlinie (`<hr>`) getrennt. Die Kategorie „Babybedarf" wird automatisch ans Ende der Seite sortiert.
+
+Der Shortcode wird vom Plugin `barmbini-core` (`class-top-product-categories-shortcode.php`) bereitgestellt und ersetzt die frühere Logik im Must-Use-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php`.
+
+Optionale Attributvarianten:
+
+| Shortcode | Wirkung |
+|-----------|---------|
+| `[barmbini_top_product_categories columns="3"]` | Grid mit 3 Spalten statt 4 |
+| `[barmbini_top_product_categories hide_empty="1"]` | Leere Kategorien ausblenden |
+| `[barmbini_top_product_categories exclude="60"]` | Kategorie-ID 60 ausschließen (Standard, „Unkategorisiert") |
+| `[barmbini_top_product_categories move_last="babybedarf"]` | Slug ans Ende sortieren (Standard: `babybedarf`) |
+| `[barmbini_top_product_categories parent="61"]` | Nur Kinder einer bestimmten Kategorie anzeigen |
+
+Alle Attribute:
+
+| Attribut | Standard | Beschreibung |
+|----------|----------|--------------|
+| `columns` | `4` | Anzahl Spalten im Grid |
+| `hide_empty` | `0` | Leere Kategorien ausblenden (`1`, `true`, `yes`, `on`) |
+| `exclude` | `60` | Komma-separierte Kategorie-IDs, die ausgeschlossen werden |
+| `move_last` | `babybedarf` | Komma-separierte Slugs, die ans Ende sortiert werden |
+| `parent` | `0` | ID der Elternkategorie (`0` = Top-Level) |
+| `orderby` | `menu_order` | Sortierkriterium für `get_terms` |
+| `order` | `ASC` | Sortierrichtung (`ASC` oder `DESC`) |
+
+Weitere Details zur Migration siehe `Barmbini_Aufgabe_Sortiment_Shortcode_Migration.md`.
+
+---
+
 ## FAQ
 
 **Was ist das Sozialkaufhaus Barmbini?**

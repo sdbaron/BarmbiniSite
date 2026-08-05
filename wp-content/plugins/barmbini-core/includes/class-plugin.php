@@ -24,6 +24,7 @@ class Barmbini_Core_Plugin {
 		$this->register_address_shortcode_module();
 		$this->register_latest_news_module();
 		$this->register_promotion_module();
+		$this->register_top_product_categories_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
@@ -77,6 +78,16 @@ class Barmbini_Core_Plugin {
 		$post_type->register();
 
 		$shortcode = new Barmbini_Core_Promotion_Shortcode();
+		$shortcode->register();
+	}
+
+	/**
+	 * Registriert den Shortcode [barmbini_top_product_categories].
+	 *
+	 * @return void
+	 */
+	protected function register_top_product_categories_module() {
+		$shortcode = new Barmbini_Core_Top_Product_Categories_Shortcode();
 		$shortcode->register();
 	}
 
