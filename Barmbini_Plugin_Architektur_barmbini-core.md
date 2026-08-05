@@ -145,6 +145,7 @@ Wichtig:
 
 - Dieses Modul reduziert Theme-Abhaengigkeit.
 - Es enthaelt keine kundenspezifische Benachrichtigungslogik.
+- `class-catalog-hooks.php` (Barmbini_Core_Catalog_Hooks) setzt die Katalog-Hooks: entfernt die Standard-WooCommerce-Breadcrumb-, Ergebnisanzahl- und Sortier-Hooks und verknüpft die eigene Breadcrumb (`class-breadcrumbs.php`) via `woocommerce_before_main_content`. Außerdem blendet es Unterkategorie-Anzahlen aus (`remove_subcategory_count`) und stellt per `enqueue_styles()`/`get_inline_styles()` die thematischen Catalog-CSS-Regeln bereit — u. a. `woocommerce-breadcrumb` Einrückung (außen auf 15px mit `!important`, da Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs` und den Hover-Kategoriebeschreibungen.
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
@@ -531,6 +532,8 @@ Zum Workspace gehören drei PowerShell-Skripte für den Entwicklungs-Workflow:
 - `-NoBrowser`: Kein Browser-Tab nach Deployment
 
 `sync.ps1` erkennt neue Dateien automatisch (auto-discover via `Get-ChildItem`).
+
+Zusätzlich leert `sync.ps1` (und das Pendant `sync.sh`) nach einem **Push** mit kopierten Dateien automatisch den **WP Fastest Cache** in der lokalen Installation (`D:\Local Sites\barmbini\app\public\wp-content\cache\all`), sodass CSS-/JS-/PHP-Änderungen sofort nach dem Browser-Reload sichtbar sind. Bei `-Pull` oder ohne kopierte Dateien wird der Cache nicht angefasst.
 
 ## Adressblock-Shortcode
 

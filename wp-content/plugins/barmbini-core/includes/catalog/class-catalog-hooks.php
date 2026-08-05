@@ -48,6 +48,7 @@ class Barmbini_Core_Catalog_Hooks {
 				'.product-category .barmbini-category-description { display: none; text-align: center; font-size: 0.85em; padding: 5px; }',
 				'.product-category:hover .barmbini-category-description { display: block; }',
 				'.kadence-breadcrumbs { display: none; }',
+				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
 			)
 		);
 	}

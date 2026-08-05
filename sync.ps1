@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Sync barmbini-core plugin between local install and workspace.
 
@@ -143,6 +143,16 @@ if (-not $Pull -and -not $NoBrowser -and $copied -gt 0) {
     }
     catch {
         Write-Host '  (no open browser tab found)' -ForegroundColor Gray
+    }
+}
+
+# ---------- Cache leeren (nur bei Push, wenn Dateien kopiert wurden) ----------
+if (-not $Pull -and $copied -gt 0) {
+    $cacheDir = 'D:\Local Sites\barmbini\app\public\wp-content\cache\all'
+    if (Test-Path $cacheDir) {
+        Remove-Item "$cacheDir\*" -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host ''
+        Write-Host '  WP Fastest Cache geleert.' -ForegroundColor Green
     }
 }
 

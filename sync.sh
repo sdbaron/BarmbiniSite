@@ -191,6 +191,20 @@ echo -e "----------------------------------------------${NC}"
 echo ""
 
 # -------------------------------------------------------------------
+# Cache leeren (nur bei Push, wenn Dateien kopiert wurden)
+# -------------------------------------------------------------------
+if ! $PULL && [ "$COPIED" -gt 0 ]; then
+    CACHE_DIR="$LOCAL_PLUGIN/../../cache/all"
+    if [ -d "$CACHE_DIR" ]; then
+        rm -rf "$CACHE_DIR"/* 2>/dev/null || true
+        echo ""
+        echo -e "  ${GREEN}WP Fastest Cache geleert.${NC}"
+    fi
+fi
+
+echo ""
+
+# -------------------------------------------------------------------
 # Browser reload (only on Push, because that updates local)
 # -------------------------------------------------------------------
 if ! $PULL && ! $NO_BROWSER && [ "$COPIED" -gt 0 ]; then

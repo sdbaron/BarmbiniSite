@@ -101,6 +101,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild, Pro-Aktion-Checkbox für Beschreibung, Einzelansicht unter `/aktion/{slug}/` im Kadence-Layout, Archivseite `/aktion/`, Shortcode `[barmbini_promotion]`, Admin-Archiv-Filter, Gutenberg-kompatibel)
 - Shortcode `[barmbini_top_product_categories]` für die Sortiment-Seite (Top-Level-Produktkategorien als gruppierte Grids; Attribute `columns`, `hide_empty`, `exclude`, `move_last`, `parent`, `orderby`, `order`). Wurde aus dem MU-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php` in `class-top-product-categories-shortcode.php` migriert und auf dem Server live deployt (Modus B).
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
+- Katalog-Styling über `class-catalog-hooks.php`/`get_inline_styles()`: u. a. Breadcrumb-Einrückung (`woocommerce-breadcrumb`, 15px mit `!important` wegen Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs`, Hover-Kategoriebeschreibungen
 
 Dort wurden bereits unter anderem umgesetzt:
 
@@ -121,8 +122,12 @@ Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifizier
 - Footer-Burger-Menü funktioniert auf Desktop (2-Spalten-Grid) und Mobile (Toggle + Grid-Wechsel).
 - Shortcode `[barmbini_address]` gibt Adressblock im korrekten Format aus.
 - Shortcode `[barmbini_latest_news]` gibt die letzten Neuigkeiten-Beiträge aus.
-- `sync.ps1` synchronisiert Workspace ↔ Local (auto-discover).
+- `sync.ps1` synchronisiert Workspace ↔ Local (auto-discover) und leert nach Push mit kopierten Dateien automatisch den WP Fastest Cache (lokale Installation).
 - `deploy.ps1 -Full -Force -NoBackup` deployed Code + DB auf den Server (217.160.74.128).
+
+## Live-Fix (2026-08-05): HTTPS-URLs in Inhalten bereinigt
+
+Auf dem Live-Server `217.160.74.128` enthielten 15 Posts/Beiträge/Produkte hartcodierte `https://217.160.74.128`-URLs in `post_content` (86 Ersetzungen), `post_excerpt` (2) und `option_value` (2). Da der Server nur HTTP bedient, schlugen diese mit `ERR_CONNECTION_REFUSED` fehl. `wp search-replace` hat die URLs gezielt auf `http://217.160.74.128` korrigiert; die `guid`-Spalte (207 Einträge) bleibt bewusst unangetastet. DB-Backup: `/root/barmbini-db-backup-2026-08-05-103727`.
 
 ## Schlussfolgerung für neue Implementierungen
 
