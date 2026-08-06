@@ -537,6 +537,15 @@ Zum Workspace gehören drei PowerShell-Skripte für den Entwicklungs-Workflow:
 
 Zusätzlich leert `sync.ps1` (und das Pendant `sync.sh`) nach einem **Push** mit kopierten Dateien automatisch den **WP Fastest Cache** in der lokalen Installation (`D:\Local Sites\barmbini\app\public\wp-content\cache\all`), sodass CSS-/JS-/PHP-Änderungen sofort nach dem Browser-Reload sichtbar sind. Bei `-Pull` oder ohne kopierte Dateien wird der Cache nicht angefasst.
 
+### Deployment von Cron-basierten Funktionen (z. B. Cache-Maintenance)
+
+WP-Cron-Ereignisse werden in der Datenbank (`wp_options.cron`) gespeichert. Reine Code-Deployments (**Modus B**) importieren keine SQL-Daten — dennoch ist **kein manueller DB-Schritt** nötig: Die Cron-Funktionen von `barmbini-core` (z. B. `Barmbini_Core_Cache_Maintenance::schedule_event()`) prüfen auf `init` mit `wp_next_scheduled()` und planen ihr Ereignis beim **nächsten Seitenaufruf nach dem Deployment** automatisch selbst.
+
+Voraussetzungen:
+- `DISABLE_WP_CRON` darf nicht gesetzt sein (WP-Cron feuert dann bei Seitenaufrufen). Auf dem Server `217.160.74.128` ist das aktuell der Fall.
+- Bei sehr geringem Traffic können Cron-Takte zeitlich verzögern; ein externer Cron-Aufruf von `wp-cron.php` wäre dann die Option.
+- Der Deaktivator (`class-deactivator.php`) räumt das Cron-Ereignis bei Plugin-Deaktivierung auf.
+
 ## Adressblock-Shortcode
 
 `[barmbini_address]` gibt einen formatierten Adressblock aus (identisch zur Seite /barrierefreiheit/). Die Daten sind zentral in `wp_options` (`barmbini_address_data`) gespeichert:
