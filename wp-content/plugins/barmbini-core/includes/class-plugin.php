@@ -24,6 +24,7 @@ class Barmbini_Core_Plugin {
 		$this->register_address_shortcode_module();
 		$this->register_latest_news_module();
 		$this->register_promotion_module();
+		$this->register_cache_maintenance_module();
 		$this->register_top_product_categories_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
@@ -79,6 +80,16 @@ class Barmbini_Core_Plugin {
 
 		$shortcode = new Barmbini_Core_Promotion_Shortcode();
 		$shortcode->register();
+	}
+
+	/**
+	 * Registriert den periodischen Cache-Refresh (WP Fastest Cache).
+	 *
+	 * @return void
+	 */
+	protected function register_cache_maintenance_module() {
+		$maintenance = new Barmbini_Core_Cache_Maintenance();
+		$maintenance->register();
 	}
 
 	/**

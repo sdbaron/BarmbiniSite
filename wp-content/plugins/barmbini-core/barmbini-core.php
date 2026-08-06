@@ -28,6 +28,7 @@ require_once BARMBINI_CORE_PATH . 'includes/catalog/class-address-shortcode.php'
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-latest-news-shortcode.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-promotion-post-type.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-promotion-shortcode.php';
+require_once BARMBINI_CORE_PATH . 'includes/catalog/class-cache-maintenance.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-top-product-categories-shortcode.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-address-widget.php';
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-log-repository.php';

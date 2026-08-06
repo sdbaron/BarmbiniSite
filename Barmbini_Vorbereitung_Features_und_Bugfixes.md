@@ -100,6 +100,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Shortcode `[barmbini_latest_news]` für die letzten drei Neuigkeiten-Beiträge (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`)
 - Custom Post Type `barmbini_aktion` für zeitlich begrenzte Aktionen (Start-/Enddatum, Flyer-Bild, Pro-Aktion-Checkbox für Beschreibung, Einzelansicht unter `/aktion/{slug}/` im Kadence-Layout, Archivseite `/aktion/`, Shortcode `[barmbini_promotion]`, Admin-Archiv-Filter, Gutenberg-kompatibel)
 - Shortcode `[barmbini_top_product_categories]` für die Sortiment-Seite (Top-Level-Produktkategorien als gruppierte Grids; Attribute `columns`, `hide_empty`, `exclude`, `move_last`, `parent`, `orderby`, `order`). Wurde aus dem MU-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php` in `class-top-product-categories-shortcode.php` migriert und auf dem Server live deployt (Modus B).
+- WP-Cron-Job `barmbini_core_cache_maintenance` (alle 6 Stunden): leert den WP Fastest Cache via `wpfc_clear_all_cache`, damit abgelaufene Aktionen zuverlässig von der Startseite verschwinden (Free-Version kennt keine native Cache-Lebensdauer).
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 - Katalog-Styling über `class-catalog-hooks.php`/`get_inline_styles()`: u. a. Breadcrumb-Einrückung (`woocommerce-breadcrumb`, 15px mit `!important` wegen Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs`, Hover-Kategoriebeschreibungen
 

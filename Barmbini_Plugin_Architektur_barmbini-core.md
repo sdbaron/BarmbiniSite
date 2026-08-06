@@ -50,6 +50,7 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-breadcrumbs.php
 |   |   |-- class-category-display.php
 |   |   |-- class-catalog-hooks.php
+|   |   |-- class-cache-maintenance.php
 |   |   |-- class-footer-menu.php
 |   |   |-- class-address-shortcode.php
 |   |   |-- class-latest-news-shortcode.php
@@ -152,6 +153,7 @@ Wichtig:
 - `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` (capability_type='post', rewrite-Slug 'aktion', has_archive=true) mit Metaboxen für Gültigkeitszeitraum und Startseiten-Anzeige, Archiv-Filtern (Aktiv/Archiv/Alle), Template-freier Einzelansicht (the_content-Filter), Rewrite-Flush und Kategorie-Cleanup.
 - `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst. Flyer und Titel verlinken auf die Einzelansicht.
 - `class-top-product-categories-shortcode.php` stellt den Shortcode `[barmbini_top_product_categories]` bereit (Attribute: `columns`, `hide_empty`, `exclude`, `move_last`, `parent`, `orderby`, `order`). Er rendert die Top-Level-Produktkategorien als gruppierte Grids, jeweils mit Unterkategorien und/oder der Kategorie selbst, in Sektionen mit Überschrift und Trenner. Wurde aus dem MU-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php` ins Plugin migriert. Auf der Seite „Sortiment" wird er mit `[barmbini_top_product_categories columns="4" hide_empty="0" exclude="60"]` verwendet.
+- `class-cache-maintenance.php` (Barmbini_Core_Cache_Maintenance) plant einen WP-Cron-Job, der alle 6 Stunden den **WP Fastest Cache** leert (Standard-Hook `wpfc_clear_all_cache` + Verzeichnis-Fallback + `wp_cache_flush`). Zweck: Zeitlich begrenzte Inhalte (z. B. abgelaufene Aktionen des CPT `barmbini_aktion`) verschwinden zuverlässig von der Startseite, da die Free-Version von WP Fastest Cache keine native Cache-Lebensdauer kennt und rein datumsbasierte Änderungen keine Cache-Invalidierung auslösen. Cron-Hook: `barmbini_core_cache_maintenance`, Intervall `barmbini_core_6_hours`. Deaktivierung räumt das Ereignis auf (`class-deactivator.php`).
 
 ### 2. Account-Modul
 
