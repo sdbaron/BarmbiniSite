@@ -33,15 +33,29 @@ class Barmbini_Core_Catalog_Hooks {
 	 * Gibt das Badge "Beispiel" auf Produktfotos aus.
 	 *
 	 * Nutzt dieselbe Mechanik wie das WooCommerce-Sale-Badge ("Angebot!",
-	 * .onsale): ein per Hook injiziertes <span>-Element. Im Produkt-Loop
-	 * landet es im Bild-Link (.woocommerce-loop-image-link), auf der
-	 * Einzelseite im Galeriebereich. Kategoriebilder (.product-category)
-	 * werden dabei bewusst NICHT erfasst.
+	 * .onsale): ein per Hook injiziertes <span>-Element. Das Badge erscheint
+	 * nur, wenn das Produkt das Produkt-Schlagwort "Beispiel" (product_tag,
+	 * Slug "beispiel") trägt. Kategoriebilder (.product-category) werden
+	 * nicht erfasst.
+	 *
+	 * Die Klasse "onsale" wird nur für identische Größen-/Schriftwerte
+	 * geerbt; Position (oben links) und Farben überschreibt
+	 * .barmbini-example-badge.
 	 *
 	 * @return void
 	 */
 	public function render_example_badge() {
-		echo '<span class="barmbini-example-badge">Beispiel</span>';
+		global $product;
+
+		if ( ! $product ) {
+			return;
+		}
+
+		if ( ! has_term( 'beispiel', 'product_tag', $product->get_id() ) ) {
+			return;
+		}
+
+		echo '<span class="barmbini-example-badge onsale">Beispiel</span>';
 	}
 
 	/**
@@ -83,7 +97,7 @@ class Barmbini_Core_Catalog_Hooks {
 				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
 				'.woocommerce-product-gallery .wp-post-image { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
 				'.barmbini-example-notice { background: #eef7f1; border-left: 4px solid #2d6a4f; padding: 0.75rem 1rem; margin: 0 0 1.5rem; font-size: 0.95rem; }',
-				'.barmbini-example-badge { position: absolute; top: 8px; left: 8px; z-index: 9; background: #2d6a4f; color: #fff; border-radius: 4px; padding: 0.3rem 0.6rem; font-size: 0.75rem; line-height: 1.2; pointer-events: none; }',
+				'.barmbini-example-badge { left: 6px !important; right: auto !important; top: 6px !important; background: #2d6a4f !important; color: #fff !important; z-index: 9; pointer-events: none; }',
 			)
 		);
 	}
