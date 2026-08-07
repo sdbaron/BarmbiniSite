@@ -25,6 +25,7 @@ class Barmbini_Core_Plugin {
 		$this->register_latest_news_module();
 		$this->register_promotion_module();
 		$this->register_cache_maintenance_module();
+		$this->register_homepage_layout_module();
 		$this->register_top_product_categories_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
@@ -90,6 +91,16 @@ class Barmbini_Core_Plugin {
 	protected function register_cache_maintenance_module() {
 		$maintenance = new Barmbini_Core_Cache_Maintenance();
 		$maintenance->register();
+	}
+
+	/**
+	 * Registriert das Startseiten-Layout (CSS für den Startseiten-Hero).
+	 *
+	 * @return void
+	 */
+	protected function register_homepage_layout_module() {
+		$layout = new Barmbini_Core_Homepage_Layout();
+		$layout->register();
 	}
 
 	/**

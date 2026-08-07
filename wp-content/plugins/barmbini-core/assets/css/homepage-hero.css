@@ -1,0 +1,19 @@
+/* Barmbini Core – Startseiten-Hero */
+
+/*
+ * Hält die beiden Hero-Spalten bis zu einer Breite von 600px nebeneinander.
+ * Ohne diesen Override stapelt Kadence die Spalten bereits am Tablet-Breakpoint
+ * (max-width: 1024px), wodurch das Logo im Hero die volle Zeilenbreite füllt
+ * und auf großen Bildschirmen unverhältnismäßig groß wirkt.
+ *
+ * Unter 600px greift das normale Kadence-Stapelverhalten (mobile-layout-row).
+ *
+ * Hinweis: Die Block-ID "13_93d54b-9c" gehört zum Startseiten-Hero (Gutenberg/
+ * Kadence). Wird der Hero-Block im Editor neu erstellt, kann sich die ID ändern
+ * und diese Regel muss entsprechend angepasst werden.
+ */
+@media (min-width: 600px) {
+	.kb-row-layout-id13_93d54b-9c > .kt-row-column-wrap {
+		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+	}
+}
