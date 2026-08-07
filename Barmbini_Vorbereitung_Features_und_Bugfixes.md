@@ -103,6 +103,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - WP-Cron-Job `barmbini_core_cache_maintenance` (alle 6 Stunden): leert den WP Fastest Cache via `wpfc_clear_all_cache`, damit abgelaufene Aktionen zuverlässig von der Startseite verschwinden (Free-Version kennt keine native Cache-Lebensdauer).
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 - Katalog-Styling über `class-catalog-hooks.php`/`get_inline_styles()`: u. a. Breadcrumb-Einrückung (`woocommerce-breadcrumb`, 15px mit `!important` wegen Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs`, Hover-Kategoriebeschreibungen
+- Startseiten-Layout-Modul `class-homepage-layout.php` (Barmbini_Core_Homepage_Layout) mit `assets/css/homepage-hero.css`: hält den Hero bis 600 px zweispaltig (nur `is_front_page()`)
 
 Dort wurden bereits unter anderem umgesetzt:
 
@@ -110,6 +111,11 @@ Dort wurden bereits unter anderem umgesetzt:
 - eigene Breadcrumb-Logik für `Sortiment`
 - Einblendung von Kategoriebeschreibungen unter Unterkategorien
 - Entfernung des Standard-Breadcrumb-Hooks und eigener Re-Insert
+- Produktgalerie-Bilder werden quadratisch zugeschnitten und zentriert (`object-fit: cover`); Größe responsiv `max(25vw, 170px)` — mindestens **170 px**, darüber ein Viertel der Fensterbreite (Regel `.woocommerce-product-gallery__image img:not(.zoomImg)`, erfasst alle Galerie-Slides, `zoomImg`-Klon ausgenommen; `!important` nötig wegen WooCommerce-Regel `div.product div.images img {height:auto}`)
+- Beispiel-Badge: Produkte mit dem Produkt-Schlagwort `Beispiel` (`product_tag`, Slug `beispiel`) erhalten ein Badge `Beispiel` (`render_example_badge()` via Hooks `woocommerce_before_shop_loop_item_title`/`woocommerce_before_single_product_summary`). Das Badge trägt die Klasse `barmbini-example-badge onsale` und übernimmt dadurch exakt Größe/Schrift des „Angebot!“-Badges; Position oben links (im Loop), auf Einzelseiten unter dem onsale-Badge gestapelt (`top: 44px`), Farbe `#2d6a4f`
+- Beispiel-Hinweis: Auf Sortiment- und Kategorieseiten erscheint ein grüner Hinweisbalken „Die gezeigten Artikel dienen als Beispiele…“ (`render_example_notice()`, Klasse `.barmbini-example-notice`, Hook `woocommerce_before_main_content` Prio 30)
+- Startseiten-Hero bleibt bis 600 px zweispaltig (`class-homepage-layout.php` + `assets/css/homepage-hero.css`, Override mit `!important`, nur `is_front_page()`), damit das Logo nicht überbreit gestapelt wird
+- Aktions-Karten (`assets/css/promotion.css`): max. **500 px** Breite, Grid `minmax(300px, 500px)`, zentriert
 
 Das ist der wichtigste technische Hebel für kommende Arbeiten.
 

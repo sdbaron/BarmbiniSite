@@ -56,7 +56,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-latest-news-shortcode.php
 |   |   |-- class-promotion-post-type.php
 |   |   |-- class-promotion-shortcode.php
-|   |   `-- class-top-product-categories-shortcode.php
+|   |   |-- class-top-product-categories-shortcode.php
+|   |   `-- class-homepage-layout.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -92,7 +93,9 @@ wp-content/plugins/barmbini-core/
     |-- css/
     |   |-- account-subscriptions.css
     |   |-- footer-burger-menu.css
-    |   `-- latest-news.css
+    |   |-- latest-news.css
+    |   |-- homepage-hero.css
+    |   `-- promotion.css
     `-- js/
         `-- footer-burger-menu.js
 ```
@@ -146,7 +149,12 @@ Wichtig:
 
 - Dieses Modul reduziert Theme-Abhaengigkeit.
 - Es enthaelt keine kundenspezifische Benachrichtigungslogik.
-- `class-catalog-hooks.php` (Barmbini_Core_Catalog_Hooks) setzt die Katalog-Hooks: entfernt die Standard-WooCommerce-Breadcrumb-, Ergebnisanzahl- und Sortier-Hooks und verknüpft die eigene Breadcrumb (`class-breadcrumbs.php`) via `woocommerce_before_main_content`. Außerdem blendet es Unterkategorie-Anzahlen aus (`remove_subcategory_count`) und stellt per `enqueue_styles()`/`get_inline_styles()` die thematischen Catalog-CSS-Regeln bereit — u. a. `woocommerce-breadcrumb` Einrückung (außen auf 15px mit `!important`, da Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs` und den Hover-Kategoriebeschreibungen.
+- `class-catalog-hooks.php` (Barmbini_Core_Catalog_Hooks) setzt die Katalog-Hooks: entfernt die Standard-WooCommerce-Breadcrumb-, Ergebnisanzahl- und Sortier-Hooks und verknüpft die eigene Breadcrumb (`class-breadcrumbs.php`) via `woocommerce_before_main_content`. Außerdem blendet es Unterkategorie-Anzahlen aus (`remove_subcategory_count`) und stellt per `enqueue_styles()`/`get_inline_styles()` die thematischen Catalog-CSS-Regeln bereit — u. a. `woocommerce-breadcrumb` Einrückung (außen auf 15px mit `!important`, da Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs` und den Hover-Kategoriebeschreibungen. Zusätzlich:
+  - **Produktgalerie**: `.woocommerce-product-gallery__image img:not(.zoomImg)` → `width/height: max(25vw, 170px) !important` mit `object-fit: cover` (quadratisch, zentriert); erfasst alle Galerie-Slides, der `zoomImg`-Klon bleibt ausgenommen. `!important` nötig, weil WooCommerce `div.product div.images img {height:auto}` höhere Spezifität hat. Minimum **170 px**, darüber `25vw` der Fensterbreite.
+  - **Beispiel-Badge**: `render_example_badge()` injiziert bei Produkten mit Produkt-Schlagwort `Beispiel` (`has_term('beispiel', 'product_tag')`) ein `<span class="barmbini-example-badge onsale">Beispiel</span>` — via `woocommerce_before_shop_loop_item_title` (Prio 10, Loop) und `woocommerce_before_single_product_summary` (Prio 10, Einzelseite). Die Klasse `onsale` sorgt für identische Größe/Schrift wie „Angebot!“; Position links oben, auf Einzelseiten unter dem onsale-Badge (`top: 44px`) gestapelt, Farbe `#2d6a4f`.
+  - **Beispiel-Hinweis**: `render_example_notice()` gibt auf `is_shop()`/`is_product_category()` einen grünen Balken „Die gezeigten Artikel dienen als Beispiele…“ aus (Klasse `.barmbini-example-notice`, Hook `woocommerce_before_main_content` Prio 30).
+- `class-homepage-layout.php` (Barmbini_Core_Homepage_Layout) lädt nur auf `is_front_page()` das Stylesheet `assets/css/homepage-hero.css`. Damit bleibt der Startseiten-Hero (Block-ID `.kb-row-layout-id13_93d54b-9c`) bis **600 px** zweispaltig (`grid-template-columns: repeat(2, minmax(0,1fr)) !important`), damit das Logo nicht überbreit gestapelt wird. Hinweis: Die Block-ID kann sich bei Neu-Erstellung des Hero-Blocks ändern (CSS-Kommentar).
+- `class-promotion-shortcode.php` rendert die Aktions-Karten mit `assets/css/promotion.css`: max. **500 px** Breite, Grid `minmax(300px, 500px)`, zentriert.
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
