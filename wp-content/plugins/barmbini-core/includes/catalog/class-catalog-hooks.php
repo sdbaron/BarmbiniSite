@@ -95,7 +95,7 @@ class Barmbini_Core_Catalog_Hooks {
 				'.product-category:hover .barmbini-category-description { display: block; }',
 				'.kadence-breadcrumbs { display: none; }',
 				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
-				'.woocommerce-product-gallery .wp-post-image { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
+				'.woocommerce-product-gallery__image img:not(.zoomImg) { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
 				'.barmbini-example-notice { background: #eef7f1; border-left: 4px solid #2d6a4f; padding: 0.75rem 1rem; margin: 0 0 1.5rem; font-size: 0.95rem; }',
 				'.barmbini-example-badge { left: 6px !important; right: auto !important; top: 6px !important; background: #2d6a4f !important; color: #fff !important; z-index: 9; pointer-events: none; }',
 				'.single-product .barmbini-example-badge { top: 44px !important; left: 8px !important; }',
