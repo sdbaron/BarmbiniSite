@@ -1,5 +1,7 @@
 # Seiteninhalte – Sozialkaufhaus Barmbini
 
+> **Hinweis:** Eine vollständige Referenz aller Shortcodes mit Attributen und Beispielen findet sich in **`Barmbini_Shortcodes.md`**.
+
 ---
 
 ## Startseite

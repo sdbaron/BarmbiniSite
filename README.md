@@ -73,6 +73,17 @@ Das Gegenstück zu `deploy` – nützlich wenn der Server-Stand der aktuellere i
 | `BARMBINI_WORKSPACE` | Verzeichnis des Skripts | Pfad zum Arbeitsverzeichnis |
 | `BARMBINI_TARGET` | `217.160.74.128` | Server-IP oder Hostname |
 
+## Shortcodes
+
+Alle projektspezifischen Shortcodes stellt das Plugin `barmbini-core` bereit:
+
+- `[barmbini_address]` – Adressblock (Kontakt)
+- `[barmbini_latest_news]` – Letzte Neuigkeiten-Beiträge
+- `[barmbini_promotion]` – Aktuell gültige Aktionen
+- `[barmbini_top_product_categories]` – Sortiment-Kategorien als Grid
+
+Vollständige Referenz mit allen Attributen und Beispielen: **`Barmbini_Shortcodes.md`**
+
 ## Server-Infos
 
 - **IP:** `217.160.74.128`
