@@ -22,15 +22,15 @@ class Barmbini_Core_Homepage_Layout {
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
 	}
 
 	/**
-	 * Bindet das Startseiten-CSS und -JavaScript ein – nur auf der Frontseite.
+	 * Bindet das Startseiten-CSS ein – nur auf der Frontseite.
 	 *
 	 * @return void
 	 */
-	public function enqueue_assets() {
+	public function enqueue_styles() {
 		if ( ! is_front_page() ) {
 			return;
 		}
@@ -40,14 +40,6 @@ class Barmbini_Core_Homepage_Layout {
 			BARMBINI_CORE_URL . 'assets/css/homepage-hero.css',
 			array(),
 			BARMBINI_CORE_VERSION
-		);
-
-		wp_enqueue_script(
-			'barmbini-core-homepage',
-			BARMBINI_CORE_URL . 'assets/js/homepage-hero.js',
-			array(),
-			BARMBINI_CORE_VERSION,
-			true
 		);
 	}
 }

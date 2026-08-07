@@ -17,20 +17,3 @@
 		grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 	}
 }
-
-/*
- * Header-Logo auf der Startseite ausblenden, solange der Hero-Bereich (der das
- * große Logo zeigt) sichtbar ist. Sobald der Hero aus dem Blickfeld gescrollt
- * ist, setzt das Skript (homepage-hero.js) die Klasse
- * "barmbini-header-logo-visible" und blendet das Logo im sticky Header wieder ein.
- */
-.home .site-header .custom-logo {
-	opacity: 0;
-	visibility: hidden;
-	transition: opacity 0.25s ease, visibility 0.25s ease;
-}
-
-.home .site-header.barmbini-header-logo-visible .custom-logo {
-	opacity: 1;
-	visibility: visible;
-}
