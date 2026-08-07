@@ -49,7 +49,7 @@ class Barmbini_Core_Catalog_Hooks {
 				'.product-category:hover .barmbini-category-description { display: block; }',
 				'.kadence-breadcrumbs { display: none; }',
 				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
-				'.woocommerce-product-gallery .wp-post-image { max-width: 200px; max-height: 200px; width: auto; height: auto; }',
+				'.woocommerce-product-gallery .wp-post-image { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
 			)
 		);
 	}
