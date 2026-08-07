@@ -24,6 +24,21 @@ class Barmbini_Core_Catalog_Hooks {
 		remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
 
 		add_action( 'woocommerce_before_main_content', array( $this->breadcrumbs, 'render' ), 5 );
+		add_action( 'woocommerce_before_main_content', array( $this, 'render_example_notice' ), 30 );
+	}
+
+	/**
+	 * Gibt den Beispiel-Hinweis auf der Sortiment-Seite und auf allen
+	 * Produktkategorie-Seiten aus.
+	 *
+	 * @return void
+	 */
+	public function render_example_notice() {
+		if ( ! is_shop() && ! is_product_category() ) {
+			return;
+		}
+
+		echo '<p class="barmbini-example-notice">Die gezeigten Artikel dienen als Beispiele. Das aktuelle Sortiment finden Sie direkt im Laden.</p>';
 	}
 
 	public function remove_subcategory_count() {
@@ -50,6 +65,9 @@ class Barmbini_Core_Catalog_Hooks {
 				'.kadence-breadcrumbs { display: none; }',
 				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
 				'.woocommerce-product-gallery .wp-post-image { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
+				'.barmbini-example-notice { background: #eef7f1; border-left: 4px solid #2d6a4f; padding: 0.75rem 1rem; margin: 0 0 1.5rem; font-size: 0.95rem; }',
+				'.woocommerce-loop-product__link, .product-category a, .woocommerce-product-gallery__image { position: relative; }',
+				'.woocommerce-loop-product__link::before, .product-category a::before, .woocommerce-product-gallery__image::before { content: "Beispiel"; position: absolute; top: 8px; left: 8px; z-index: 2; background: #2d6a4f; color: #fff; font-size: 0.7rem; line-height: 1; padding: 4px 8px; border-radius: 3px; pointer-events: none; }',
 			)
 		);
 	}
