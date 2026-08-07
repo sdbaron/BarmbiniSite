@@ -25,6 +25,23 @@ class Barmbini_Core_Catalog_Hooks {
 
 		add_action( 'woocommerce_before_main_content', array( $this->breadcrumbs, 'render' ), 5 );
 		add_action( 'woocommerce_before_main_content', array( $this, 'render_example_notice' ), 30 );
+		add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'render_example_badge' ), 10 );
+		add_action( 'woocommerce_before_single_product_summary', array( $this, 'render_example_badge' ), 10 );
+	}
+
+	/**
+	 * Gibt das Badge "Beispiel" auf Produktfotos aus.
+	 *
+	 * Nutzt dieselbe Mechanik wie das WooCommerce-Sale-Badge ("Angebot!",
+	 * .onsale): ein per Hook injiziertes <span>-Element. Im Produkt-Loop
+	 * landet es im Bild-Link (.woocommerce-loop-image-link), auf der
+	 * Einzelseite im Galeriebereich. Kategoriebilder (.product-category)
+	 * werden dabei bewusst NICHT erfasst.
+	 *
+	 * @return void
+	 */
+	public function render_example_badge() {
+		echo '<span class="barmbini-example-badge">Beispiel</span>';
 	}
 
 	/**
@@ -66,8 +83,7 @@ class Barmbini_Core_Catalog_Hooks {
 				'.woocommerce nav.woocommerce-breadcrumb { padding: 15px 0 0 15px !important; }',
 				'.woocommerce-product-gallery .wp-post-image { width: 200px !important; height: 200px !important; object-fit: cover; object-position: center; }',
 				'.barmbini-example-notice { background: #eef7f1; border-left: 4px solid #2d6a4f; padding: 0.75rem 1rem; margin: 0 0 1.5rem; font-size: 0.95rem; }',
-				'.woocommerce-loop-product__link, .product-category a, .woocommerce-product-gallery__image { position: relative; }',
-				'.woocommerce-loop-product__link::before, .product-category a::before, .woocommerce-product-gallery__image::before { content: "Beispiel"; position: absolute; top: 8px; left: 8px; z-index: 2; background: #2d6a4f; color: #fff; font-size: 0.7rem; line-height: 1; padding: 4px 8px; border-radius: 3px; pointer-events: none; }',
+				'.barmbini-example-badge { position: absolute; top: 8px; left: 8px; z-index: 9; background: #2d6a4f; color: #fff; border-radius: 4px; padding: 0.3rem 0.6rem; font-size: 0.75rem; line-height: 1.2; pointer-events: none; }',
 			)
 		);
 	}
