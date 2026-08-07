@@ -11,8 +11,8 @@ Die Aufgabe ist so zu bearbeiten, dass am Ende eine lauffaehige, DSGVO-konforme,
 Die Aufgabe basiert auf:
 
 - `Barmbini_Technisches_Konzept_v2.5.md`
-- `Barmbini_Rechtliche_Seiten.md`
-- `Barmbini_Seiteninhalte.md`
+- `Docs/Barmbini_Rechtliche_Seiten.md`
+- `Docs/Barmbini_Seiteninhalte.md`
 - lokaler WordPress-Installation unter `D:\Local Sites\barmbini`
 
 ## Verifizierter Ist-Stand der lokalen Installation

@@ -611,7 +611,7 @@ protected function __construct() {
      - Shortcode `[barmbini_promotion]` in `class-promotion-shortcode.php`
    - Im Zielverzeichnisbaum die neuen Dateien ergänzen.
 
-2. **`Barmbini_Seiteninhalte.md`:**
+2. **`Docs/Barmbini_Seiteninhalte.md`:**
    - Unter „Startseite" einen neuen Abschnitt „Aktionen" einfügen, der den Shortcode und seine Attribute dokumentiert.
 
 3. **`Barmbini_Vorbereitung_Features_und_Bugfixes.md`:**
@@ -826,7 +826,7 @@ wp-content/plugins/barmbini-core/
 - Startseiten-Konzept: `Barmbini_Technisches_Konzept_v2.5.md` §7.1
 - Plugin-Architektur: `Barmbini_Plugin_Architektur_barmbini-core.md`
 - Deployment-Workflow: `Barmbini_Aufgabe_Update_von_local_auf_Server.md`
-- Admin-Anleitung: `Barmbini_Anleitung_Aktionen_Admin.md`
+- Admin-Anleitung: `Docs/Barmbini_Anleitung_Aktionen_Admin.md`
 
 ---
 
@@ -901,6 +901,6 @@ Umsetzung:
 | `barmbini-core.php` | **ÄNDERN** | Zwei `require_once`-Zeilen ergänzen |
 | `includes/class-plugin.php` | **ÄNDERN** | `register_promotion_module()` ergänzen und im Konstruktor aufrufen |
 | `Barmbini_Plugin_Architektur_barmbini-core.md` | **ÄNDERN** | Catalog-Modul + Verzeichnisbaum ergänzen |
-| `Barmbini_Seiteninhalte.md` | **ÄNDERN** | Abschnitt „Aktionen" unter Startseite ergänzen |
+| `Docs/Barmbini_Seiteninhalte.md` | **ÄNDERN** | Abschnitt „Aktionen“ unter Startseite ergänzen |
 | `Barmbini_Vorbereitung_Features_und_Bugfixes.md` | **ÄNDERN** | Verifizierten Ist-Stand ergänzen |
 | `Barmbini_Technisches_Konzept_v2.5.md` | **ÄNDERN** | §7.1 ergänzen |

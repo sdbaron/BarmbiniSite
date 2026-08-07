@@ -16,7 +16,7 @@ Die Aufgabe basiert auf:
 - `class-promotion-post-type.php` – aktuelle CPT-Klasse (Stand 2026-08-04)
 - `class-promotion-shortcode.php` – aktueller Shortcode (Stand 2026-08-04)
 - `promotion.css` – aktuelle Styles (Stand 2026-08-04)
-- `Barmbini_Anleitung_Aktionen_Admin.md` – Admin-Anleitung
+- `Docs/Barmbini_Anleitung_Aktionen_Admin.md` – Admin-Anleitung
 
 ## Fachliche Leitplanken
 
@@ -427,7 +427,7 @@ Diese Styles greifen nur auf der Einzelseite (`single-barmbini_aktion`):
 
 **Ziel:** Alle Dokumente spiegeln die Entfernung des Link-Felds und die neue Einzelansicht wider.
 
-#### 7a. `Barmbini_Anleitung_Aktionen_Admin.md`
+#### 7a. `Docs/Barmbini_Anleitung_Aktionen_Admin.md`
 
 | Abschnitt | Änderung |
 |-----------|----------|
@@ -455,7 +455,7 @@ Diese Styles greifen nur auf der Einzelseite (`single-barmbini_aktion`):
 
 - Verifizierten Ist-Stand um „Einzelansicht" und „Link entfernt" ergänzen.
 
-#### 7e. `Barmbini_Seiteninhalte.md`
+#### 7e. `Docs/Barmbini_Seiteninhalte.md`
 
 - Im Abschnitt „Aktionen" den Satz zur Link-URL streichen.
 - Einzelansicht-URL erwähnen.
@@ -610,7 +610,7 @@ wp-content/plugins/barmbini-core/
 - Bestehendes CSS: `assets/css/promotion.css`
 - Plugin-Bootstrap: `barmbini-core.php` (keine Änderung nötig)
 - Modulregistrierung: `includes/class-plugin.php` (keine Änderung nötig)
-- Admin-Anleitung: `Barmbini_Anleitung_Aktionen_Admin.md`
+- Admin-Anleitung: `Docs/Barmbini_Anleitung_Aktionen_Admin.md`
 
 ---
 
@@ -622,8 +622,8 @@ wp-content/plugins/barmbini-core/
 | `includes/catalog/class-promotion-shortcode.php` | **ÄNDERN** | Link-Logik entfernen, Flyer→Permalink, Titel→Permalink, Button entfernen |
 | `templates/single-barmbini_aktion.php` | **NEU** | Einzelansicht-Template |
 | `assets/css/promotion.css` | **ÄNDERN** | Button-Styles entfernen, Hover für Bild-Link, Single-Styles |
-| `Barmbini_Anleitung_Aktionen_Admin.md` | **ÄNDERN** | §4 streichen, Einzelansicht erklären |
+| `Docs/Barmbini_Anleitung_Aktionen_Admin.md` | **ÄNDERN** | §4 streichen, Einzelansicht erklären |
 | `Barmbini_Aufgabe_Startseite_Aktionen.md` | **ÄNDERN** | Nachtrag Einzelansicht |
 | `Barmbini_Plugin_Architektur_barmbini-core.md` | **ÄNDERN** | Catalog-Modul-Einträge aktualisieren |
 | `Barmbini_Vorbereitung_Features_und_Bugfixes.md` | **ÄNDERN** | Ist-Stand ergänzen |
-| `Barmbini_Seiteninhalte.md` | **ÄNDERN** | Link-URL entfernen, Einzelansicht erwähnen |
+| `Docs/Barmbini_Seiteninhalte.md` | **ÄNDERN** | Link-URL entfernen, Einzelansicht erwähnen |

@@ -180,7 +180,7 @@ Ziel: Projektdokumentation um den neuen Shortcode ergänzen.
 Arbeitsschritte:
 
 1. In `Barmbini_Plugin_Architektur_barmbini-core.md` den neuen Shortcode unter dem Catalog-Modul ergänzen.
-2. In `Barmbini_Seiteninhalte.md` unter „Startseite" den Shortcode-Hinweis einfügen.
+2. In `Docs/Barmbini_Seiteninhalte.md` unter „Startseite“ den Shortcode-Hinweis einfügen.
 3. In `Barmbini_Vorbereitung_Features_und_Bugfixes.md` den verifizierten Ist-Stand um den neuen Shortcode erweitern.
 
 Abnahmekriterium:

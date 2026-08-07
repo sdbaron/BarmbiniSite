@@ -82,7 +82,7 @@ Alle projektspezifischen Shortcodes stellt das Plugin `barmbini-core` bereit:
 - `[barmbini_promotion]` – Aktuell gültige Aktionen
 - `[barmbini_top_product_categories]` – Sortiment-Kategorien als Grid
 
-Vollständige Referenz mit allen Attributen und Beispielen: **`Barmbini_Shortcodes.md`**
+Vollständige Referenz mit allen Attributen und Beispielen: **`Docs/Barmbini_Shortcodes.md`**
 
 ## Server-Infos
 
@@ -100,6 +100,12 @@ Vollständige Referenz mit allen Attributen und Beispielen: **`Barmbini_Shortcod
 ├── fetch.ps1 / fetch.sh         # Fetch Server → Local
 ├── sync.ps1 / sync.sh           # Plugin-Sync Workspace ↔ Local
 ├── README.md                    # Diese Datei
+├── Docs/                        # Benutzerdokumentation (Anleitungen, Inhalte, Referenzen)
+│   ├── Barmbini_Anleitung_Aktionen_Admin.md
+│   ├── Barmbini_Seiteninhalte.md
+│   ├── Barmbini_Shortcodes.md
+│   ├── Barmbini_Rechtliche_Seiten.md
+│   └── *.docx                   # Inhalts- und Anforderungsdateien
 ├── Barmbini_Technisches_Konzept_v2.5.md
 ├── Barmbini_Aufgabe_Update_von_local_auf_Server.md
 ├── Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md
