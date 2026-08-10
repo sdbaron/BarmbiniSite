@@ -171,6 +171,7 @@ Zweck:
 - WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
 - Laden, Validieren und Speichern der Abo-Einstellungen
 - Darstellung der Frequenzwahl für `sofort`, `täglich`, `wöchentlich`
+- Benutzerregistrierung und DSGVO-Einwilligung über `/mein-konto/`
 
 Verantwortung:
 
@@ -178,6 +179,12 @@ Verantwortung:
 - Nonce-Pruefung
 - Sanitizing
 - Rückmeldungen nach dem Speichern
+- `class-account-endpoint.php` (Barmbini_Core_Account_Endpoint): über `register_registration_features()` werden die Hooks für die Benutzerregistrierung gesetzt (via `woocommerce_register_form`/`woocommerce_registration_errors`/`woocommerce_created_customer`):
+  - **DSGVO-Pflicht-Checkbox** bei der Registrierung (`render_privacy_consent_checkbox`); ohne Zustimmung wird die Registrierung abgelehnt (`validate_privacy_consent`).
+  - **Einwilligungs-Protokollierung**: nach erfolgreicher Registrierung werden `barmbini_consent_at` und `barmbini_consent_source = 'registration'` gespeichert (`save_privacy_consent` → `Subscription_Settings::update_consent()`).
+  - **E-Mail-Absender**: `wp_mail_from` → `info@barmbini.de`, `wp_mail_from_name` → `Barmbini Sozialkaufhaus` für alle Mails.
+  - **Redirect**: nach nativer WP-Registrierung auf die WooCommerce-Account-Seite (`registration_redirect`).
+  - **Admin-Benachrichtigung**: bei neuer Kundenregistrierung erhält `info@barmbini.de` eine E-Mail mit Benutzername, E-Mail und Zeitpunkt (`notify_admin_new_user`).
 
 ### 3. Notifications-Modul
 

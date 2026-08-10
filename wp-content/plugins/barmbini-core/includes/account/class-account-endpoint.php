@@ -100,6 +100,154 @@ class Barmbini_Core_Account_Endpoint {
 		);
 	}
 
+	/**
+	 * Registriert die Hooks für die Benutzerregistrierung und
+	 * die Anpassung des E-Mail-Versands (DSGVO-Checkbox, Absender,
+	 * Redirect nach Registrierung).
+	 *
+	 * @return void
+	 */
+	public function register_registration_features() {
+		if ( ! function_exists( 'is_account_page' ) ) {
+			return;
+		}
+
+		// DSGVO-Checkbox bei der Registrierung (WooCommerce).
+		add_action( 'woocommerce_register_form', array( $this, 'render_privacy_consent_checkbox' ) );
+		add_filter( 'woocommerce_registration_errors', array( $this, 'validate_privacy_consent' ), 10, 3 );
+		add_action( 'woocommerce_created_customer', array( $this, 'save_privacy_consent' ), 10, 1 );
+
+		// Admin-Benachrichtigung bei neuer Registrierung.
+		add_action( 'woocommerce_created_customer', array( $this, 'notify_admin_new_user' ), 20, 1 );
+
+		// E-Mail-Absender für alle wp_mail()-Mails.
+		add_filter( 'wp_mail_from', array( $this, 'custom_mail_from' ) );
+		add_filter( 'wp_mail_from_name', array( $this, 'custom_mail_from_name' ) );
+
+		// Nach nativer WordPress-Registrierung auf die Account-Seite umleiten.
+		add_filter( 'registration_redirect', array( $this, 'registration_redirect' ) );
+	}
+
+	/**
+	 * Rendert die DSGVO-Pflicht-Checkbox im WooCommerce-Registrierungsformular.
+	 *
+	 * @return void
+	 */
+	public function render_privacy_consent_checkbox() {
+		$privacy_url = function_exists( 'get_privacy_policy_url' ) && get_privacy_policy_url()
+			? get_privacy_policy_url()
+			: home_url( '/datenschutz/' );
+
+		$checked = ! empty( $_POST['barmbini_privacy_consent'] ) ? ' checked="checked"' : '';
+		?>
+		<p class="form-row form-row-wide barmbini-privacy-consent">
+			<label class="woocommerce-form__label woocommerce-form__label-for-checkbox">
+				<input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox" name="barmbini_privacy_consent" value="1"<?php echo $checked; // phpcs:ignore WordPress.Security.EscapeOutput ?> />
+				<span>
+					<?php
+					printf(
+						/* translators: %s: Link zur Datenschutzerklärung */
+						wp_kses_post( __( 'Ich habe die %s gelesen und stimme der Verarbeitung meiner Daten zu. *', 'barmbini-core' ) ),
+						'<a href="' . esc_url( $privacy_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Datenschutzerklärung', 'barmbini-core' ) . '</a>'
+					);
+					?>
+				</span>
+			</label>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Validiert die DSGVO-Checkbox bei der Registrierung.
+	 *
+	 * @param WP_Error $errors   Bestehende Fehler.
+	 * @param string   $username Benutzername.
+	 * @param string   $email    E-Mail-Adresse.
+	 * @return WP_Error
+	 */
+	public function validate_privacy_consent( $errors, $username, $email ) {
+		if ( empty( $_POST['barmbini_privacy_consent'] ) ) {
+			$errors->add( 'barmbini_privacy_consent_error', __( 'Bitte stimmen Sie der Datenschutzerklärung zu.', 'barmbini-core' ) );
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Speichert die Einwilligung nach erfolgreicher Registrierung.
+	 *
+	 * @param int $customer_id ID des neuen Benutzers.
+	 * @return void
+	 */
+	public function save_privacy_consent( $customer_id ) {
+		if ( ! $customer_id || empty( $_POST['barmbini_privacy_consent'] ) ) {
+			return;
+		}
+
+		$this->settings->update_consent( $customer_id, current_time( 'mysql' ), 'registration' );
+	}
+
+	/**
+	 * Setzt die Absender-Adresse aller Mails auf die Barmbini-Adresse.
+	 *
+	 * @param string $from_email Aktuelle Absender-Adresse.
+	 * @return string
+	 */
+	public function custom_mail_from( $from_email ) {
+		return 'info@barmbini.de';
+	}
+
+	/**
+	 * Setzt den Absender-Namen aller Mails.
+	 *
+	 * @param string $from_name Aktueller Absender-Name.
+	 * @return string
+	 */
+	public function custom_mail_from_name( $from_name ) {
+		return 'Barmbini Sozialkaufhaus';
+	}
+
+	/**
+	 * Leitet nach der nativen WordPress-Registrierung auf die
+	 * WooCommerce-Account-Seite um.
+	 *
+	 * @param string $redirect Aktuelles Redirect-Ziel.
+	 * @return string
+	 */
+	public function registration_redirect( $redirect ) {
+		if ( function_exists( 'wc_get_page_permalink' ) ) {
+			return wc_get_page_permalink( 'myaccount' );
+		}
+
+		return $redirect;
+	}
+
+	/**
+	 * Benachrichtigt den Betreiber per E-Mail über eine neue
+	 * Kundenregistrierung.
+	 *
+	 * @param int $customer_id ID des neuen Kunden.
+	 * @return void
+	 */
+	public function notify_admin_new_user( $customer_id ) {
+		if ( ! $customer_id ) {
+			return;
+		}
+
+		$user = get_userdata( $customer_id );
+		if ( ! $user || is_wp_error( $user ) ) {
+			return;
+		}
+
+		$subject = 'Neues Kundenkonto auf der Website';
+		$message = "Auf der Website wurde ein neues Kundenkonto angelegt:\n\n"
+			. 'Benutzername: ' . $user->user_login . "\n"
+			. 'E-Mail: ' . $user->user_email . "\n"
+			. 'Zeitpunkt: ' . current_time( 'mysql' ) . "\n";
+
+		wp_mail( 'info@barmbini.de', $subject, $message );
+	}
+
 	protected function is_subscriptions_endpoint_request() {
 		global $wp_query;
 

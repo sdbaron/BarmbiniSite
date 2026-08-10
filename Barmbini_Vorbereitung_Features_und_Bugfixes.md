@@ -92,6 +92,12 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 
 - WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
 - Speicherung der Abo-Einstellungen in `usermeta`
+- Benutzerregistrierung über `/mein-konto/` (WooCommerce; Einstellung `woocommerce_enable_myaccount_registration = yes`)
+- DSGVO-Pflicht-Checkbox bei der Registrierung (ohne Zustimmung wird abgelehnt); Einwilligung wird mit Zeitstempel und Quelle `registration` in `barmbini_consent_at`/`barmbini_consent_source` gespeichert
+- E-Mail-Absender aller Mails: `Barmbini Sozialkaufhaus <info@barmbini.de>` (`wp_mail_from`/`wp_mail_from_name`)
+- Redirect nach nativer WP-Registrierung auf `/mein-konto/`
+- Admin-Benachrichtigung per E-Mail an `info@barmbini.de` bei neuer Kundenregistrierung
+- Kontodetails (Vorname, Nachname, Anzeigename, E-Mail, Passwort) über WooCommerce-Standard bearbeitbar
 - Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration

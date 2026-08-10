@@ -108,6 +108,8 @@ Technisch notwendige Cookies bedürfen keiner Einwilligung gemäß § 25 Abs. 2 
 
 Wenn Sie ein Kundenkonto anlegen oder im Bereich `Mein Konto -> Abonnements` Benachrichtigungen aktivieren, verarbeiten wir zusätzlich die dafür erforderlichen personenbezogenen Daten.
 
+Für die **Registrierung eines Kundenkontos** holen wir Ihre ausdrückliche Einwilligung über eine Pflicht-Checkbox zur Datenschutzerklärung ein (Art. 6 Abs. 1 lit. a DSGVO). Zeitpunkt und Quelle dieser Einwilligung werden protokolliert. Ohne Ihre Einwilligung ist eine Registrierung nicht möglich. Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen.
+
 Dabei können insbesondere folgende Daten verarbeitet werden:
 
 - Kontodaten wie Benutzername und E-Mail-Adresse

@@ -121,6 +121,7 @@ class Barmbini_Core_Plugin {
 		$account_endpoint = new Barmbini_Core_Account_Endpoint( $settings, $consent_recorder, $queue_repository );
 
 		$this->loader->add_action( 'init', $account_endpoint, 'register_endpoint' );
+		$this->loader->add_action( 'init', $account_endpoint, 'register_registration_features' );
 		$this->loader->add_filter( 'woocommerce_account_menu_items', $account_endpoint, 'add_menu_item' );
 		$this->loader->add_action( 'woocommerce_account_abonnements_endpoint', $account_endpoint, 'render_content' );
 		$this->loader->add_action( 'template_redirect', $account_endpoint, 'handle_form_submission' );
