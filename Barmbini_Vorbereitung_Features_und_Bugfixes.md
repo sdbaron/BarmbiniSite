@@ -92,7 +92,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 
 - WooCommerce-Endpoint `abonnements` im Bereich `Mein Konto`
 - Speicherung der Abo-Einstellungen in `usermeta`
-- Abo-Optionen: **Neuigkeiten, Rabatte, Produktkategorien und Aktionen** (je mit Frequenz `sofort`, `täglich`, `wöchentlich`)
+- Abo-Optionen im Formular: **Neuigkeiten und Aktionen** (je mit Frequenz `sofort`, `täglich`, `wöchentlich`). Rabatte/Produktkategorien sind im Formular ausgeblendet (Datenlogik und Trigger bleiben im Code, reversibel)
 - Benutzerregistrierung über `/mein-konto/` (WooCommerce; Einstellung `woocommerce_enable_myaccount_registration = yes`)
 - DSGVO-Pflicht-Checkbox bei der Registrierung (ohne Zustimmung wird abgelehnt); Einwilligung wird mit Zeitstempel und Quelle `registration` in `barmbini_consent_at`/`barmbini_consent_source` gespeichert
 - E-Mail-Absender aller Mails: `Barmbini Sozialkaufhaus <info@barmbini.de>` (`wp_mail_from`/`wp_mail_from_name`)

@@ -238,6 +238,8 @@ Empfohlene Felder:
 - `barmbini_actions_enabled`
 - `barmbini_actions_frequency`
 - `barmbini_subscription_updated_at`
+
+Hinweis: Die Felder `barmbini_discount_*` und `barmbini_category_*` existieren weiterhin im Code (inkl. Trigger), werden aber im Formular seit 2026-08-10 nicht mehr angeboten (Abo-Optionen auf Neuigkeiten und Aktionen reduziert).
 - `barmbini_consent_at`
 - `barmbini_consent_source`
 - `barmbini_unsubscribe_token_hash`
@@ -310,16 +312,12 @@ Empfohlene `delivery_mode`-Werte:
 
 ## UI-Konzept im WooCommerce-Konto
 
-Empfohlene Oberflaeche im Endpoint `Abonnements`:
+Empfohlene Oberflaeche im Endpoint `Abonnements` (Ist-Stand 2026-08-10: nur Neuigkeiten und Aktionen; Rabatte/Produktkategorien ausgeblendet, Logik reversibel):
 
 1. Checkbox `Neuigkeiten abonnieren`
 2. Select `Neuigkeiten Frequenz`
-3. Checkbox `Rabatte abonnieren`
-4. Select `Rabatte Frequenz`
-5. Mehrfachauswahl für Produktkategorien
-6. Select `Produktkategorien Frequenz`
-7. Checkbox `Aktionen abonnieren`
-8. Select `Aktionen Frequenz`
+3. Checkbox `Aktionen abonnieren`
+4. Select `Aktionen Frequenz`
 9. Speichern
 10. Link oder Aktion `Alle Benachrichtigungen kündigen`
 

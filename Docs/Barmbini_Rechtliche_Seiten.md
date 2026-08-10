@@ -114,9 +114,8 @@ Dabei können insbesondere folgende Daten verarbeitet werden:
 
 - Kontodaten wie Benutzername und E-Mail-Adresse
 - technische Kontodaten, die WordPress für Login und Kontoverwaltung benötigt
-- Ihre Auswahl zu Benachrichtigungen für Neuigkeiten, Rabatte, Produktkategorien und Aktionen
+- Ihre Auswahl zu Benachrichtigungen für Neuigkeiten und Aktionen
 - die von Ihnen gewählte Versandfrequenz `sofort`, `täglich` oder `wöchentlich`
-- ausgewählte Produktkategorien
 - Zeitpunkte der Einwilligung und der letzten Änderung
 - technische Versand-, Fehler- und Warteschlangeninformationen zur Zustellung und zur Vermeidung von Dubletten
 - technische Abmeldeinformationen für sichere Abmeldelinks in E-Mails
@@ -132,7 +131,7 @@ Die Verarbeitung erfolgt zu folgenden Zwecken:
 Rechtsgrundlagen:
 
 - Art. 6 Abs. 1 lit. b DSGVO für die Bereitstellung und Verwaltung des Kundenkontos
-- Art. 6 Abs. 1 lit. a DSGVO für freiwillige Benachrichtigungen zu Neuigkeiten, Produktkategorien, Rabatten und Aktionen
+- Art. 6 Abs. 1 lit. a DSGVO für freiwillige Benachrichtigungen zu Neuigkeiten und Aktionen
 
 Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Dies ist im Kundenkonto oder über den Abmeldelink in jeder Benachrichtigungs-E-Mail möglich.
 
