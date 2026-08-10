@@ -41,6 +41,7 @@ class Barmbini_Core_Promotion_Post_Type {
 		add_action( 'save_post_' . self::POST_TYPE, array( $this, 'save_metaboxes' ), 10, 1 );
 		add_filter( 'views_edit-' . self::POST_TYPE, array( $this, 'add_archive_views' ) );
 		add_action( 'pre_get_posts', array( $this, 'filter_admin_list' ) );
+		add_action( 'pre_get_posts', array( $this, 'filter_archive_for_visitors' ) );
 		add_filter( 'the_content', array( $this, 'add_promotion_meta_to_content' ) );
 		add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ), 20 );
 		add_action( 'admin_init', array( $this, 'remove_legacy_category' ) );
@@ -478,6 +479,48 @@ class Barmbini_Core_Promotion_Post_Type {
 			flush_rewrite_rules();
 			update_option( 'barmbini_promotion_rewrite_version', BARMBINI_CORE_VERSION );
 		}
+	}
+
+	/**
+	 * Filter: pre_get_posts
+	 *
+	 * Blendet im Frontend-Archiv (\/aktion\/) für Besucher ohne
+	 * Redakteurs- oder Admin-Rolle Aktionen mit zukünftigem Startdatum
+	 * aus. Admins und Redakteure sehen weiterhin alle Aktionen.
+	 *
+	 * @param WP_Query $query Die aktuelle WP_Query.
+	 * @return void
+	 */
+	public function filter_archive_for_visitors( $query ) {
+		if ( is_admin() ) {
+			return;
+		}
+		if ( ! $query->is_main_query() ) {
+			return;
+		}
+		if ( ! $query->is_post_type_archive( self::POST_TYPE ) ) {
+			return;
+		}
+		if ( current_user_can( 'edit_others_posts' ) ) {
+			return;
+		}
+
+		$today       = current_time( 'Y-m-d' );
+		$meta_query  = (array) $query->get( 'meta_query' );
+		$meta_query[] = array(
+			'relation' => 'OR',
+			array(
+				'key'     => self::META_START_DATE,
+				'value'   => $today,
+				'compare' => '<=',
+				'type'    => 'DATE',
+			),
+			array(
+				'key'     => self::META_START_DATE,
+				'compare' => 'NOT EXISTS',
+			),
+		);
+		$query->set( 'meta_query', $meta_query );
 	}
 
 	/**
