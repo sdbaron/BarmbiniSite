@@ -120,6 +120,14 @@ class Barmbini_Core_Account_Endpoint {
 		// Admin-Benachrichtigung bei neuer Registrierung.
 		add_action( 'woocommerce_created_customer', array( $this, 'notify_admin_new_user' ), 20, 1 );
 
+		// Passwort-Anforderungen: mindestens 6 Zeichen (statt strikter
+		// WooCommerce-Stärke-Anforderung).
+		add_filter( 'password_hint', array( $this, 'password_hint' ) );
+		add_filter( 'woocommerce_min_password_strength', array( $this, 'password_min_strength' ) );
+		add_filter( 'user_profile_update_errors', array( $this, 'validate_password_length_wp' ), 10, 3 );
+		add_action( 'woocommerce_save_account_details_errors', array( $this, 'validate_password_length_wc' ), 10, 2 );
+		add_filter( 'woocommerce_registration_errors', array( $this, 'validate_password_length_registration' ), 20, 3 );
+
 		// E-Mail-Absender für alle wp_mail()-Mails.
 		add_filter( 'wp_mail_from', array( $this, 'custom_mail_from' ) );
 		add_filter( 'wp_mail_from_name', array( $this, 'custom_mail_from_name' ) );
@@ -246,6 +254,95 @@ class Barmbini_Core_Account_Endpoint {
 			. 'Zeitpunkt: ' . current_time( 'mysql' ) . "\n";
 
 		wp_mail( 'info@barmbini.de', $subject, $message );
+	}
+
+	/**
+	 * Ersetzt den WordPress-Standard-Hinweis zur Passwort-Komplexität
+	 * durch eine einfache Mindestlängen-Angabe (6 Zeichen).
+	 *
+	 * @param string $hint Aktueller Hinweis.
+	 * @return string
+	 */
+	public function password_hint( $hint ) {
+		return __( 'Tipp: Das Passwort muss mindestens 6 Zeichen lang sein.', 'barmbini-core' );
+	}
+
+	/**
+	 * Setzt die minimale WooCommerce-Passwortstärke auf 0 (keine
+	 * Stärke-Anforderung), damit nur die eigene 6-Zeichen-Regel gilt.
+	 *
+	 * @return int
+	 */
+	public function password_min_strength() {
+		return 0;
+	}
+
+	/**
+	 * Validiert die Mindestlänge des Passworts bei WordPress-Profil-Updates
+	 * (z. B. Passwort setzen nach Registrierung, Passwort zurücksetzen).
+	 *
+	 * @param WP_Error $errors Fehlerobjekt.
+	 * @param bool     $update Ob Update.
+	 * @param WP_User  $user   Benutzer.
+	 * @return WP_Error
+	 */
+	public function validate_password_length_wp( $errors, $update, $user ) {
+		$password = $this->get_submitted_password();
+
+		if ( '' !== $password && strlen( $password ) < 6 ) {
+			$errors->add( 'barmbini_password_too_short', __( 'Das Passwort muss mindestens 6 Zeichen lang sein.', 'barmbini-core' ) );
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Validiert die Mindestlänge des Passworts im WooCommerce-Kontodetails-Formular.
+	 *
+	 * @param WP_Error $errors Fehlerobjekt.
+	 * @param WP_User  $user   Benutzer.
+	 * @return void
+	 */
+	public function validate_password_length_wc( $errors, $user ) {
+		$password = $this->get_submitted_password();
+
+		if ( '' !== $password && strlen( $password ) < 6 ) {
+			$errors->add( 'barmbini_password_too_short', __( 'Das Passwort muss mindestens 6 Zeichen lang sein.', 'barmbini-core' ) );
+		}
+	}
+
+	/**
+	 * Validiert die Mindestlänge des Passworts bei der Registrierung.
+	 *
+	 * @param WP_Error $errors   Fehlerobjekt.
+	 * @param string   $username Benutzername.
+	 * @param string   $email    E-Mail-Adresse.
+	 * @return WP_Error
+	 */
+	public function validate_password_length_registration( $errors, $username, $email ) {
+		$password = $this->get_submitted_password();
+
+		if ( '' !== $password && strlen( $password ) < 6 ) {
+			$errors->add( 'barmbini_password_too_short', __( 'Das Passwort muss mindestens 6 Zeichen lang sein.', 'barmbini-core' ) );
+		}
+
+		return $errors;
+	}
+
+	/**
+	 * Liefert das aktuell übermittelte Passwort aus den üblichen
+	 * Formular-Feldern zurück (leer, wenn keines gesetzt).
+	 *
+	 * @return string
+	 */
+	protected function get_submitted_password() {
+		foreach ( array( 'password_1', 'pass1', 'reg_password', 'password' ) as $field ) {
+			if ( isset( $_POST[ $field ] ) && '' !== (string) $_POST[ $field ] ) {
+				return (string) $_POST[ $field ];
+			}
+		}
+
+		return '';
 	}
 
 	protected function is_subscriptions_endpoint_request() {

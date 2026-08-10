@@ -185,6 +185,7 @@ Verantwortung:
   - **E-Mail-Absender**: `wp_mail_from` → `info@barmbini.de`, `wp_mail_from_name` → `Barmbini Sozialkaufhaus` für alle Mails.
   - **Redirect**: nach nativer WP-Registrierung auf die WooCommerce-Account-Seite (`registration_redirect`).
   - **Admin-Benachrichtigung**: bei neuer Kundenregistrierung erhält `info@barmbini.de` eine E-Mail mit Benutzername, E-Mail und Zeitpunkt (`notify_admin_new_user`).
+  - **Passwort-Anforderung**: nur noch mindestens 6 Zeichen. Filter `password_hint` ersetzt die Standard-Meldung (`password_hint()`), `woocommerce_min_password_strength` wird auf 0 gesetzt (`password_min_strength()`), und eine eigene Mindestlängen-Prüfung läuft auf `user_profile_update_errors`, `woocommerce_save_account_details_errors` und `woocommerce_registration_errors` (`validate_password_length_*` mit Helfer `get_submitted_password()`).
 
 ### 3. Notifications-Modul
 

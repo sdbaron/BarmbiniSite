@@ -98,6 +98,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Redirect nach nativer WP-Registrierung auf `/mein-konto/`
 - Admin-Benachrichtigung per E-Mail an `info@barmbini.de` bei neuer Kundenregistrierung
 - Kontodetails (Vorname, Nachname, Anzeigename, E-Mail, Passwort) über WooCommerce-Standard bearbeitbar
+- Passwort-Anforderung gelockert: nur noch **mindestens 6 Zeichen** (statt WooCommerce-Stärke-Anforderung). Hinweis-Meldung via Filter `password_hint` ersetzt, `woocommerce_min_password_strength` auf 0, eigene 6-Zeichen-Validierung auf `user_profile_update_errors`, `woocommerce_save_account_details_errors` und `woocommerce_registration_errors`
 - Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
