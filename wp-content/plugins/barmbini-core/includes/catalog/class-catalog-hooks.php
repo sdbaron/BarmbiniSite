@@ -86,6 +86,29 @@ class Barmbini_Core_Catalog_Hooks {
 		wp_add_inline_style( 'barmbini-core-catalog', $this->get_inline_styles() );
 	}
 
+	/**
+	 * Lädt globale Design-Overrides für alle Seiten (unabhängig von
+	 * WooCommerce), z. B. die reduzierte Höhe des Kadence-Titelbanners
+	 * (.entry-hero-container-inner .entry-header).
+	 *
+	 * @return void
+	 */
+	public function enqueue_global_styles() {
+		wp_register_style( 'barmbini-core-global', false, array(), BARMBINI_CORE_VERSION );
+		wp_enqueue_style( 'barmbini-core-global' );
+		wp_add_inline_style( 'barmbini-core-global', $this->get_global_inline_styles() );
+	}
+
+	protected function get_global_inline_styles() {
+		return implode(
+			"\n",
+			array(
+				// Kadence-Titelbanner auf inneren Seiten: 200px -> 120px Höhe.
+				'.entry-hero-container-inner .entry-header { min-height: 120px !important; }',
+			)
+		);
+	}
+
 	protected function get_inline_styles() {
 		return implode(
 			"\n",

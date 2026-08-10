@@ -39,6 +39,7 @@ class Barmbini_Core_Plugin {
 
 		$this->loader->add_action( 'wp', $catalog_hooks, 'register_runtime_hooks' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $catalog_hooks, 'enqueue_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $catalog_hooks, 'enqueue_global_styles' );
 		$this->loader->add_filter( 'woocommerce_get_breadcrumb', $breadcrumbs, 'inject_sortiment_crumb' );
 		$this->loader->add_filter( 'woocommerce_subcategory_count_html', $catalog_hooks, 'remove_subcategory_count' );
 		$this->loader->add_action( 'woocommerce_after_subcategory_title', $category_display, 'render_subcategory_description', 10, 1 );

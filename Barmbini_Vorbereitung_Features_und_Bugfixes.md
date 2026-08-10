@@ -116,6 +116,7 @@ Dort wurden bereits unter anderem umgesetzt:
 - Beispiel-Hinweis: Auf Sortiment- und Kategorieseiten erscheint ein grüner Hinweisbalken „Die gezeigten Artikel dienen als Beispiele…“ (`render_example_notice()`, Klasse `.barmbini-example-notice`, Hook `woocommerce_before_main_content` Prio 30)
 - Startseiten-Hero bleibt bis 600 px zweispaltig (`class-homepage-layout.php` + `assets/css/homepage-hero.css`, Override mit `!important`, nur `is_front_page()`), damit das Logo nicht überbreit gestapelt wird
 - Aktions-Karten (`assets/css/promotion.css`): max. **500 px** Breite, Grid `minmax(300px, 500px)`, zentriert
+- Kadence-Titelbanner auf inneren Seiten (`.entry-hero-container-inner .entry-header`) von **200 px auf 120 px** Höhe reduziert — globale Inline-Regel in `class-catalog-hooks.php`/`get_global_inline_styles()` (Handle `barmbini-core-global`, lädt auf allen Seiten, `min-height: 120px !important`). Startseite und Produktseiten haben keinen solchen Banner und bleiben unverändert.
 
 Das ist der wichtigste technische Hebel für kommende Arbeiten.
 
