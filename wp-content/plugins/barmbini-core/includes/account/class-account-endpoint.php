@@ -270,9 +270,30 @@ class Barmbini_Core_Account_Endpoint {
 	 * Ersetzt den Standard-WooCommerce-Dashboard-Inhalt durch eine
 	 * Barmbini-Variante (ohne Bestellungen/Adressen, da reiner Katalog).
 	 *
+	 * WICHTIG: Spezifische Account-Endpoints (z. B. `abonnements`,
+	 * `edit-account`) werden weiterhin über ihre eigenen Renderer
+	 * ausgelöst; nur die Dashboard-Seite (kein Endpoint aktiv) rendert
+	 * den angepassten Text.
+	 *
 	 * @return void
 	 */
 	public function render_custom_dashboard() {
+		global $wp;
+
+		// Spezifische Endpoints weiterhin normal ausliefern.
+		if ( ! empty( $wp->query_vars ) ) {
+			foreach ( $wp->query_vars as $key => $value ) {
+				if ( 'pagename' === $key ) {
+					continue;
+				}
+
+				if ( has_action( 'woocommerce_account_' . $key . '_endpoint' ) ) {
+					do_action( 'woocommerce_account_' . $key . '_endpoint', $value );
+					return;
+				}
+			}
+		}
+
 		$current_user     = wp_get_current_user();
 		$logout_url       = function_exists( 'wc_logout_url' ) ? wc_logout_url() : wp_logout_url();
 		$edit_account_url = function_exists( 'wc_get_endpoint_url' ) ? wc_get_endpoint_url( 'edit-account' ) : home_url( '/mein-konto/edit-account/' );
