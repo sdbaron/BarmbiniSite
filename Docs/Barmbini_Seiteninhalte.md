@@ -39,6 +39,8 @@ Dieser Shortcode gibt alle Aktionen aus dem Custom Post Type `barmbini_aktion` a
 
 Aktionen werden im Admin unter dem Menüpunkt „Aktionen" gepflegt. Redakteure legen dort Titel, Beschreibung, Flyer-Bild (Beitragsbild), Startdatum und Enddatum an. Abgelaufene und noch nicht begonnene Aktionen erscheinen automatisch nicht.
 
+Zusätzlich verlinkt das **Footer-Menü** (Bereich „Footer-Menü öffnen") seit dem 2026-08-10 über den Eintrag „Aktionen" direkt auf das Archiv `/aktion/` (Menü-Item als CPT-Archiv-Link `post_type_archive` für `barmbini_aktion`). Das Archiv listet alle Aktionen des CPT, unabhängig vom Gültigkeitszeitraum.
+
 Optionale Attributvarianten:
 
 | Shortcode | Wirkung |
