@@ -22,6 +22,12 @@ class Barmbini_Core_Account_Endpoint {
 	}
 
 	public function add_menu_item( $items ) {
+		// Konto-Bereiche ohne Shop/Checkout ausblenden (reiner Katalog).
+		unset( $items['orders'] );
+		unset( $items['downloads'] );
+		unset( $items['edit-address'] );
+		unset( $items['payment-methods'] );
+
 		$updated_items = array();
 
 		foreach ( $items as $key => $label ) {
@@ -134,6 +140,10 @@ class Barmbini_Core_Account_Endpoint {
 
 		// Nach nativer WordPress-Registrierung auf die Account-Seite umleiten.
 		add_filter( 'registration_redirect', array( $this, 'registration_redirect' ) );
+
+		// Dashboard-Inhalt anpassen (Standard-Text ersetzen).
+		remove_action( 'woocommerce_account_content', 'woocommerce_account_content' );
+		add_action( 'woocommerce_account_content', array( $this, 'render_custom_dashboard' ) );
 	}
 
 	/**
@@ -254,6 +264,49 @@ class Barmbini_Core_Account_Endpoint {
 			. 'Zeitpunkt: ' . current_time( 'mysql' ) . "\n";
 
 		wp_mail( 'info@barmbini.de', $subject, $message );
+	}
+
+	/**
+	 * Ersetzt den Standard-WooCommerce-Dashboard-Inhalt durch eine
+	 * Barmbini-Variante (ohne Bestellungen/Adressen, da reiner Katalog).
+	 *
+	 * @return void
+	 */
+	public function render_custom_dashboard() {
+		$current_user     = wp_get_current_user();
+		$logout_url       = function_exists( 'wc_logout_url' ) ? wc_logout_url() : wp_logout_url();
+		$edit_account_url = function_exists( 'wc_get_endpoint_url' ) ? wc_get_endpoint_url( 'edit-account' ) : home_url( '/mein-konto/edit-account/' );
+
+		$allowed_html = array(
+			'a' => array(
+				'href' => array(),
+			),
+		);
+		?>
+		<p>
+			<?php
+			printf(
+				wp_kses( __( 'Hallo %1$s (nicht %1$s? <a href="%2$s">Abmelden</a>)', 'barmbini-core' ), $allowed_html ),
+				'<strong>' . esc_html( $current_user->display_name ) . '</strong>',
+				esc_url( $logout_url )
+			);
+			?>
+		</p>
+		<p>
+			<?php
+			printf(
+				wp_kses( __( 'Von Ihrem Konto-Dashboard aus können Sie Ihr <a href="%1$s">Passwort und Ihre Kontodetails</a> bearbeiten.', 'barmbini-core' ), $allowed_html ),
+				esc_url( $edit_account_url )
+			);
+			?>
+		</p>
+		<?php
+
+		/**
+		 * WooCommerce-Dashboard-Hook weiterhin auslösen, damit
+		 * zusätzliche Inhalte (z. B. Widgets) nicht verloren gehen.
+		 */
+		do_action( 'woocommerce_account_dashboard' );
 	}
 
 	/**
