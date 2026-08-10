@@ -141,6 +141,8 @@ class Barmbini_Core_Plugin {
 		$this->loader->add_action( 'init', $unsubscribe_service, 'handle_request' );
 		$this->loader->add_filter( 'cron_schedules', $digest_scheduler, 'register_schedules' );
 		$this->loader->add_action( 'init', $digest_scheduler, 'schedule_events' );
+		$this->loader->add_action( 'init', $event_collector, 'schedule_action_notifier' );
+		$this->loader->add_action( 'barmbini_core_action_start_notifier', $event_collector, 'handle_scheduled_action_starts' );
 		$this->loader->add_action( 'transition_post_status', $event_collector, 'handle_transition_post_status', 10, 3 );
 		$this->loader->add_action( 'save_post_product', $event_collector, 'handle_product_save', 20, 3 );
 		$this->loader->add_action( 'woocommerce_scheduled_sales', $event_collector, 'handle_scheduled_sales' );

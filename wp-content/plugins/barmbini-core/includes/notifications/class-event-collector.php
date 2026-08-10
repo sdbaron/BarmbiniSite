@@ -54,24 +54,88 @@ class Barmbini_Core_Event_Collector {
 				$this->delivery_service->deliver( $user_id, 'category', $event );
 			}
 		}
+	}
 
-		if ( 'barmbini_aktion' === $post->post_type ) {
-			$event = array(
-				'event_type'  => 'aktion',
-				'event_key'   => 'aktion-' . $post->ID,
-				'object_id'   => $post->ID,
-				'object_type' => 'barmbini_aktion',
-				'intro'       => 'Es gibt eine neue Aktion bei Barmbini.',
-				'title'       => get_the_title( $post ),
-				'excerpt'     => has_excerpt( $post ) ? $post->post_excerpt : wp_trim_words( wp_strip_all_tags( $post->post_content ), 40 ),
-				'url'         => get_permalink( $post ),
-			);
+	/**
+	 * Plant den täglichen Lauf des Aktionen-Start-Versands (Cron).
+	 *
+	 * Benachrichtigt Abonnenten, sobald das Startdatum einer Aktion
+	 * erreicht ist — nicht beim Veröffentlichen (Variante A).
+	 *
+	 * @return void
+	 */
+	public function schedule_action_notifier() {
+		if ( ! wp_next_scheduled( 'barmbini_core_action_start_notifier' ) ) {
+			wp_schedule_event( strtotime( 'tomorrow 08:00' ), 'daily', 'barmbini_core_action_start_notifier' );
+		}
+	}
+
+	/**
+	 * Cron: Benachrichtigt Aktionen-Abonnenten, sobald das Startdatum
+	 * einer veröffentlichten Aktion erreicht ist.
+	 *
+	 * Es wird bewusst nur Startdatum === heute berücksichtigt (kein
+	 * rückwirkender Versand für zurückdatierte Aktionen). Ein Meta-Flag
+	 * verhindert doppelte Benachrichtigungen pro Aktion.
+	 *
+	 * @return void
+	 */
+	public function handle_scheduled_action_starts() {
+		$today = current_time( 'Y-m-d' );
+
+		$action_ids = get_posts(
+			array(
+				'post_type'      => 'barmbini_aktion',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array(
+					array(
+						'key'     => '_barmbini_action_start_notified',
+						'compare' => 'NOT EXISTS',
+					),
+				),
+			)
+		);
+
+		foreach ( $action_ids as $action_id ) {
+			$start_date = get_post_meta( $action_id, Barmbini_Core_Promotion_Post_Type::META_START_DATE, true );
+
+			if ( empty( $start_date ) || $today !== $start_date ) {
+				continue;
+			}
+
+			$event = $this->build_action_event( $action_id );
 
 			foreach ( $this->get_enabled_users( Barmbini_Core_Subscription_Settings::ACTIONS_ENABLED ) as $user_id ) {
 				$this->delivery_service->deliver( $user_id, 'aktion', $event );
 			}
+
+			update_post_meta( $action_id, '_barmbini_action_start_notified', '1' );
 		}
 	}
+
+	/**
+	 * Baut das Event für eine Aktion zusammen.
+	 *
+	 * @param int $post_id Aktionen-ID.
+	 * @return array
+	 */
+	protected function build_action_event( $post_id ) {
+		$post = get_post( $post_id );
+
+		return array(
+			'event_type'  => 'aktion',
+			'event_key'   => 'aktion-' . $post->ID,
+			'object_id'   => $post->ID,
+			'object_type' => 'barmbini_aktion',
+			'intro'       => 'Es gibt eine neue Aktion bei Barmbini.',
+			'title'       => get_the_title( $post ),
+			'excerpt'     => has_excerpt( $post ) ? $post->post_excerpt : wp_trim_words( wp_strip_all_tags( $post->post_content ), 40 ),
+			'url'         => get_permalink( $post ),
+		);
+	}
+
 
 	public function handle_product_save( $post_id, $post, $update ) {
 		if ( wp_is_post_revision( $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || empty( $update ) ) {

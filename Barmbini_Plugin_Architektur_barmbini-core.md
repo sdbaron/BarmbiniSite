@@ -376,18 +376,19 @@ Regel:
 - nur Wechsel in `publish`
 - Produktkategorien ermitteln und passende Benutzer suchen
 
-### Aktions-Trigger
+### Aktions-Trigger (Startdatum, Variante A)
 
-Empfohlener Hook:
+Benachrichtigung erfolgt **nicht beim Veröffentlichen**, sondern per **Cron** sobald das Startdatum einer Aktion erreicht ist.
 
-- `transition_post_status`
+Mechanik (Ist-Stand 2026-08-10):
 
-Regel:
-
-- nur `barmbini_aktion`
-- nur Wechsel in `publish`
-- Benachrichtigung an Benutzer mit aktivem `barmbini_actions_enabled`
-- Event-Typ `aktion`, Betreff „Neue Aktion bei Barmbini"
+- Cron-Job `barmbini_core_action_start_notifier` (täglich, 08:00), geplant via `Event_Collector::schedule_action_notifier()` auf `init` (`wp_next_scheduled()`-Prüfung)
+- `Event_Collector::handle_scheduled_action_starts()` lädt alle `barmbini_aktion` (publish) ohne Meta-Flag `_barmbini_action_start_notified`
+- Nur wenn `_barmbini_promotion_start_date === heute` → Versand an Benutzer mit aktivem `barmbini_actions_enabled` (Event-Typ `aktion`, Betreff „Neue Aktion bei Barmbini", Frequenz `sofort`/`täglich`/`wöchentlich`)
+- Meta-Flag `_barmbini_action_start_notified = 1` nach Versand → Duplikat-Schutz (einmalige Benachrichtigung)
+- Kein rückwirkender Versand (nur Startdatum = heute, nicht `<`)
+- Deaktivator räumt den Cron auf (`class-deactivator.php`)
+- Der frühere Veröffentlichungs-Trigger (`transition_post_status` → `publish`) für `barmbini_aktion` wurde entfernt
 
 ### Rabatt-Trigger
 

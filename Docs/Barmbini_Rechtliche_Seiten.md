@@ -124,6 +124,7 @@ Die Verarbeitung erfolgt zu folgenden Zwecken:
 
 - Bereitstellung und Verwaltung des Kundenkontos
 - Versand der von Ihnen ausdrücklich gewünschten Benachrichtigungen per E-Mail
+- Benachrichtigungen zu neuen Aktionen werden versendet, sobald das Startdatum der Aktion erreicht ist
 - technische Steuerung täglicher oder wöchentlicher Sammelbenachrichtigungen
 - Nachweis der Einwilligung, Vermeidung doppelter Benachrichtigungen und Fehleranalyse
 - Bearbeitung von Abmeldungen und Änderungen Ihrer Abo-Einstellungen

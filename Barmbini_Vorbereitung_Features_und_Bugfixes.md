@@ -101,7 +101,8 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Kontodetails (Vorname, Nachname, Anzeigename, E-Mail, Passwort) über WooCommerce-Standard bearbeitbar
 - Passwort-Anforderung gelockert: nur noch **mindestens 6 Zeichen** (statt WooCommerce-Stärke-Anforderung). Hinweis-Meldung via Filter `password_hint` ersetzt, `woocommerce_min_password_strength` auf 0, eigene 6-Zeichen-Validierung auf `user_profile_update_errors`, `woocommerce_save_account_details_errors` und `woocommerce_registration_errors`
 - Konto-Dashboard angepasst: Menüpunkte `Bestellungen`, `Downloads`, `Adressen` und `Zahlungsarten` ausgeblendet (reiner Katalog ohne Checkout); Dashboard-Text ersetzt durch „Von Ihrem Konto-Dashboard aus können Sie Ihr Passwort und Ihre Kontodetails bearbeiten.“ (`add_menu_item`-Filter + `render_custom_dashboard` via `woocommerce_account_content`-Override)
-- Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien, Rabatte und **neue Aktionen** (`barmbini_aktion`, Event-Typ `aktion`, Betreff „Neue Aktion bei Barmbini")
+- Trigger für Neuigkeiten, neue Produkte in abonnierten Kategorien und Rabatte
+- Trigger für **Aktionen beim Startdatum** (Variante A): Cron-Job `barmbini_core_action_start_notifier` (täglich 08:00) benachrichtigt Aktionen-Abonnenten, sobald das Startdatum einer Aktion erreicht ist (Meta-Flag `_barmbini_action_start_notified` verhindert Duplikate; kein Versand beim Veröffentlichen, kein rückwirkender Versand)
 - Queue- und Digest-Logik mit eigenen Tabellen `wp_barmbini_notification_log` und `wp_barmbini_notification_queue`
 - Admin-Übersicht, Unsubscribe-Logik und Datenschutz-Export/Löschintegration
 - Responsives Footer-Burger-Menü (Grid-basiert, breakpoint 1024px, Toggle-Klasse `.barmbini-footer-grid-open`)
