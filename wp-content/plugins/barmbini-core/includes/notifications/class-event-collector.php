@@ -54,6 +54,23 @@ class Barmbini_Core_Event_Collector {
 				$this->delivery_service->deliver( $user_id, 'category', $event );
 			}
 		}
+
+		if ( 'barmbini_aktion' === $post->post_type ) {
+			$event = array(
+				'event_type'  => 'aktion',
+				'event_key'   => 'aktion-' . $post->ID,
+				'object_id'   => $post->ID,
+				'object_type' => 'barmbini_aktion',
+				'intro'       => 'Es gibt eine neue Aktion bei Barmbini.',
+				'title'       => get_the_title( $post ),
+				'excerpt'     => has_excerpt( $post ) ? $post->post_excerpt : wp_trim_words( wp_strip_all_tags( $post->post_content ), 40 ),
+				'url'         => get_permalink( $post ),
+			);
+
+			foreach ( $this->get_enabled_users( Barmbini_Core_Subscription_Settings::ACTIONS_ENABLED ) as $user_id ) {
+				$this->delivery_service->deliver( $user_id, 'aktion', $event );
+			}
+		}
 	}
 
 	public function handle_product_save( $post_id, $post, $update ) {

@@ -98,6 +98,8 @@ class Barmbini_Core_Delivery_Service {
 				return $settings['news_frequency'];
 			case 'discount':
 				return $settings['discount_frequency'];
+			case 'aktion':
+				return $settings['actions_frequency'];
 			case 'category':
 			default:
 				return $settings['category_frequency'];
@@ -110,6 +112,8 @@ class Barmbini_Core_Delivery_Service {
 				return 'Neue Neuigkeit bei Barmbini';
 			case 'discount':
 				return 'Neuer Rabatt bei Barmbini';
+			case 'aktion':
+				return 'Neue Aktion bei Barmbini';
 			case 'category_product':
 			default:
 				return 'Neuer Artikel bei Barmbini';

@@ -12,6 +12,8 @@ class Barmbini_Core_Subscription_Settings {
 	const CATEGORY_ENABLED        = 'barmbini_category_enabled';
 	const CATEGORY_FREQUENCY      = 'barmbini_category_frequency';
 	const CATEGORY_TERMS          = 'barmbini_category_terms';
+	const ACTIONS_ENABLED         = 'barmbini_actions_enabled';
+	const ACTIONS_FREQUENCY       = 'barmbini_actions_frequency';
 	const SUBSCRIPTION_UPDATED_AT = 'barmbini_subscription_updated_at';
 	const CONSENT_AT              = 'barmbini_consent_at';
 	const CONSENT_SOURCE          = 'barmbini_consent_source';
@@ -63,6 +65,8 @@ class Barmbini_Core_Subscription_Settings {
 			'category_enabled'   => false,
 			'category_frequency' => 'sofort',
 			'category_terms'     => array(),
+			'actions_enabled'    => false,
+			'actions_frequency'  => 'sofort',
 			'updated_at'         => '',
 			'consent_at'         => '',
 			'consent_source'     => '',
@@ -80,6 +84,8 @@ class Barmbini_Core_Subscription_Settings {
 			'category_enabled'   => $this->get_bool_meta( $user_id, self::CATEGORY_ENABLED ),
 			'category_frequency' => $this->sanitize_frequency( get_user_meta( $user_id, self::CATEGORY_FREQUENCY, true ) ),
 			'category_terms'     => $this->get_term_ids( $user_id ),
+			'actions_enabled'    => $this->get_bool_meta( $user_id, self::ACTIONS_ENABLED ),
+			'actions_frequency'  => $this->sanitize_frequency( get_user_meta( $user_id, self::ACTIONS_FREQUENCY, true ) ),
 			'updated_at'         => (string) get_user_meta( $user_id, self::SUBSCRIPTION_UPDATED_AT, true ),
 			'consent_at'         => (string) get_user_meta( $user_id, self::CONSENT_AT, true ),
 			'consent_source'     => (string) get_user_meta( $user_id, self::CONSENT_SOURCE, true ),
@@ -98,6 +104,8 @@ class Barmbini_Core_Subscription_Settings {
 			'category_enabled'   => ! empty( $request_data['category_enabled'] ),
 			'category_frequency' => $this->sanitize_frequency( $request_data['category_frequency'] ?? '' ),
 			'category_terms'     => $this->sanitize_term_ids( $request_data['category_terms'] ?? array() ),
+			'actions_enabled'    => ! empty( $request_data['actions_enabled'] ),
+			'actions_frequency'  => $this->sanitize_frequency( $request_data['actions_frequency'] ?? '' ),
 		);
 
 		if ( empty( $new_settings['category_terms'] ) ) {
@@ -111,6 +119,8 @@ class Barmbini_Core_Subscription_Settings {
 		update_user_meta( $user_id, self::CATEGORY_ENABLED, $new_settings['category_enabled'] ? '1' : '0' );
 		update_user_meta( $user_id, self::CATEGORY_FREQUENCY, $new_settings['category_frequency'] );
 		update_user_meta( $user_id, self::CATEGORY_TERMS, $new_settings['category_terms'] );
+		update_user_meta( $user_id, self::ACTIONS_ENABLED, $new_settings['actions_enabled'] ? '1' : '0' );
+		update_user_meta( $user_id, self::ACTIONS_FREQUENCY, $new_settings['actions_frequency'] );
 
 		return array(
 			'current' => $current_settings,
@@ -123,7 +133,8 @@ class Barmbini_Core_Subscription_Settings {
 	public function has_any_subscription( $settings ) {
 		return ! empty( $settings['news_enabled'] )
 			|| ! empty( $settings['discount_enabled'] )
-			|| ( ! empty( $settings['category_enabled'] ) && ! empty( $settings['category_terms'] ) );
+			|| ( ! empty( $settings['category_enabled'] ) && ! empty( $settings['category_terms'] ) )
+			|| ! empty( $settings['actions_enabled'] );
 	}
 
 	public function get_product_categories() {

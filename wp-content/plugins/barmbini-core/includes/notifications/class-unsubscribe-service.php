@@ -52,12 +52,16 @@ class Barmbini_Core_Unsubscribe_Service {
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::CATEGORY_ENABLED, '0' );
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::CATEGORY_TERMS, array() );
 				break;
+			case 'aktion':
+				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::ACTIONS_ENABLED, '0' );
+				break;
 			case 'all':
 			default:
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::NEWS_ENABLED, '0' );
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::DISCOUNT_ENABLED, '0' );
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::CATEGORY_ENABLED, '0' );
 				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::CATEGORY_TERMS, array() );
+				update_user_meta( $user_id, Barmbini_Core_Subscription_Settings::ACTIONS_ENABLED, '0' );
 				break;
 		}
 

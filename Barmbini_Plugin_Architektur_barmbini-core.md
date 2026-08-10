@@ -235,6 +235,8 @@ Empfohlene Felder:
 - `barmbini_category_enabled`
 - `barmbini_category_frequency`
 - `barmbini_category_terms`
+- `barmbini_actions_enabled`
+- `barmbini_actions_frequency`
 - `barmbini_subscription_updated_at`
 - `barmbini_consent_at`
 - `barmbini_consent_source`
@@ -316,8 +318,10 @@ Empfohlene Oberflaeche im Endpoint `Abonnements`:
 4. Select `Rabatte Frequenz`
 5. Mehrfachauswahl für Produktkategorien
 6. Select `Produktkategorien Frequenz`
-7. Speichern
-8. Link oder Aktion `Alle Benachrichtigungen kündigen`
+7. Checkbox `Aktionen abonnieren`
+8. Select `Aktionen Frequenz`
+9. Speichern
+10. Link oder Aktion `Alle Benachrichtigungen kündigen`
 
 Empfohlene Select-Werte:
 
@@ -373,6 +377,19 @@ Regel:
 - nur `product`
 - nur Wechsel in `publish`
 - Produktkategorien ermitteln und passende Benutzer suchen
+
+### Aktions-Trigger
+
+Empfohlener Hook:
+
+- `transition_post_status`
+
+Regel:
+
+- nur `barmbini_aktion`
+- nur Wechsel in `publish`
+- Benachrichtigung an Benutzer mit aktivem `barmbini_actions_enabled`
+- Event-Typ `aktion`, Betreff „Neue Aktion bei Barmbini"
 
 ### Rabatt-Trigger
 
