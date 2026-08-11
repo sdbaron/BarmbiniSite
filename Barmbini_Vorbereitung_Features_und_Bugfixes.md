@@ -13,7 +13,7 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durchgeführt. Befunde (nach Schweregrad):
 
 **🔴 Hoch:**
-- Die Startseite lädt einen Google-Maps-iframe mit **öffentlichem API-Key** (`https://www.google.com/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Verstößt gegen die Architektur-Regel „nur statische Karte". Der Schlüssel kann missbraucht werden. Die `/kontakt/`-Seite nutzt korrekt eine statische Karte – nur die Startseite weicht ab.
+- Die Startseite lädt einen Google-Maps-iframe mit **öffentlichem API-Key** (`https://www.google.com/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Verstößt gegen die Architektur-Regel „nur statische Karte". Der Schlüssel kann missbraucht werden. Die `/kontakt/`-Seite nutzt korrekt eine statische Karte – nur die Startseite weicht ab. → Aufgabe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md` (statische Karte + API-Key rotieren). Blöckt zudem eine enge Content-Security-Policy.
 
 **🔴 Mittel:**
 - **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
