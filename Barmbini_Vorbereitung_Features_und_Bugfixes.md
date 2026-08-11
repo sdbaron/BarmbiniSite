@@ -23,7 +23,7 @@ Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durch
 - **HTTP statt HTTPS:** Die gesamte Site läuft unverschlüsselt; Konzept v2.5 §2 sieht SSL vor.
 
 **🟡 Niedrig:**
-- **Information Disclosure:** `/readme.html` erreichbar (200), `/xmlrpc.php` aktiv (405). → Aufgabe `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md` (Server-Runbook).
+- **Information Disclosure:** `/readme.html` erreichbar (200), `/xmlrpc.php` aktiv (405). → Aufgabe `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md` (Server-Runbook). **Fortschritt:** WP-Ebene-Filter (`xmlrpc_enabled`→false) ist umgesetzt und live (Commit `19280f8`); nginx-Block + `readme.html`-Löschung stehen aus (per SSH).
 - Externe Emoji-SVGs von `https://s.w.org` werden geladen (gegen „keine externen Dienste").
 
 **🔵 Redaktionell:**

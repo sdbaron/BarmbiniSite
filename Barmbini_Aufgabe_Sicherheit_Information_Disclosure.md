@@ -108,6 +108,53 @@ curl -sI http://217.160.74.128/xmlrpc.php    # erwartet: 403
 - Kein SQL-Import, keine Datenänderung.
 - Die `readme.html`-Löschung und der nginx-Block werden im Server-Runbook festgehalten.
 
+### Umsetzungsstatus (2026-08-11)
+
+| Teil | Status |
+|---|---|
+| WP-Ebene: `xmlrpc_enabled` → `false` | ✅ **Umgesetzt & live deployed** (Security-Modul, Commit `19280f8`, deploy.ps1 Modus B) – live verifiziert: `wp.getUsersBlogs` → 405 |
+| Server: nginx-Block `xmlrpc.php` → 403 | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
+| Server: `readme.html` löschen | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
+
+### Server-Schritte (per SSH, nach Freigabe)
+
+Diese Schritte erfordern SSH-Zugriff auf `217.160.74.128` und werden **nicht** über die lokalen Skripte ausgeführt. Vor Ausführung: Backup und Freigabe einholen.
+
+**1. Server-Backup:**
+```bash
+cp /etc/nginx/sites-available/barmbini /root/barmbini-nginx-backup-$(date +%F-%H%M%S)
+cp /var/www/barmbini/readme.html /root/barmbini-readme-backup-$(date +%F-%H%M%S).html 2>/dev/null || true
+```
+
+**2. `readme.html` löschen:**
+```bash
+rm /var/www/barmbini/readme.html
+```
+
+**3. nginx-Block für `xmlrpc.php` ergänzen** (in `/etc/nginx/sites-available/barmbini`):
+```nginx
+# XML-RPC blockieren (Brute-Force-Vektor, wird nicht benötigt)
+location = /xmlrpc.php {
+    deny all;
+    return 403;
+}
+```
+
+**4. Testen + aktivieren:**
+```bash
+nginx -t && systemctl reload nginx
+```
+
+**5. Verifikation:**
+```bash
+curl -sI http://217.160.74.128/readme.html   # 404
+curl -sI http://217.160.74.128/xmlrpc.php    # 403
+```
+
+**6. Regression:** Startseite, ein Beitrag, `/wp-login.php`, `/wp-admin/` laden.
+
+**7. Doku:** Nach Durchführung in `Server_Aenderungsdokumentation_*.md` nachtragen.
+
 ## Rollback
 
 ```bash
