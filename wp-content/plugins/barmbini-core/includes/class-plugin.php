@@ -31,6 +31,7 @@ class Barmbini_Core_Plugin {
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
+		$this->register_security_module();
 	}
 
 	protected function register_catalog_module() {
@@ -170,6 +171,19 @@ class Barmbini_Core_Plugin {
 
 		$this->loader->add_filter( 'wp_privacy_personal_data_exporters', $privacy_exporter, 'register_exporter' );
 		$this->loader->add_filter( 'wp_privacy_personal_data_erasers', $privacy_exporter, 'register_eraser' );
+	}
+
+	/**
+	 * Registriert das Security-Modul (REST-API-Härtung).
+	 *
+	 * Sperrt die Benutzer-Endpoints der REST-API für nicht berechtigte
+	 * Personen, damit Benutzernamen nicht öffentlich preisgegeben werden.
+	 *
+	 * @return void
+	 */
+	protected function register_security_module() {
+		$rest_hardening = new Barmbini_Core_Rest_Api_Hardening();
+		$rest_hardening->register();
 	}
 
 	public function run() {

@@ -42,6 +42,7 @@ require_once BARMBINI_CORE_PATH . 'includes/notifications/class-event-collector.
 require_once BARMBINI_CORE_PATH . 'includes/admin/class-admin-menu.php';
 require_once BARMBINI_CORE_PATH . 'includes/privacy/class-consent-recorder.php';
 require_once BARMBINI_CORE_PATH . 'includes/privacy/class-privacy-exporter.php';
+require_once BARMBINI_CORE_PATH . 'includes/security/class-rest-api-hardening.php';
 require_once BARMBINI_CORE_PATH . 'includes/class-plugin.php';
 
 register_activation_hook( __FILE__, array( 'Barmbini_Core_Activator', 'activate' ) );

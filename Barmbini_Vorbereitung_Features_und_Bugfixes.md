@@ -8,6 +8,29 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 
 ## Verifizierter Ist-Stand
 
+### Server-Sicherheitsanalyse vom 2026-08-11
+
+Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durchgeführt. Befunde (nach Schweregrad):
+
+**🔴 Hoch:**
+- Die Startseite lädt einen Google-Maps-iframe mit **öffentlichem API-Key** (`https://www.google.com/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Verstößt gegen die Architektur-Regel „nur statische Karte". Der Schlüssel kann missbraucht werden. Die `/kontakt/`-Seite nutzt korrekt eine statische Karte – nur die Startseite weicht ab.
+
+**🔴 Mittel:**
+- **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
+
+**🟠 Mittel:**
+- **Keine Sicherheits-Header:** `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` fehlen komplett. → Aufgabe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` (nginx-Runbook). HSTS erst nach HTTPS-Einführung.
+- **HTTP statt HTTPS:** Die gesamte Site läuft unverschlüsselt; Konzept v2.5 §2 sieht SSL vor.
+
+**🟡 Niedrig:**
+- **Information Disclosure:** `/readme.html` erreichbar (200), `/xmlrpc.php` aktiv (405). → Aufgabe `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md` (Server-Runbook).
+- Externe Emoji-SVGs von `https://s.w.org` werden geladen (gegen „keine externen Dienste").
+
+**🔵 Redaktionell:**
+- Tippfehler **„Deutcshland"** im Startseiten-Inhalt (Post 13). → Aufgabe `Barmbini_Aufgabe_Redaktioneller_Textfehler_Startseite.md`.
+
+**Positiv:** Kein exponiertes `debug.log`; WooCommerce-Katalog ohne Warenkorb; kein offensichtliches Schad-Skript im Frontend-HTML.
+
 ### Fachlich und technisch
 
 - WordPress wird als Informationswebsite mit WooCommerce-Katalog ohne Checkout betrieben.

@@ -79,6 +79,8 @@ wp-content/plugins/barmbini-core/
 |   `-- privacy/
 |       |-- class-consent-recorder.php
 |       `-- class-privacy-exporter.php
+|   `-- security/
+|       `-- class-rest-api-hardening.php
 |-- templates/
 |   |-- account/
 |   |   `-- subscriptions.php
@@ -221,6 +223,21 @@ Zweck:
 - Protokollierung der Einwilligung
 - spätere Export- oder Löschunterstuetzung
 - technische Grundlage für Datenschutzanfragen
+
+### 6. Security-Modul
+
+Zweck:
+
+- Härtung der REST-API gegen öffentliches Auslesen von Benutzernamen
+- Server-Sicherheitsthemen, die sich im Plugin abbilden lassen (ohne nginx-/Server-Eingriff)
+
+Verantwortung:
+
+- `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Registriert in `class-plugin.php`/`register_security_module()`.
+
+Hinweis:
+
+- Reine Server-Maßnahmen (nginx-Sicherheitsheader, `readme.html`, `xmlrpc.php`, HTTPS) liegen außerhalb des Plugins und werden über Server-Runbooks dokumentiert (`Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
 
 ## Datenmodell
 
