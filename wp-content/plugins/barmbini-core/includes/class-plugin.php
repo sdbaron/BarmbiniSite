@@ -24,6 +24,7 @@ class Barmbini_Core_Plugin {
 		$this->register_address_shortcode_module();
 		$this->register_latest_news_module();
 		$this->register_promotion_module();
+		$this->register_account_menu_module();
 		$this->register_cache_maintenance_module();
 		$this->register_homepage_layout_module();
 		$this->register_top_product_categories_module();
@@ -82,6 +83,16 @@ class Barmbini_Core_Plugin {
 
 		$shortcode = new Barmbini_Core_Promotion_Shortcode();
 		$shortcode->register();
+	}
+
+	/**
+	 * Registriert den dynamischen Menüeintrag "Ihr Konto" / "Anmelden".
+	 *
+	 * @return void
+	 */
+	protected function register_account_menu_module() {
+		$account_menu = new Barmbini_Core_Account_Menu();
+		$account_menu->register();
 	}
 
 	/**

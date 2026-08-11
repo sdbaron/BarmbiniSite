@@ -1,0 +1,29 @@
+/**
+ * Barmbini Core – Account-Menü Avatar-Styling
+ *
+ * Stellt den Avatar neben "Ihr Konto" im Hauptmenü dar.
+ *
+ * @package Barmbini_Core
+ * @since 0.5.1
+ */
+
+/* Container: Avatar und Label in einer Zeile, vertikal zentriert */
+.barmbini-account-menu-item > a {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 8px !important;
+}
+
+/* Avatar: rund, fester Durchmesser, kein Verziehen */
+.barmbini-account-menu-item .barmbini-account-avatar {
+	border-radius: 50%;
+	width: 28px;
+	height: 28px;
+	flex-shrink: 0;
+	vertical-align: middle;
+}
+
+/* Label: vertikal mittig zum Avatar */
+.barmbini-account-menu-item .barmbini-account-label {
+	vertical-align: middle;
+}

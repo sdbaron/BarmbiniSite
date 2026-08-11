@@ -107,6 +107,29 @@ class Barmbini_Core_Account_Endpoint {
 	}
 
 	/**
+	 * Lädt das Login-Sicherheits-JavaScript nur auf der Account-Seite,
+	 * wenn der Benutzer nicht angemeldet ist.
+	 *
+	 * Leert Login-Felder und setzt autocomplete="off", damit nach dem
+	 * Abmelden keine alten Zugangsdaten im Browser-Autofill erscheinen.
+	 *
+	 * @return void
+	 */
+	public function enqueue_login_security() {
+		if ( is_user_logged_in() || ! is_account_page() ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'barmbini-core-account-login',
+			BARMBINI_CORE_URL . 'assets/js/account-login.js',
+			array(),
+			BARMBINI_CORE_VERSION,
+			false
+		);
+	}
+
+	/**
 	 * Registriert die Hooks für die Benutzerregistrierung und
 	 * die Anpassung des E-Mail-Versands (DSGVO-Checkbox, Absender,
 	 * Redirect nach Registrierung).
@@ -118,7 +141,8 @@ class Barmbini_Core_Account_Endpoint {
 			return;
 		}
 
-		// DSGVO-Checkbox bei der Registrierung (WooCommerce).
+		// Login-Sicherheit: verhindert Browser-Autofill nach Abmeldung.
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_login_security' ) );
 		add_action( 'woocommerce_register_form', array( $this, 'render_privacy_consent_checkbox' ) );
 		add_filter( 'woocommerce_registration_errors', array( $this, 'validate_privacy_consent' ), 10, 3 );
 		add_action( 'woocommerce_created_customer', array( $this, 'save_privacy_consent' ), 10, 1 );

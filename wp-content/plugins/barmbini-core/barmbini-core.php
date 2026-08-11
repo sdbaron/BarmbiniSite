@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Barmbini Core
  * Description: Projektspezifische Fachlogik für Sozialkaufhaus Barmbini.
- * Version: 0.5.0
+ * Version: 0.5.1
  * Author: Barmbini
  */
 
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BARMBINI_CORE_VERSION', '0.5.0' );
+define( 'BARMBINI_CORE_VERSION', '0.5.1' );
 define( 'BARMBINI_CORE_FILE', __FILE__ );
 define( 'BARMBINI_CORE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BARMBINI_CORE_URL', plugin_dir_url( __FILE__ ) );
@@ -28,6 +28,7 @@ require_once BARMBINI_CORE_PATH . 'includes/catalog/class-address-shortcode.php'
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-latest-news-shortcode.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-promotion-post-type.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-promotion-shortcode.php';
+require_once BARMBINI_CORE_PATH . 'includes/catalog/class-account-menu.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-cache-maintenance.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-homepage-layout.php';
 require_once BARMBINI_CORE_PATH . 'includes/catalog/class-top-product-categories-shortcode.php';
