@@ -46,12 +46,12 @@ Ziel ist es, die fehlenden HTTP-Sicherheits-Header in der nginx-Konfiguration zu
 
 **Begründung:**
 
-1. Eine **enge CSP** blockiert den **Google-Maps-iframe auf der Startseite** (`https://www.google.com/maps/embed/...`). Dieser verstößt ohnehin gegen die Architektur („nur statische Karte") und exponiert einen öffentlichen API-Key (siehe Server-Analyse, Priorität 1).
+1. Eine **enge CSP** blockiert den **Google-Maps-iframe auf der Startseite** (`https://www.google.com/maps/embed/...`). Der Block bleibt laut Projektentscheidung (2026-08-11) vorerst bestehen (siehe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
 2. Der Seiteninhalt lädt außerdem **Emoji-SVGs von `https://s.w.org`** – eine enge `img-src` ohne `s.w.org` würde diese brechen.
-3. Die dringendste Aufgabe ist daher: **Google-Maps-Embed durch eine statische Karte ersetzen + API-Key rotieren** (separate Aufgabe, Priorität 1). **Erst danach** eine enge CSP einführen.
+3. Sobald der Google-Maps-Block durch eine statische Karte ersetzt wird (später möglich), kann eine enge CSP nachgereicht werden.
 4. Die übrigen Header (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) sind **ohne Google-Maps-Abhängigkeit** und können sofort gesetzt werden.
 
-**Konsequenz:** Im ersten Schritt werden **nur die vier Google-unabhängigen Header** gesetzt. Eine CSP wird als eigene Folge-Aufgabe nach der Google-Maps-Bereinigung nachgereicht.
+**Konsequenz:** Im ersten Schritt werden **nur die vier Google-unabhängigen Header** gesetzt. Eine CSP wird als eigene Folge-Aufgabe nach einer eventuellen Google-Maps-Bereinigung nachgereicht.
 
 ## Aufgabe
 
@@ -89,7 +89,7 @@ add_header Permissions-Policy "geolocation=(), camera=(), microphone=(), payment
 
 Eine strikte CSP würde den **Google-Maps-iframe auf der Startseite** blockieren (`https://www.google.com/maps/embed/...`). Deshalb gilt:
 
-- **Option A (empfohlen für den ersten Schritt):** Noch **keine** CSP setzen, sondern in einer Folge-Aufgabe klären, ob der Google-Maps-Embed durch eine statische Karte ersetzt wird (siehe Server-Analyse, Priorität 1). Erst danach eine enge CSP einführen.
+- **Option A (empfohlen für den ersten Schritt):** Noch **keine** CSP setzen; der Google-Maps-Embed bleibt vorerst (Projektentscheidung 2026-08-11). Erst nach einer eventuellen Ersetzung durch eine statische Karte eine enge CSP einführen.
 - **Option B:** Eine erste, lockere CSP mit expliziter Freigabe für Google setzen:
   ```nginx
   add_header Content-Security-Policy "default-src 'self'; frame-src https://www.google.com; img-src 'self' data: https://s.w.org; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:" always;
@@ -178,7 +178,7 @@ nginx -t && systemctl reload nginx
 ## Risiken und offene Punkte
 
 - **HSTS zurückgestellt:** Erst nach HTTPS-Einführung sinnvoll – als Folge-Aufgabe dokumentieren.
-- **CSP-Abhängigkeit:** Eine enge CSP blockiert den Google-Maps-Embed und die s.w.org-Emojis. Reihenfolge: erst statische Karte + Emoji-Problem lösen (Priorität 1 der Server-Analyse), dann CSP härten.
+- **CSP-Abhängigkeit:** Eine enge CSP blockiert den Google-Maps-Embed und die s.w.org-Emojis. Reihenfolge: erst (falls gewünscht) Google-Maps-Block durch statische Karte ersetzen (Block bleibt vorerst, siehe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`), dann CSP härten.
 - `X-Frame-Options` verhindert das Einbetten der Site in fremde Frames (Clickjacking-Schutz) – sollte für eine normale Informationsseite unkritisch sein.
 - Falls einzelne Seiten (z. B. Admin-Preview) bewusst in Frames eingebettet werden müssen: `SAMEORIGIN` erlaubt dieselbe Domain, das genügt in der Regel.
 

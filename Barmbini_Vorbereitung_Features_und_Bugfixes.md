@@ -12,8 +12,8 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 
 Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durchgeführt. Befunde (nach Schweregrad):
 
-**🔴 Hoch:**
-- Die Startseite lädt einen Google-Maps-iframe mit **öffentlichem API-Key** (`https://www.google.com/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Verstößt gegen die Architektur-Regel „nur statische Karte". Der Schlüssel kann missbraucht werden. Die `/kontakt/`-Seite nutzt korrekt eine statische Karte – nur die Startseite weicht ab. → Aufgabe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md` (statische Karte + API-Key rotieren). Blöckt zudem eine enge Content-Security-Policy.
+**� Mittel (korrigiert am 2026-08-11):**
+- Die Startseite lädt einen Google-Maps-iframe (`/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Der sichtbare Key ist **kein eigener Key**, sondern der **eingebaute Standard-Key des Kadence-Blocks-Plugins** (Fallback, wenn keine eigene Option `kadence_blocks_google_maps_api` gesetzt ist – verifiziert im Plugin-Quellcode). **Kein eigenes Google-Cloud-Konto/Rotationsrisiko.** Reale Punkte: (1) Architektur-Konflikt mit „nur statische Karte" (v2.5 §3), (2) Datenschutzerklärung behauptet „keine externen Dienste" – unzutreffend, (3) Kadences geteilter Key kann rate-limitiert werden (Verfügbarkeitsrisiko), (4) blockt eine enge Content-Security-Policy. **Entscheidung:** Block bleibt vorerst (Optionen + spätere Ersetzung in `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
 
 **🔴 Mittel:**
 - **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
