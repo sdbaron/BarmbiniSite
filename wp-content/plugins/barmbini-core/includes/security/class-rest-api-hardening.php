@@ -1,12 +1,16 @@
 <?php
 /**
- * Barmbini Core – REST-API-Härtung
+ * Barmbini Core – Security-Modul (REST-API-Härtung + XML-RPC)
  *
  * Sperrt die Benutzer-Endpoints der REST-API für nicht berechtigte
  * Personen, damit Benutzernamen nicht öffentlich auslesbar sind
  * (GET /wp-json/wp/v2/users gab den Benutzernamen preis).
  *
- * Administratoren (list_users) behalten vollen Zugriff.
+ * Deaktiviert zusätzlich XML-RPC (xmlrpc_enabled = false), das als
+ * Brute-Force-/Multicall-Vektor dienen kann und im Projekt nicht
+ * benötigt wird.
+ *
+ * Administratoren (list_users) behalten vollen REST-Zugriff.
  *
  * @package Barmbini_Core
  * @since 0.5.1
@@ -19,12 +23,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Barmbini_Core_Rest_Api_Hardening {
 
 	/**
-	 * Registriert den rest_endpoints-Filter.
+	 * Registriert die Security-Filter.
 	 *
 	 * @return void
 	 */
 	public function register() {
 		add_filter( 'rest_endpoints', array( $this, 'disable_user_endpoints_for_public' ) );
+		add_filter( 'xmlrpc_enabled', array( $this, 'disable_xmlrpc' ) );
+	}
+
+	/**
+	 * Filter: xmlrpc_enabled
+	 *
+	 * Deaktiviert XML-RPC-Methoden. Dies ist eine ergänzende Maßnahme
+	 * auf WP-Ebene; für eine echte Blockade des Endpoints ist zusätzlich
+	 * ein nginx-Block (return 403) erforderlich (siehe Server-Runbook
+	 * `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
+	 *
+	 * @param bool $enabled Aktueller XML-RPC-Status.
+	 * @return bool
+	 */
+	public function disable_xmlrpc( $enabled ) {
+		return false;
 	}
 
 	/**

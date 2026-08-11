@@ -233,7 +233,7 @@ Zweck:
 
 Verantwortung:
 
-- `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Registriert in `class-plugin.php`/`register_security_module()`.
+- `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Deaktiviert zusätzlich XML-RPC (`xmlrpc_enabled` → `false`), wodurch WordPress-XML-RPC-Methoden (z. B. `wp.getUsersBlogs`) mit Fehler 405 „XML-RPC-Dienst deaktiviert" antworten. Registriert in `class-plugin.php`/`register_security_module()`.
 
 Hinweis:
 

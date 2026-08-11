@@ -72,6 +72,8 @@ add_filter( 'xmlrpc_enabled', '__return_false' );
 
 **Achtung:** `xmlrpc_enabled = false` deaktiviert nur die XML-RPC-**Methoden**, entfernt den Endpoint aber nicht vollständig. Für eine echte Blockade ist der nginx-Block (z. B. 403) die robustere Maßnahme. Empfehlung: **nginx-Block als Primärmaßnahme**, optional zusätzlich der WP-Filter.
 
+> **Status (2026-08-11):** Der WP-Ebene-Filter (`xmlrpc_enabled` → `false`) ist bereits umgesetzt – als Teil des Security-Moduls `Barmbini_Core_Rest_Api_Hardening` (`includes/security/class-rest-api-hardening.php`). Lokal validiert: `wp.getUsersBlogs` liefert Fehler 405 „XML-RPC-Dienst auf dieser Website deaktiviert". Der **nginx-Block (return 403)** für eine vollständige Blockade steht noch aus und wird über dieses Server-Runbook ausgeführt.
+
 ### 3. Konfiguration testen und aktivieren
 
 ```bash
