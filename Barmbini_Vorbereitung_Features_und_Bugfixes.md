@@ -27,7 +27,7 @@ Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durch
 - Externe Emoji-SVGs von `https://s.w.org` werden geladen (gegen „keine externen Dienste").
 
 **🔵 Redaktionell:**
-- Tippfehler **„Deutcshland"** im Startseiten-Inhalt (Post 13). → Aufgabe `Barmbini_Aufgabe_Redaktioneller_Textfehler_Startseite.md`.
+- Tippfehler **„Deutcshland"** im Startseiten-Inhalt (Post 13). → Aufgabe `Barmbini_Aufgabe_Redaktioneller_Textfehler_Startseite.md`. **Fortschritt (2026-08-11):** Lokal korrigiert (verifiziert: 0× „Deutcshland"); **Live-Nachzug im Editor steht noch aus** (Modus B, kein SQL).
 
 **Positiv:** Kein exponiertes `debug.log`; WooCommerce-Katalog ohne Warenkorb; kein offensichtliches Schad-Skript im Frontend-HTML.
 

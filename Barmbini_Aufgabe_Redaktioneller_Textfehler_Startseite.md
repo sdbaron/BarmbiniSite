@@ -24,6 +24,17 @@ Auf der Startseite des Live-Servers `http://217.160.74.128/` steht im Adress-/Ko
 - Der Fehler ist sowohl lokal als auch live vorhanden.
 - Betroffene Vorkommen im SQL-Dump: mehrere Zeilen (Post und Revisionen), da die Startseite mehrfach überarbeitet wurde.
 
+## Umsetzungsstatus (2026-08-11)
+
+| Schritt | Status |
+|---|---|
+| 1. Lokale Korrektur | ✅ **Erledigt** – lokal verifiziert: 0× „Deutcshland", 1× „Deutschland" |
+| 2. Live-Nachzug (Modus B) | ⏳ **Offen** – Startseite im Live-Editor öffnen, korrigieren, veröffentlichen |
+| 3. Verifikation live | ⏳ Offen |
+| 4. Cache live leeren | ⏳ Offen (nach Live-Nachzug) |
+
+> **Hinweis:** Der Live-Nachzug ist ein **separater, manueller Schritt im Live-Editor** (`http://217.160.74.128/wp-admin/`), da Modus B keinen SQL-Import ausführt. Der lokale Stand ist nur die Quelle – er wird **nicht** automatisch live.
+
 ## Aufgabe
 
 ### 1. Lokale Korrektur (Quelle)
@@ -58,10 +69,10 @@ Nach der Korrektur den WP Fastest Cache auf dem Live-System leeren (im Admin: WP
 
 ## Abnahmekriterien
 
-- [ ] Lokale Startseite zeigt „Deutschland" (Quelle aktualisiert)
+- [x] Lokale Startseite zeigt „Deutschland" (Quelle aktualisiert – verifiziert 2026-08-11)
 - [ ] Live-Startseite zeigt „Deutschland" (kein „Deutcshland" mehr im HTML)
-- [ ] Kein SQL-Vollimport durchgeführt (Modus B eingehalten)
-- [ ] WP Fastest Cache live geleert
+- [x] Kein SQL-Vollimport durchgeführt (Modus B eingehalten)
+- [ ] WP Fastest Cache live geleert (nach Live-Nachzug)
 - [ ] Korrektur im Inhalts-Runbook dokumentiert
 
 ## Deployment
