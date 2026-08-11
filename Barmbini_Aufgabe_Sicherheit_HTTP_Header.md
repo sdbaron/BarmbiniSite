@@ -34,6 +34,25 @@ Ziel ist es, die fehlenden HTTP-Sicherheits-Header in der nginx-Konfiguration zu
 | `Permissions-Policy` | fehlt |
 | `X-XSS-Protection` | fehlt |
 
+## Umsetzungsstatus (2026-08-11)
+
+| Teil | Status |
+|---|---|
+| Planung / Runbook | ✅ **Freigegeben** – dieses Dokument ist umsetzungsreif (Backup, nginx-Blöcke, Test, Verify, Rollback) |
+| CSP-Entscheidung | ✅ **Empfehlung: Option A** (keine CSP im ersten Schritt) – Begründung unten |
+| nginx-Header setzen | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
+
+## Empfohlene Entscheidung: CSP-Option A (keine CSP im ersten Schritt)
+
+**Begründung:**
+
+1. Eine **enge CSP** blockiert den **Google-Maps-iframe auf der Startseite** (`https://www.google.com/maps/embed/...`). Dieser verstößt ohnehin gegen die Architektur („nur statische Karte") und exponiert einen öffentlichen API-Key (siehe Server-Analyse, Priorität 1).
+2. Der Seiteninhalt lädt außerdem **Emoji-SVGs von `https://s.w.org`** – eine enge `img-src` ohne `s.w.org` würde diese brechen.
+3. Die dringendste Aufgabe ist daher: **Google-Maps-Embed durch eine statische Karte ersetzen + API-Key rotieren** (separate Aufgabe, Priorität 1). **Erst danach** eine enge CSP einführen.
+4. Die übrigen Header (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) sind **ohne Google-Maps-Abhängigkeit** und können sofort gesetzt werden.
+
+**Konsequenz:** Im ersten Schritt werden **nur die vier Google-unabhängigen Header** gesetzt. Eine CSP wird als eigene Folge-Aufgabe nach der Google-Maps-Bereinigung nachgereicht.
+
 ## Aufgabe
 
 ### 1. Server-Backup erstellen (Pflicht)
@@ -115,6 +134,39 @@ Erwartet: Die gesetzten Header erscheinen in der Antwort.
 - **Server-Änderung** (nginx-Konfiguration) – erfolgt **nicht** über `deploy.ps1`, sondern über das dokumentierte Runbook (Backup → Edit → Test → Reload → Verify → Rollback-Bereit).
 - Kein SQL-Import, keine Datenänderung.
 - Die Änderung ist lokal **nicht** replizierbar (nginx ist server-spezifisch) – wird ausschließlich im Server-Runbook festgehalten.
+
+### Server-Schritte (per SSH, nach Freigabe)
+
+Diese Schritte erfordern SSH-Zugriff auf `217.160.74.128` und werden **nicht** über die lokalen Skripte ausgeführt. Vor Ausführung: Backup und Freigabe einholen.
+
+**1. Backup:**
+```bash
+cp /etc/nginx/sites-available/barmbini /root/barmbini-nginx-backup-$(date +%F-%H%M%S)
+```
+
+**2. Header im `server`-Block ergänzen** (in `/etc/nginx/sites-available/barmbini`):
+```nginx
+# Sicherheits-Header (Google-unabhängig, sofort umsetzbar)
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "geolocation=(), camera=(), microphone=(), payment=(), usb=()" always;
+```
+> CSP wird **bewusst nicht** gesetzt – Entscheidung Option A (siehe oben), nach Google-Maps-Bereinigung als Folge-Aufgabe.
+
+**3. Testen + aktivieren:**
+```bash
+nginx -t && systemctl reload nginx
+```
+
+**4. Verifikation:**
+```bash
+curl -sI http://217.160.74.128/ | grep -iE 'x-content-type-options|x-frame-options|referrer-policy|permissions-policy'
+```
+
+**5. Regression:** Startseite, Sortiment, Kontakt, eine Aktion, `/wp-admin/` laden.
+
+**6. Doku:** Nach Durchführung in `Server_Aenderungsdokumentation_*.md` nachtragen.
 
 ## Rollback
 

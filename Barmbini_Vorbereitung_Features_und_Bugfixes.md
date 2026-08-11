@@ -19,7 +19,7 @@ Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durch
 - **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
 
 **🟠 Mittel:**
-- **Keine Sicherheits-Header:** `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` fehlen komplett. → Aufgabe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` (nginx-Runbook). HSTS erst nach HTTPS-Einführung.
+- **Keine Sicherheits-Header:** `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` fehlen komplett. → Aufgabe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` (nginx-Runbook). HSTS erst nach HTTPS-Einführung. **Fortschritt:** Runbook freigegeben, CSP-Entscheidung = Option A (keine CSP im ersten Schritt wegen Google-Maps-Embed); 4 Google-unabhängige Header stehen zur Umsetzung per SSH bereit.
 - **HTTP statt HTTPS:** Die gesamte Site läuft unverschlüsselt; Konzept v2.5 §2 sieht SSL vor.
 
 **🟡 Niedrig:**
