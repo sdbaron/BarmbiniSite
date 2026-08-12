@@ -1,5 +1,16 @@
 # Detaillierte Aufgabe: `/root`-Speicher aufräumen (Server-Wartung)
 
+## Umsetzungsstatus (2026-08-12)
+
+| Schritt | Status |
+|---|---|
+| Sicherheits-Check (`barmbini-db.txt`, Forensik-Backups) | ✅ bestanden |
+| Integrität des zu behaltenden Backups `...-125648` | ✅ intakt (TAR_OK, SQL: 6004 Zeilen MariaDB-Dump) |
+| Älteres Backup `...-112119` **verschoben** | ✅ nach `/root/deploy-backups-archiv/` |
+| Geschützte Einträge (`barmbini-db.txt`, Malware-Backups) | ✅ unangetastet |
+
+**Wichtige Erkenntnis (ehrlich dokumentiert):** Durch `mv` innerhalb desselben Dateisystems wird **kein physischer Speicher freigegeben** – `/root` bleibt bei 390 MB und der freie Speicher auf `/` unverändert bei **1.9 GB / 79 %**. Die Verschiebung gewährleistet Reversibilität, aber der Speicher wird **erst durch Löschung** des archivierten Backups (`/root/deploy-backups-archiv/barmbini-backup-2026-08-11-112119`, 176 MB) frei. Das Löschen erfolgt nur nach **separater expliziter Freigabe** (Sicherheits-Check ist dann erneut nötig).
+
 ## Ziel
 
 Der Root-Speicher `/` des Servers `217.160.74.128` ist zu **79 % belegt** (8.7 GB total, nur 1.9 GB frei). Ein wesentlicher Anteil liegt in `/root` (aktuell **390 MB**), darunter zwei große Deployment-Backups aus dem **2026-08-11**.
@@ -96,22 +107,22 @@ rm -rf /root/barmbini-import   # leeres/zeitweiliges Import-Verzeichnis
 ### 4. Verifikation
 
 ```bash
-df -h /                                                      # freier Platz muss steigen
-du -sh /root                                                 # muss sinken (~214 MB nach Variante 1)
+df -h /      # freier Platz – steigt ERST nach Löschung (mv gibt keinen Platz frei)
+du -sh /root # bleibt bei 390 MB nach Variante 1 (Verschieben)
 ```
 
-**Erwartetes Ergebnis (beide 176-MB-Backups entfernt o. verschoben):**
-- `/root` ~390 MB → ~14 MB
-- Freier Speicher auf `/` ~1.9 GB → ~2.3 GB
+**Hinweis zum Speicher-Freisetzung:**
+- **Variante 1 (verschieben):** Reversibel, aber **kein** Speichergewinn (mv = nur Verzeichniseintrag).
+- **Variante 2 (löschen):** Gibt die 176 MB erst frei; erst nach separater Freigabe.
 
 ## Abnahmekriterien
 
-- [ ] Das ältere Deploy-Backup `...-112119` ist verschoben (bevorzugt) oder gelöscht
-- [ ] Das aktuellste Deploy-Backup `...-125648` ist intakt (Verifikation vor Löschung)
-- [ ] `barmbini-db.txt` ist **unangetastet** (Zugangsdaten)
-- [ ] Alle **Malware-/Forensik-Backups** sind erhalten
-- [ ] `df -h /` zeigt mehr freien Speicher
-- [ ] Kein aktives Skript ist durch das Aufräumen betroffen
+- [x] Das ältere Deploy-Backup `...-112119` ist verschoben (2026-08-12, nach `/root/deploy-backups-archiv/`)
+- [x] Das aktuellste Deploy-Backup `...-125648` ist intakt (TAR_OK, SQL-Validierung)
+- [x] `barmbini-db.txt` ist **unangetastet** (Zugangsdaten)
+- [x] Alle **Malware-/Forensik-Backups** sind erhalten
+- [ ] `df -h /` zeigt mehr freien Speicher → **offen:** erst nach Löschung des archivierten Backups (nur nach Freigabe)
+- [x] Kein aktives Skript ist durch das Aufräumen betroffen
 
 ## Deployment
 
