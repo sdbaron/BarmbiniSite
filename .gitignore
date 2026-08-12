@@ -6,3 +6,4 @@ dump-db.php
 server-backup.sh
 *.zip
 Images/
+server-backups/

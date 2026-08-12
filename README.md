@@ -10,6 +10,19 @@ Dokumentation, Deployment- und Fetch-Skripte für den Server `217.160.74.128`.
 | `deploy.ps1` / `deploy.sh` | **Local → Server** | Code (und optional DB) auf den Live-Server deployen |
 | `fetch.ps1` / `fetch.sh`   | **Server → Local** | Code (und optional DB) vom Live-Server abrufen und lokal einspielen |
 | `sync.ps1` / `sync.sh`     | **Bidirektional** | `barmbini-core` Plugin zwischen Workspace und Local-Installation synchronisieren |
+| `fetch-backups.ps1`        | **Server → Local** | Server-Backups (DB + wp-content) nach lokal holen, nach Verifikation vom Server löschen |
+
+## Backups vom Server sichern (`fetch-backups.ps1`)
+
+Holt die Server-Backups (DB-Dumps + `wp-content`-Archive) nach lokal und löscht sie nach erfolgreicher Verifikation standardmäßig vom Server – so wird der knappe Server-Speicher entlastet, während die Daten lokal als Offsite-Kopie erhalten bleiben.
+
+```powershell
+.\fetch-backups.ps1                  # holen + Server bereinigen (Standard)
+.\fetch-backups.ps1 -KeepServer      # nur holen, Server-Kopien behalten
+.\fetch-backups.ps1 -IncludeForensic # + Offsite-Kopie der Malware-Backups (keine Server-Löschung)
+```
+
+**Wichtig:** Lokale Backups enthalten personenbezogene DB-Daten und liegen unter `server-backups/`, das in `.gitignore` ausgeschlossen ist – **nicht committen**.
 
 ## Deployment (`deploy.ps1` / `deploy.sh`)
 

@@ -8,8 +8,10 @@
 | Integrität des zu behaltenden Backups `...-125648` | ✅ intakt (TAR_OK, SQL: 6004 Zeilen MariaDB-Dump) |
 | Älteres Backup `...-112119` **verschoben** | ✅ nach `/root/deploy-backups-archiv/` |
 | Geschützte Einträge (`barmbini-db.txt`, Malware-Backups) | ✅ unangetastet |
+| **Backups nach lokal gesichert** | ✅ **neues Skript `fetch-backups.ps1`** – holt alle Backups nach `D:\Dev\Website\server-backups\`, verifiziert und löscht Server-Kopien |
+| Server-Bereinigung | ✅ `/root` **390 MB → 33 MB**, Disk **79 % → 75 %** (2.2 GB frei) |
 
-**Wichtige Erkenntnis (ehrlich dokumentiert):** Durch `mv` innerhalb desselben Dateisystems wird **kein physischer Speicher freigegeben** – `/root` bleibt bei 390 MB und der freie Speicher auf `/` unverändert bei **1.9 GB / 79 %**. Die Verschiebung gewährleistet Reversibilität, aber der Speicher wird **erst durch Löschung** des archivierten Backups (`/root/deploy-backups-archiv/barmbini-backup-2026-08-11-112119`, 176 MB) frei. Das Löschen erfolgt nur nach **separater expliziter Freigabe** (Sicherheits-Check ist dann erneut nötig).
+**Abgeschlossen:** Alle Deploy-/DB-Backups (3 Ordner, ~350 MB) wurden per `fetch-backups.ps1` **nach lokal** geholt und nach erfolgreicher Verifikation **vom Server gelöscht**. Auf dem Server verbleiben nur die **Forensik-Backups** (klein, Beweismittel) und `barmbini-db.txt`.
 
 ## Ziel
 
