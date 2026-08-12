@@ -31,6 +31,13 @@ Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durch
 
 **Positiv:** Kein exponiertes `debug.log`; WooCommerce-Katalog ohne Warenkorb; kein offensichtliches Schad-Skript im Frontend-HTML.
 
+### Server-Ressourcen (per SSH, 2026-08-12)
+
+Der Server ist ein **1-Kern-VPS mit nur 826 MB RAM** und **8.7 GB Disk (79 % belegt)**. Load Average praktisch idle (0.08), Uptime 43 Tage – kein Leistungsengpass, aber:
+
+- **RAM ist der Engpass:** PHP-FPM-Worker (bis zu 5, à ~110–123 MB RSS) können bei Spitzen fast den gesamten RAM belegen; Swap (2 GB, 192 MB genutzt) fängt es ab.
+- **Disk-Druck:** `/` zu 79 % voll (1.9 GB frei). `/root` enthält 390 MB, davon 2× 176 MB Deploy-Backups vom 2026-08-11. → Aufgabe `Barmbini_Aufgabe_Server_Wartung_root_aufraeumen.md` (älteres Deploy-Backup verschoben/löschen; Malware-/Forensik-Backups und `barmbini-db.txt` bleiben unangetastet).
+
 ### Fachlich und technisch
 
 - WordPress wird als Informationswebsite mit WooCommerce-Katalog ohne Checkout betrieben.
