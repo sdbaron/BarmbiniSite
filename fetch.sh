@@ -55,10 +55,11 @@ ARCHIVE_PATH="$WORKSPACE/barmbini-fetch.tar.gz"
 
 # --- Server ---
 TARGET="${BARMBINI_TARGET:-217.160.74.128}"
+SITE_DOMAIN="${BARMBINI_SITE_DOMAIN:-barmbini.de}"
 SERVER_IMPORT="/root/barmbini-import"
 SERVER_WEBROOT="/var/www/barmbini"
 SERVER_DB_FILE="/root/barmbini-db.txt"
-LIVE_URL="http://$TARGET/kontakt/"
+LIVE_URL="https://$SITE_DOMAIN/kontakt/"
 LOCAL_URL="https://barmbini.local/kontakt/"
 
 # --- Farben (optional, werden nur bei Terminal-Support gesetzt) ---
@@ -423,13 +424,13 @@ echo ""
 echo -e "${YELLOW}[6/6] URL-Umschreibung + Cache leeren ...${NC}"
 
 if $FULL; then
-    # search-replace: Server-IP -> barmbini.local
-    info "Ersetze 'http://$TARGET' -> 'https://barmbini.local' ..."
-    if wp --path="$LOCAL_ROOT" search-replace "http://$TARGET" "https://barmbini.local" --all-tables --skip-columns=guid 2>/dev/null; then
+    # search-replace: Server-Domain -> barmbini.local
+    info "Ersetze '$SITE_DOMAIN' -> 'barmbini.local' ..."
+    if wp --path="$LOCAL_ROOT" search-replace "$SITE_DOMAIN" "barmbini.local" --all-tables --skip-columns=guid 2>/dev/null; then
         info "URL-Umschreibung erfolgreich."
     else
         warn "search-replace fehlgeschlagen. Bitte manuell ausfuehren:"
-        warn "  wp --path=$LOCAL_ROOT search-replace 'http://$TARGET' 'https://barmbini.local' --all-tables --skip-columns=guid"
+        warn "  wp --path=$LOCAL_ROOT search-replace '$SITE_DOMAIN' 'barmbini.local' --all-tables --skip-columns=guid"
     fi
 fi
 

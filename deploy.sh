@@ -56,9 +56,10 @@ ZIP_PATH="$WORKSPACE/barmbini-deploy.zip"
 
 # --- Server ---
 TARGET="${BARMBINI_TARGET:-217.160.74.128}"
+SITE_DOMAIN="${BARMBINI_SITE_DOMAIN:-barmbini.de}"
 SERVER_IMPORT="/root/barmbini-import"
 SERVER_WEBROOT="/var/www/barmbini"
-LIVE_URL="http://$TARGET/kontakt/"
+LIVE_URL="https://$SITE_DOMAIN/kontakt/"
 DUMP_URL="https://barmbini.local/dump-db.php"
 
 # --- Farben (optional, werden nur bei Terminal-Support gesetzt) ---
@@ -165,6 +166,29 @@ echo -e "${CYAN}================================================================
 echo -e "${CYAN}  Barmbini Deployment – Modus $MODE_LABEL${NC}"
 echo -e "${CYAN}  Ziel: $TARGET${NC}"
 echo -e "${CYAN}================================================================${NC}"
+echo ""
+
+# -------------------------------------------------------------------
+# Modus-Warnung
+# -------------------------------------------------------------------
+if $FULL; then
+    echo -e "${RED}[!] WARNUNG: MODUS A (Vollabgleich) – ZERSTOEREND${NC}"
+    echo -e "${YELLOW}    - Die LIVE-Datenbank wird durch local.sql ERSETZT.${NC}"
+    echo -e "${YELLOW}    - Live-Uploads werden ersetzt.${NC}"
+    echo -e "${YELLOW}    - Live-Benutzerkonten/-Inhalte gehen verloren.${NC}"
+    echo -e "${GRAY}    - Nach dem Deploy: URLs -> https://$SITE_DOMAIN${NC}"
+    echo ""
+    read -r -p "    Fortfahren? (j = ja, andere Taste = abbrechen) " confirm
+    if [ "$confirm" != "j" ] && [ "$confirm" != "J" ]; then
+        echo -e "${RED}    ABGEBROCHEN.${NC}"
+        exit 1
+    fi
+else
+    echo -e "${CYAN}[i] MODUS B (Nur Code)${NC}"
+    echo -e "${GRAY}    - Es wird NUR Code uebertragen (languages/plugins/themes).${NC}"
+    echo -e "${GRAY}    - Datenbank und Uploads bleiben UNVERAENDERT.${NC}"
+    echo -e "${YELLOW}    - Fuer einen Vollabgleich nutze: ./deploy.sh -Full -Force${NC}"
+fi
 echo ""
 
 # ===================================================================
@@ -322,7 +346,8 @@ chown -R www-data:www-data $SERVER_WEBROOT/wp-content/languages $SERVER_WEBROOT/
 chmod -R u+rwX,go+rX,go-w $SERVER_WEBROOT/wp-content/plugins $SERVER_WEBROOT/wp-content/themes 2>/dev/null || true
 rm -rf $SERVER_WEBROOT/wp-content/__MACOSX 2>/dev/null || true
 wp --path=$SERVER_WEBROOT db import $SERVER_IMPORT/local.sql --allow-root
-wp --path=$SERVER_WEBROOT search-replace 'barmbini.local' '$TARGET' --all-tables --allow-root 2>/dev/null || true
+wp --path=$SERVER_WEBROOT search-replace 'barmbini.local' '$SITE_DOMAIN' --all-tables --allow-root 2>/dev/null || true
+wp --path=$SERVER_WEBROOT search-replace 'http://$SITE_DOMAIN' 'https://$SITE_DOMAIN' --all-tables --skip-columns=guid --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
 INSTALLEOF
 

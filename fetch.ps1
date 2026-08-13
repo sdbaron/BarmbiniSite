@@ -17,7 +17,7 @@
     3. Lokales Backup erstellen (optional via -NoBackup ueberspringbar)
     4. Lokale Datenbank importieren (nur Modus A)
     5. Lokales wp-content entpacken
-    6. URL-Umschreibung: Server-IP -> barmbini.local
+    6. URL-Umschreibung: Server-Domain -> barmbini.local
     7. Cache leeren
     8. (optional) Lokale Seite im Browser oeffnen
 
@@ -59,7 +59,8 @@ param(
     [switch]$NoBackup,
     [switch]$NoBrowser,
     [switch]$Force,
-    [string]$Target = '217.160.74.128'
+    [string]$Target = '217.160.74.128',
+    [string]$SiteDomain = 'barmbini.de'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -377,12 +378,12 @@ Write-Host ''
 Write-Host '[6/6] URL-Umschreibung + Cache leeren ...' -ForegroundColor Yellow
 
 if ($Full) {
-    # search-replace: Server-IP -> barmbini.local
-    Write-Host "       Ersetze '$Target' -> 'barmbini.local' ..." -ForegroundColor Gray
-    cmd /c "wp --path=`"$localRoot`" search-replace 'http://$Target' 'https://barmbini.local' --all-tables --skip-columns=guid 2>&1"
+    # search-replace: Server-Domain -> barmbini.local
+    Write-Host "       Ersetze '$SiteDomain' -> 'barmbini.local' ..." -ForegroundColor Gray
+    cmd /c "wp --path=`"$localRoot`" search-replace '$SiteDomain' 'barmbini.local' --all-tables --skip-columns=guid 2>&1"
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "       search-replace fehlgeschlagen. Bitte manuell ausfuehren:"
-        Write-Host "       wp --path=$localRoot search-replace 'http://$Target' 'https://barmbini.local' --all-tables --skip-columns=guid" -ForegroundColor DarkYellow
+        Write-Host "       wp --path=$localRoot search-replace '$SiteDomain' 'barmbini.local' --all-tables --skip-columns=guid" -ForegroundColor DarkYellow
     } else {
         Write-Host "       URL-Umschreibung erfolgreich." -ForegroundColor Gray
     }

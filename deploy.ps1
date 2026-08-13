@@ -58,7 +58,8 @@ param(
     [switch]$NoBrowser,
     [switch]$ForceOldDump,
     [switch]$Force,
-    [string]$Target = '217.160.74.128'
+    [string]$Target = '217.160.74.128',
+    [string]$SiteDomain = 'barmbini.de'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -75,7 +76,7 @@ $zipPath        = "$workspace\barmbini-deploy.zip"
 $serverImport   = '/root/barmbini-import'
 $serverWebroot  = '/var/www/barmbini'
 $serverDBFile   = '/root/barmbini-db.txt'
-$liveUrl        = "http://$Target/kontakt/"
+$liveUrl        = "https://$SiteDomain/kontakt/"
 
 # Modus-Label
 $modeLabel = if ($Full) { 'A (Vollabgleich + SQL)' } else { 'B (Nur Code, Live-Daten sicher)' }
@@ -86,6 +87,29 @@ Write-Host '================================================================' -F
 Write-Host "  Barmbini Deployment – Modus $modeLabel" -ForegroundColor Cyan
 Write-Host "  Ziel: $Target" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
+Write-Host ''
+
+# ---------- Modus-Warnung ----------
+if ($Full) {
+    Write-Host '[!] WARNUNG: MODUS A (Vollabgleich) – ZERSTOEREND' -ForegroundColor Red
+    Write-Host '    - Die LIVE-Datenbank wird durch local.sql ERSETZT.' -ForegroundColor Yellow
+    Write-Host '    - Live-Uploads werden ersetzt.' -ForegroundColor Yellow
+    Write-Host '    - Live-Benutzerkonten/-Inhalte gehen verloren.' -ForegroundColor Yellow
+    Write-Host "    - Nach dem Deploy: URLs -> https://$SiteDomain" -ForegroundColor Gray
+    Write-Host ''
+    Write-Host '    Fortfahren? (J = ja, andere Taste = abbrechen)' -ForegroundColor Red
+    $key = [Console]::ReadKey($true)
+    Write-Host ''
+    if ($key.Key -ne [System.ConsoleKey]::J) {
+        Write-Host '    ABGEBROCHEN.' -ForegroundColor Red
+        exit 1
+    }
+} else {
+    Write-Host '[i] MODUS B (Nur Code)' -ForegroundColor Cyan
+    Write-Host '    - Es wird NUR Code uebertragen (languages/plugins/themes).' -ForegroundColor Gray
+    Write-Host '    - Datenbank und Uploads bleiben UNVERAENDERT.' -ForegroundColor Gray
+    Write-Host '    - Fuer einen Vollabgleich nutze: .\deploy.ps1 -Full -Force' -ForegroundColor DarkYellow
+}
 Write-Host ''
 
 # ---------- 0. Force: frischen Dump erstellen ----------
@@ -245,7 +269,8 @@ chown -R www-data:www-data $serverWebroot/wp-content/languages $serverWebroot/wp
 chmod -R u+rwX,go+rX,go-w $serverWebroot/wp-content/plugins $serverWebroot/wp-content/themes 2>/dev/null || true
 rm -rf $serverWebroot/wp-content/__MACOSX 2>/dev/null || true
 wp --path=$serverWebroot db import $serverImport/local.sql --allow-root
-wp --path=$serverWebroot search-replace 'barmbini.local' '$Target' --all-tables --allow-root 2>/dev/null || true
+wp --path=$serverWebroot search-replace 'barmbini.local' '$SiteDomain' --all-tables --allow-root 2>/dev/null || true
+wp --path=$serverWebroot search-replace 'http://$SiteDomain' 'https://$SiteDomain' --all-tables --skip-columns=guid --allow-root 2>/dev/null || true
 echo 'DEPLOY_OK'
 "@)
     [System.IO.File]::WriteAllText($tmpScript, $installScript, [System.Text.UTF8Encoding]::new($false))
