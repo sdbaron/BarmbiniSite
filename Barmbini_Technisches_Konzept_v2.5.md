@@ -42,7 +42,8 @@ Der Sortiment-Bereich nutzt WooCommerce als reinen Produktkatalog ohne Kaufabwic
 
 * Minimalprinzip bei Plugins
 * Kein Page Builder (nur Gutenberg + Kadence Blocks)
-* Keine externen Drittanbieter-Services
+* Externe Drittanbieter-Services nur mit DSGVO-Abwägung bzw. dokumentierter Einwilligung
+  *(Regel gelockert am 2026-08-13 – vorher „Keine externen Drittanbieter-Services"; siehe `Barmbini_Aufgabe_Kontaktformular.md`)*
 * Keine eingebetteten Google Maps (nur statische Karte)
 * Keine extern geladenen Google Fonts
 * Mobile-first Design
