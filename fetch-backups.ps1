@@ -122,15 +122,18 @@ function Test-LocalBackupIntegrity {
                 $ok = $false
             }
         } elseif ($_.Extension -eq '.gz' -or $_.Name -like '*.tar.gz') {
-            # gzip/tar-Integritaet lokal pruefen (wenn gzip verfuegbar)
-            if (Get-Command gzip -ErrorAction SilentlyContinue) {
-                $r = & gzip -t $_.FullName 2>&1
+            # tar.gz-Integritaet: 'tar -tzf' listet den Inhalt ohne Entpacken
+            # und liefert bei korruptem Archiv einen Fehlercode != 0.
+            # (tar ist in Windows 10+ vorhanden, gzip dagegen nicht.)
+            if (Get-Command tar -ErrorAction SilentlyContinue) {
+                $r = & tar -tzf $_.FullName 2>&1
                 if ($LASTEXITCODE -ne 0) {
-                    Write-Warning "  gzip-Integritaet fehlgeschlagen: $($_.Name)"
+                    Write-Warning "  tar.gz-Integritaet fehlgeschlagen: $($_.Name)"
                     $ok = $false
                 }
             } else {
-                # Fallback: Groessenvergleich gegen Server (im Aufrufer)
+                Write-Warning "  tar nicht verfuegbar – tar.gz-Integritaet NICHT geprueft: $($_.Name)"
+                $ok = $false
             }
         }
     }
