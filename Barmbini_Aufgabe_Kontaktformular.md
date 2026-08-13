@@ -36,9 +36,26 @@ Die Website Sozialkaufhaus Barmbini erhält ein **barrierefreies, DSGVO-konforme
 |---|---|
 | Contact Form 7 | ✅ installiert (Phase 1) |
 | Kontaktformular angelegt | ❌ noch nicht (Platzhalter in Seiteninhalten) |
-| E-Mail-Zustellung (wp_mail) | ⚠️ ungetestet (muss validiert werden) |
+| E-Mail-Zustellung (wp_mail) | 🔴 **DEFEKT** – kein MTA auf dem Server (siehe unten) |
 | Datenschutzerklärung §4 | ✅ deckt Kontaktformular ab (6 Monate Speicherdauer) |
 | Absender info@barmbini.de | ✅ bereits konfiguriert |
+
+### 🔴 Blockierender Befund: E-Mail-Versand funktioniert nicht (2026-08-13)
+
+Die Validierung per SSH hat ergeben, dass der Server **keinen Mail-Server (MTA)** hat:
+
+- `sendmail_path` ist konfiguriert auf `/usr/sbin/sendmail -t -i`
+- **aber `/usr/sbin/sendmail` existiert nicht** (kein sendmail, postfix, exim installiert)
+- `postfix` Dienst: **inactive**
+- PHP `mail()` liefert `bool(false)` mit Fehler `sh: /usr/sbin/sendmail: not found`
+
+**Folge:** `wp_mail()` schlägt komplett fehl – Kontaktformular, Benutzerregistrierungs-Mails **und** die Abo-/Benachrichtigungs-Mails (barmbini-core) kommen alle nicht an. Das muss **vor** dem Kontaktformular (und eigentlich auch für die bestehenden Mail-Features) behoben werden.
+
+**Lösungsoptionen (separate Aufgabe):**
+1. **Postfix/Sendmail installieren** (einfachster Weg; Server-Mail via PHP `mail()`), oder
+2. **SMTP-Plugin** (z. B. WP Mail SMTP) mit externem Relay (z. B. IONOS/Posteo) – robuster gegen Spam-Absender-Problem, benötigt SMTP-Zugangsdaten.
+
+> Siehe `Barmbini_Aufgabe_Server_Mail_Zustellung.md` (wird bei Umsetzung angelegt).
 
 ## Aufgabe
 
@@ -58,16 +75,12 @@ Die Website Sozialkaufhaus Barmbini erhält ein **barrierefreies, DSGVO-konforme
 
 ### 2. Spam-Schutz wählen (Regel gelockert)
 
-**Option A – Honeypot (kein externer Dienst):**
+**Entscheidung (2026-08-13): Option A – Honeypot** (kein externer Dienst).
+
 - CF7-intern oder kleines Honeypot-Feld; datenschutzfreundlich, keine externe Übertragung.
-- Empfohlen, wenn die Regel-Lockerung bewusst **nicht** für dieses Formular genutzt wird.
+- reCAPTCHA (Option B) bleibt als **spätere Rückfall-Option** dokumentiert, falls Spam zum Problem wird.
 
-**Option B – Google reCAPTCHA v3 (externer Dienst, jetzt erlaubt):**
-- Bessere Spam-Abwehr, aber: Datenübertragung an Google.
-- **Pflicht parallel:** Datenschutzerklärung um reCAPTCHA ergänzen + Rechtsgrundlage festlegen.
-- CF7-Integration via `Contact Form 7`-reCAPTCHA-Erweiterung oder direktem Google-Key.
-
-> **Entscheidung im Projekt treffen und dokumentieren.** Empfehlung: Option B nur, wenn Spam ein reales Problem wird – sonst Option A (weniger rechtlicher Aufwand).
+> **Status:** Option A gewählt. Die Regel-Lockerung bleibt bestehen (für andere künftige Dienste), wird aber für dieses Formular **nicht** genutzt.
 
 ### 3. Einbinden auf den Seiten
 
@@ -99,10 +112,11 @@ CF7-Formulare werden als Custom Post Type (`wpcf7_contact_form`) in der **Datenb
 - [ ] Test-E-Mail kommt an `info@barmbini.de` an (kein Spam-Verlust)
 - [ ] DSGVO-Checkbox ist Pflichtfeld
 - [ ] Kein neues Plugin (Contact Form 7 vorhanden)
-- [ ] Spam-Schutz-Entscheidung dokumentiert (A oder B)
-- [ ] Bei Option B: Datenschutzerklärung um reCAPTCHA ergänzt
-- [ ] Regeländerung „externe Dienste" im Konzept v2.5 dokumentiert
+- [x] Spam-Schutz-Entscheidung dokumentiert (Option A – Honeypot)
+- [ ] Bei Option B: Datenschutzerklärung um reCAPTCHA ergänzt (entfällt – Option A)
+- [ ] Regeländerung „externe Dienste" im Konzept v2.5 dokumentiert (✅ Konzept aktualisiert, Spam bleibt aber ohne externen Dienst)
 - [ ] Live-Nachzug ohne SQL-Vollimport (Modus B)
+- [ ] **Voraussetzung:** E-Mail-Versand auf dem Server behoben (MTA/SMTP – blockiert aktuell)
 
 ## Deployment
 
