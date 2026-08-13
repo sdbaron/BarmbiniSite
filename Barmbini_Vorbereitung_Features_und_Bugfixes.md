@@ -43,7 +43,7 @@ Der Server ist ein **1-Kern-VPS mit nur 826 MB RAM** und **8.7 GB Disk (79 % bel
 - WordPress wird als Informationswebsite mit WooCommerce-Katalog ohne Checkout betrieben.
 - Das aktuelle Leitdokument ist das technische Konzept v2.5.
 - Die Live-Bereitstellung ist dokumentiert auf dem Server `217.160.74.128` mit `nginx`, `php8.3-fpm`, `mariadb-server` und `wp-cli`.
-- **Seit 2026-08-13 läuft die Website unter der Domain `http://barmbini.de`** (vorher IP-basiert `http://217.160.74.128`). `www.barmbini.de` leitet per 301 auf `barmbini.de` um. Siehe `Barmbini_Aenderung_Domain_barmbini_de.md`. HTTPS steht noch aus.
+- **Seit 2026-08-13 läuft die Website unter der Domain `https://barmbini.de`** (vorher IP-basiert `http://217.160.74.128`, dann `http://barmbini.de`). `www.barmbini.de` leitet per 301 auf `https://barmbini.de` um; HTTP→HTTPS-Redirect + HSTS aktiv. Siehe `Barmbini_Aenderung_Domain_barmbini_de.md` und `Barmbini_Aenderung_HTTPS_barmbini_de.md`.
 - Der Update-Prozess unterscheidet zwischen:
   - Modus A: Vollabgleich mit SQL-Import
   - Modus B: Live-Daten behalten, kein Vollimport
