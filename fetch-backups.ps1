@@ -70,18 +70,24 @@ $forensicGlobs      = @(
 function ToUnix($s) { return $s -replace "`r`n", "`n" }
 
 function Test-Ssh {
-    param([string]$Cmd)
+    param([string]$Cmd, [switch]$AllowFailure)
     $out = ssh -o BatchMode=yes -o ConnectTimeout=10 "root@$Target" $Cmd 2>&1
-    if ($LASTEXITCODE -ne 0) {
+    if (-not $AllowFailure -and $LASTEXITCODE -ne 0) {
         throw "SSH-Fehler: $out"
     }
     return $out
 }
 
 function Get-ServerBackups {
-    # Liefert Liste der Backup-Verzeichnisse (normale Deploy/DB-Backups)
-    $raw = Test-Ssh "ls -d $serverBackupGlob $serverDbBackupGlob $serverArchivGlob 2>/dev/null"
-    return @($raw | Where-Object { $_ -and $_ -notmatch '^\s*$' })
+    # Liefert Liste der Backup-Verzeichnisse (normale Deploy/DB-Backups).
+    # Jeder Glob wird einzeln, fehlertolerant abgefragt: es ist völlig
+    # normal, dass einer der Globs nichts findet (ls liefert dann Exit != 0).
+    $result = @()
+    foreach ($glob in @($serverBackupGlob, $serverDbBackupGlob, $serverArchivGlob)) {
+        $raw = Test-Ssh "ls -d $glob 2>/dev/null" -AllowFailure
+        $result += @($raw | Where-Object { $_ -and $_ -notmatch '^\s*$' })
+    }
+    return $result
 }
 
 function Invoke-FetchBackup {
@@ -91,8 +97,8 @@ function Invoke-FetchBackup {
     New-Item -ItemType Directory -Force -Path $destDir | Out-Null
 
     Write-Host "  -> $name" -ForegroundColor Gray
-    # Dateien im Remote-Ordner auflisten
-    $files = Test-Ssh "ls $RemotePath/* 2>/dev/null"
+    # Dateien im Remote-Ordner auflisten (fehlertolerant, da leer/nicht vorhanden normal ist)
+    $files = Test-Ssh "ls $RemotePath/* 2>/dev/null" -AllowFailure
     if (-not $files -or $files -match 'No such file') {
         Write-Warning "  Ordner ist leer oder nicht erreichbar: $RemotePath"
         return $false
@@ -197,7 +203,7 @@ if ($IncludeForensic) {
     Write-Host ''
     Write-Host '[Option] Forensik-Backups (Offsite-Kopie, keine Loeschung) ...' -ForegroundColor Yellow
     foreach ($glob in $forensicGlobs) {
-        $raw = Test-Ssh "ls -d $glob 2>/dev/null"
+        $raw = Test-Ssh "ls -d $glob 2>/dev/null" -AllowFailure
         foreach ($r in @($raw | Where-Object { $_ -and $_ -notmatch '^\s*$' })) {
             Invoke-FetchBackup $r | Out-Null
             Write-Host "  (bleibt auf dem Server)" -ForegroundColor DarkGray
