@@ -42,8 +42,8 @@ user-invocable: true
 
 5. Prefer the correct documents.
 
-- Use `Barmbini_Aufgabe_Update_von_local_auf_Server.md` for the standard update path.
-- Use `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` when live data must survive.
+- Use `Tasks/Barmbini_Aufgabe_Update_von_local_auf_Server.md` for the standard update path.
+- Use `Tasks/Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` when live data must survive.
 - Use `Barmbini_Migrationsdurchfuehrung_2026-04-22.md` for validated production facts.
  - If a referenced document is not available in context, explicitly list it as an open question in the output and do not assume its contents.
 

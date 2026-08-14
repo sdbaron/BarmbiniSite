@@ -17,7 +17,7 @@
 
 - Prefer operational documents over older concept documents when they conflict.
 - Treat `Barmbini_Technisches_Konzept_v2.5.md` as the current target concept.
-- Treat `Barmbini_Migrationsdurchfuehrung_2026-04-22.md`, `Barmbini_Aufgabe_Update_von_local_auf_Server.md`, and `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` as the primary live-operational references.
+- Treat `Barmbini_Migrationsdurchfuehrung_2026-04-22.md`, `Tasks/Barmbini_Aufgabe_Update_von_local_auf_Server.md`, and `Tasks/Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` as the primary live-operational references.
 - Use `Barmbini_Vorbereitung_Features_und_Bugfixes.md` as the main implementation preparation note.
 
 ## Deployment Rules

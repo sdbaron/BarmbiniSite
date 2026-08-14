@@ -15,7 +15,7 @@ Dokumentiert den Ist-Stand des Google-Maps-Blocks auf der Startseite, die korrig
 - Server-Analyse vom 2026-08-11 (zunächst fälschlich als 🔴 „öffentlicher API-Key" eingestuft)
 - **Korrektur (verifiziert am 2026-08-11):** Key-Quelle im Kadence-Blocks-Quellcode nachgewiesen (siehe unten)
 - `Barmbini_Technisches_Konzept_v2.5.md` – §3 Architektur-Grundsätze („Keine eingebetteten Google Maps (nur statische Karte)"), §7.5
-- `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` – CSP-Entscheidung (enge CSP erst nach Entfernen des Google-Embeds möglich)
+- `Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` – CSP-Entscheidung (enge CSP erst nach Entfernen des Google-Embeds möglich)
 - Die Kontaktseite `/kontakt/` als korrektes Referenz-Muster (statische `map.png` + „In Google Maps öffnen"-Link)
 
 ## Verifizierter Ist-Stand (2026-08-11)
@@ -65,7 +65,7 @@ if ( empty( $user_google_maps_key ) ) {
 - 🟡 **Architektur-Konflikt:** Der Embed widerspricht der Projektregel „nur statische Karte" (Konzept v2.5 §3). Rein konzeptionell, nicht sicherheitskritisch.
 - 🟡 **Datenschutz:** Der iframe überträgt Besucherdaten an Google; die Datenschutzerklärung behauptet aktuell „lädt keine externen Dienste", was mit diesem Block **unzutreffend** ist. Bei Beibehaltung des Blocks sollte der Text angepasst werden.
 - 🟡 **Stabilitätsrisiko:** Kadences geteilter Standard-Key kann von Google rate-limitiert oder gesperrt werden → die Karte könnte ausfallen. Kein Sicherheits-, aber ein Verfügbarkeitsrisiko.
-- 🟠 **CSP-Blockade:** Solange der Embed existiert, ist eine enge Content-Security-Policy nicht möglich (siehe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, Option A).
+- 🟠 **CSP-Blockade:** Solange der Embed existiert, ist eine enge Content-Security-Policy nicht möglich (siehe `Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, Option A).
 
 ## Fachliche Leitplanken
 

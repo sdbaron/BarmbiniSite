@@ -63,4 +63,4 @@ Backup: `/root/barmbini-nginx-backup-2026-08-13-https`
 ## Offene Punkte
 
 - **Keine** unmittelbar – HTTPS, Redirects, HSTS und Mixed-Content sind sauber.
-- Optionale Folge-Härtung: `Content-Security-Policy` (nach eventueller Google-Maps-Bereinigung, siehe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`), sowie die übrigen Sicherheits-Header aus derselben Aufgabe.
+- Optionale Folge-Härtung: `Content-Security-Policy` (nach eventueller Google-Maps-Bereinigung, siehe `Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`), sowie die übrigen Sicherheits-Header aus derselben Aufgabe.

@@ -8,8 +8,8 @@ Auf der Startseite des Live-Servers `http://217.160.74.128/` steht im Adress-/Ko
 
 - Server-Analyse vom 2026-08-11 (Befund: Adressblock auf der Startseite zeigt „Deutcshland")
 - Lokaler SQL-Dump `D:\Local Sites\barmbini\app\sql\local.sql` – Suche nach „Deutcshland" bestätigt Vorkommen im Seiteninhalt der Startseite (u. a. Post-ID 13, Kadence-Row-Layouts)
-- `Barmbini_Aufgabe_Update_von_local_auf_Server.md` – Inhalts-Update-Prozess
-- `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` – Live-Daten bleiben erhalten
+- `Tasks/Barmbini_Aufgabe_Update_von_local_auf_Server.md` – Inhalts-Update-Prozess
+- `Tasks/Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` – Live-Daten bleiben erhalten
 
 ## Fachliche Leitplanken
 

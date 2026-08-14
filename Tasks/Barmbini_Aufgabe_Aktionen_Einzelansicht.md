@@ -10,7 +10,7 @@ Gleichzeitig wird das bisherige „Link"-Feld (externe URL) aus dem CPT entfernt
 
 Die Aufgabe basiert auf:
 
-- `Barmbini_Aufgabe_Startseite_Aktionen.md` – bestehende CPT- und Shortcode-Spezifikation
+- `Tasks/Barmbini_Aufgabe_Startseite_Aktionen.md` – bestehende CPT- und Shortcode-Spezifikation
 - `Barmbini_Plugin_Architektur_barmbini-core.md` – Zielstruktur des Plugins
 - `Barmbini_Vorbereitung_Features_und_Bugfixes.md` – verifizierter Ist-Stand
 - `class-promotion-post-type.php` – aktuelle CPT-Klasse (Stand 2026-08-04)
@@ -439,7 +439,7 @@ Diese Styles greifen nur auf der Einzelseite (`single-barmbini_aktion`):
 | Neuer Abschnitt | **„Einzelansicht der Aktion"** – erklärt, dass jede Aktion unter `/aktion/{slug}/` aufrufbar ist und wie Besucher dorthin gelangen |
 | Nummerierung | Nach Streichung von §4 neu durchnummerieren |
 
-#### 7b. `Barmbini_Aufgabe_Startseite_Aktionen.md`
+#### 7b. `Tasks/Barmbini_Aufgabe_Startseite_Aktionen.md`
 
 - Annahme 7 („Jede Aktion kann einen optionalen Link enthalten") **streichen**.
 - Im Shortcode-Referenz-Abschnitt die Spalte für Link-relevantes entfernen.
@@ -623,7 +623,7 @@ wp-content/plugins/barmbini-core/
 | `templates/single-barmbini_aktion.php` | **NEU** | Einzelansicht-Template |
 | `assets/css/promotion.css` | **ÄNDERN** | Button-Styles entfernen, Hover für Bild-Link, Single-Styles |
 | `Docs/Barmbini_Anleitung_Aktionen_Admin.md` | **ÄNDERN** | §4 streichen, Einzelansicht erklären |
-| `Barmbini_Aufgabe_Startseite_Aktionen.md` | **ÄNDERN** | Nachtrag Einzelansicht |
+| `Tasks/Barmbini_Aufgabe_Startseite_Aktionen.md` | **ÄNDERN** | Nachtrag Einzelansicht |
 | `Barmbini_Plugin_Architektur_barmbini-core.md` | **ÄNDERN** | Catalog-Modul-Einträge aktualisieren |
 | `Barmbini_Vorbereitung_Features_und_Bugfixes.md` | **ÄNDERN** | Ist-Stand ergänzen |
 | `Docs/Barmbini_Seiteninhalte.md` | **ÄNDERN** | Link-URL entfernen, Einzelansicht erwähnen |

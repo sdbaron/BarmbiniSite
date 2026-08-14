@@ -13,21 +13,21 @@ Es dient als Arbeitsgrundlage, bevor konkrete Änderungen an WordPress, WooComme
 Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durchgeführt. Befunde (nach Schweregrad):
 
 **� Mittel (korrigiert am 2026-08-11):**
-- Die Startseite lädt einen Google-Maps-iframe (`/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Der sichtbare Key ist **kein eigener Key**, sondern der **eingebaute Standard-Key des Kadence-Blocks-Plugins** (Fallback, wenn keine eigene Option `kadence_blocks_google_maps_api` gesetzt ist – verifiziert im Plugin-Quellcode). **Kein eigenes Google-Cloud-Konto/Rotationsrisiko.** Reale Punkte: (1) Architektur-Konflikt mit „nur statische Karte" (v2.5 §3), (2) Datenschutzerklärung behauptet „keine externen Dienste" – unzutreffend, (3) Kadences geteilter Key kann rate-limitiert werden (Verfügbarkeitsrisiko), (4) blockt eine enge Content-Security-Policy. **Entscheidung:** Block bleibt vorerst (Optionen + spätere Ersetzung in `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
+- Die Startseite lädt einen Google-Maps-iframe (`/maps/embed/v1/place?key=AIzaSyBAM2o7...`). Der sichtbare Key ist **kein eigener Key**, sondern der **eingebaute Standard-Key des Kadence-Blocks-Plugins** (Fallback, wenn keine eigene Option `kadence_blocks_google_maps_api` gesetzt ist – verifiziert im Plugin-Quellcode). **Kein eigenes Google-Cloud-Konto/Rotationsrisiko.** Reale Punkte: (1) Architektur-Konflikt mit „nur statische Karte" (v2.5 §3), (2) Datenschutzerklärung behauptet „keine externen Dienste" – unzutreffend, (3) Kadences geteilter Key kann rate-limitiert werden (Verfügbarkeitsrisiko), (4) blockt eine enge Content-Security-Policy. **Entscheidung:** Block bleibt vorerst (Optionen + spätere Ersetzung in `Tasks/Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
 
 **🔴 Mittel:**
-- **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
+- **REST-API gibt Benutzernamen preis:** `GET /wp-json/wp/v2/users` liefert `barmbini` (ID 1) an nicht angemeldete Besucher. → Aufgabe `Tasks/Barmbini_Aufgabe_Sicherheit_REST_API_Benutzernamen.md` (Plugin-Fix).
 
 **🟠 Mittel:**
-- **Keine Sicherheits-Header:** `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` fehlen komplett. → Aufgabe `Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` (nginx-Runbook). HSTS erst nach HTTPS-Einführung. **Fortschritt:** Runbook freigegeben, CSP-Entscheidung = Option A (keine CSP im ersten Schritt wegen Google-Maps-Embed); 4 Google-unabhängige Header stehen zur Umsetzung per SSH bereit.
+- **Keine Sicherheits-Header:** `X-Frame-Options`, `X-Content-Type-Options`, `Content-Security-Policy`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security` fehlen komplett. → Aufgabe `Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md` (nginx-Runbook). HSTS erst nach HTTPS-Einführung. **Fortschritt:** Runbook freigegeben, CSP-Entscheidung = Option A (keine CSP im ersten Schritt wegen Google-Maps-Embed); 4 Google-unabhängige Header stehen zur Umsetzung per SSH bereit.
 - **HTTP statt HTTPS:** Die gesamte Site läuft unverschlüsselt; Konzept v2.5 §2 sieht SSL vor.
 
 **🟡 Niedrig:**
-- **Information Disclosure:** `/readme.html` erreichbar (200), `/xmlrpc.php` aktiv (405). → Aufgabe `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md` (Server-Runbook). **Fortschritt:** WP-Ebene-Filter (`xmlrpc_enabled`→false) ist umgesetzt und live (Commit `19280f8`); nginx-Block + `readme.html`-Löschung stehen aus (per SSH).
+- **Information Disclosure:** `/readme.html` erreichbar (200), `/xmlrpc.php` aktiv (405). → Aufgabe `Tasks/Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md` (Server-Runbook). **Fortschritt:** WP-Ebene-Filter (`xmlrpc_enabled`→false) ist umgesetzt und live (Commit `19280f8`); nginx-Block + `readme.html`-Löschung stehen aus (per SSH).
 - Externe Emoji-SVGs von `https://s.w.org` werden geladen (gegen „keine externen Dienste").
 
 **🔵 Redaktionell:**
-- Tippfehler **„Deutcshland"** im Startseiten-Inhalt (Post 13). → Aufgabe `Barmbini_Aufgabe_Redaktioneller_Textfehler_Startseite.md`. **Fortschritt (2026-08-11):** Lokal korrigiert (verifiziert: 0× „Deutcshland"); **Live-Nachzug im Editor steht noch aus** (Modus B, kein SQL).
+- Tippfehler **„Deutcshland"** im Startseiten-Inhalt (Post 13). → Aufgabe `Tasks/Barmbini_Aufgabe_Redaktioneller_Textfehler_Startseite.md`. **Fortschritt (2026-08-11):** Lokal korrigiert (verifiziert: 0× „Deutcshland"); **Live-Nachzug im Editor steht noch aus** (Modus B, kein SQL).
 
 **Positiv:** Kein exponiertes `debug.log`; WooCommerce-Katalog ohne Warenkorb; kein offensichtliches Schad-Skript im Frontend-HTML.
 
@@ -36,7 +36,7 @@ Am 2026-08-11 wurde eine lesende Analyse des Live-Servers `217.160.74.128` durch
 Der Server ist ein **1-Kern-VPS mit nur 826 MB RAM** und **8.7 GB Disk (79 % belegt)**. Load Average praktisch idle (0.08), Uptime 43 Tage – kein Leistungsengpass, aber:
 
 - **RAM ist der Engpass:** PHP-FPM-Worker (bis zu 5, à ~110–123 MB RSS) können bei Spitzen fast den gesamten RAM belegen; Swap (2 GB, 192 MB genutzt) fängt es ab.
-- **Disk-Druck:** `/` zu 79 % voll (1.9 GB frei). `/root` enthält 390 MB, davon 2× 176 MB Deploy-Backups vom 2026-08-11. → Aufgabe `Barmbini_Aufgabe_Server_Wartung_root_aufraeumen.md`. **Fortschritt (2026-08-12):** Älteres Deploy-Backup `...-112119` wurde nach `/root/deploy-backups-archiv/` **verschoben** (reversibel, kein Speichergewinn); `barmbini-db.txt` + Malware-Backups unangetastet. Speicher wird erst durch **Löschung** des archivierten Backups (176 MB) frei – nur nach Freigabe.
+- **Disk-Druck:** `/` zu 79 % voll (1.9 GB frei). `/root` enthält 390 MB, davon 2× 176 MB Deploy-Backups vom 2026-08-11. → Aufgabe `Tasks/Barmbini_Aufgabe_Server_Wartung_root_aufraeumen.md`. **Fortschritt (2026-08-12):** Älteres Deploy-Backup `...-112119` wurde nach `/root/deploy-backups-archiv/` **verschoben** (reversibel, kein Speichergewinn); `barmbini-db.txt` + Malware-Backups unangetastet. Speicher wird erst durch **Löschung** des archivierten Backups (176 MB) frei – nur nach Freigabe.
 
 ### Fachlich und technisch
 

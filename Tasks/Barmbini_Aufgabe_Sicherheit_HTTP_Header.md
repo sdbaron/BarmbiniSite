@@ -11,7 +11,7 @@ Ziel ist es, die fehlenden HTTP-Sicherheits-Header in der nginx-Konfiguration zu
 - Server-Analyse vom 2026-08-11 (Befund: alle geprüften Sicherheits-Header fehlen)
 - `.github/skills/deployment-safety-check/SKILL.md` – Deployment-Regeln (Server-Änderungen dokumentiert und reversibel)
 - `Barmbini_Technisches_Konzept_v2.5.md` – §14 Risiken, §2 Technische Basis
-- `Barmbini_Server_Migration_Aufgabe.md` / `Server_Aenderungsdokumentation_2026-04-22.md` – Server-Kontext
+- `Tasks/Barmbini_Server_Migration_Aufgabe.md` / `Server_Aenderungsdokumentation_2026-04-22.md` – Server-Kontext
 
 ## Fachliche Leitplanken
 
@@ -46,7 +46,7 @@ Ziel ist es, die fehlenden HTTP-Sicherheits-Header in der nginx-Konfiguration zu
 
 **Begründung:**
 
-1. Eine **enge CSP** blockiert den **Google-Maps-iframe auf der Startseite** (`https://www.google.com/maps/embed/...`). Der Block bleibt laut Projektentscheidung (2026-08-11) vorerst bestehen (siehe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
+1. Eine **enge CSP** blockiert den **Google-Maps-iframe auf der Startseite** (`https://www.google.com/maps/embed/...`). Der Block bleibt laut Projektentscheidung (2026-08-11) vorerst bestehen (siehe `Tasks/Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`).
 2. Der Seiteninhalt lädt außerdem **Emoji-SVGs von `https://s.w.org`** – eine enge `img-src` ohne `s.w.org` würde diese brechen.
 3. Sobald der Google-Maps-Block durch eine statische Karte ersetzt wird (später möglich), kann eine enge CSP nachgereicht werden.
 4. Die übrigen Header (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) sind **ohne Google-Maps-Abhängigkeit** und können sofort gesetzt werden.
@@ -178,7 +178,7 @@ nginx -t && systemctl reload nginx
 ## Risiken und offene Punkte
 
 - **HSTS zurückgestellt:** Erst nach HTTPS-Einführung sinnvoll – als Folge-Aufgabe dokumentieren.
-- **CSP-Abhängigkeit:** Eine enge CSP blockiert den Google-Maps-Embed und die s.w.org-Emojis. Reihenfolge: erst (falls gewünscht) Google-Maps-Block durch statische Karte ersetzen (Block bleibt vorerst, siehe `Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`), dann CSP härten.
+- **CSP-Abhängigkeit:** Eine enge CSP blockiert den Google-Maps-Embed und die s.w.org-Emojis. Reihenfolge: erst (falls gewünscht) Google-Maps-Block durch statische Karte ersetzen (Block bleibt vorerst, siehe `Tasks/Barmbini_Aufgabe_Google_Maps_statt_Iframe_Startseite.md`), dann CSP härten.
 - `X-Frame-Options` verhindert das Einbetten der Site in fremde Frames (Clickjacking-Schutz) – sollte für eine normale Informationsseite unkritisch sein.
 - Falls einzelne Seiten (z. B. Admin-Preview) bewusst in Frames eingebettet werden müssen: `SAMEORIGIN` erlaubt dieselbe Domain, das genügt in der Regel.
 

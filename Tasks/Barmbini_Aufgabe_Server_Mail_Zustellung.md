@@ -13,7 +13,7 @@ Ziel dieser Aufgabe: E-Mail-Versand so einrichten, dass `wp_mail()` zuverlässig
 ## Quellenbasis
 
 - SSH-Validierung vom 2026-08-13 (Befund: kein MTA)
-- `Barmbini_Aufgabe_Kontaktformular.md` – blockierender Befund
+- `Tasks/Barmbini_Aufgabe_Kontaktformular.md` – blockierender Befund
 - `.github/skills/deployment-safety-check/SKILL.md` – Server-Änderungen dokumentiert + reversibel
 - `Barmbini_Technisches_Konzept_v2.5.md` – §2 Technische Basis
 
@@ -137,4 +137,4 @@ apt-get update && apt-get install -y msmtp-mta
 ## Dokumentation
 
 - Nach Umsetzung die gewählte Option und Konfiguration in `Server_Aenderungsdokumentation_*.md` festhalten.
-- Verweis in `Barmbini_Aufgabe_Kontaktformular.md` auf den behobenen Mail-Befund aktualisieren (Status von 🔴 auf ✅).
+- Verweis in `Tasks/Barmbini_Aufgabe_Kontaktformular.md` auf den behobenen Mail-Befund aktualisieren (Status von 🔴 auf ✅).

@@ -72,7 +72,7 @@ In diesem Modus gilt:
 
 Verbindlicher Verweis:
 
-- Fuer die konkrete Durchfuehrung von Modus B ist das separate Dokument `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` zu verwenden.
+- Fuer die konkrete Durchfuehrung von Modus B ist das separate Dokument `Tasks/Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md` zu verwenden.
 
 ## Wichtige Regel
 
@@ -365,7 +365,7 @@ Ziel: Dateien und technische Aenderungen aus lokal uebernehmen, ohne die produkt
 Wichtiger Verweis:
 
 - Dieser Abschnitt ist nur die Kurzfassung.
-- Die operative Durchfuehrung erfolgt nach `Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md`.
+- Die operative Durchfuehrung erfolgt nach `Tasks/Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md`.
 
 Regeln:
 

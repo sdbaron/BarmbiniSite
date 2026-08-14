@@ -125,9 +125,11 @@ Vollständige Referenz mit allen Attributen und Beispielen: **`Docs/Barmbini_Sho
 │   ├── Barmbini_Shortcodes.md
 │   ├── Barmbini_Rechtliche_Seiten.md
 │   └── *.docx                   # Inhalts- und Anforderungsdateien
+├── Tasks/                       # Aufgaben-/Aufgabendokumente
+│   ├── Barmbini_Aufgabe_Update_von_local_auf_Server.md
+│   ├── Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md
+│   └── ... (weitere Barmbini_Aufgabe_*.md)
 ├── Barmbini_Technisches_Konzept_v2.5.md
-├── Barmbini_Aufgabe_Update_von_local_auf_Server.md
-├── Barmbini_Aufgabe_Update_Modus_B_Live_Daten_erhalten.md
 ├── Barmbini_Migrationsdurchfuehrung_2026-04-22.md
 ├── Barmbini_Vorbereitung_Features_und_Bugfixes.md
 ├── wp-content/
@@ -138,7 +140,7 @@ Vollständige Referenz mit allen Attributen und Beispielen: **`Docs/Barmbini_Sho
 
 ## Wichtige Regeln
 
-- Vor jedem Live-Update **explizit Modus A oder B entscheiden** (siehe `Barmbini_Aufgabe_Update_von_local_auf_Server.md`)
+- Vor jedem Live-Update **explizit Modus A oder B entscheiden** (siehe `Tasks/Barmbini_Aufgabe_Update_von_local_auf_Server.md`)
 - **Modus A nur**, wenn keine Live-Benutzer-/Kundendaten existieren
 - **Modus B ist Pflicht**, sobald Kundenkonten, Bestellungen oder andere Live-Daten vorhanden sind
 - Manuelle Änderungen direkt auf dem Server gehen beim nächsten Deployment verloren

@@ -23,7 +23,7 @@ Optionale Attributvarianten:
 | `[barmbini_latest_news show_excerpt="0"]` | Kurztext ausblenden |
 | `[barmbini_latest_news empty_message="Aktuell keine Neuigkeiten."]` | Text bei leerer Liste |
 
-Weitere Details siehe `Barmbini_Aufgabe_Startseite_Letzte_Neuigkeiten.md`.
+Weitere Details siehe `Tasks/Barmbini_Aufgabe_Startseite_Letzte_Neuigkeiten.md`.
 
 ---
 
@@ -50,7 +50,7 @@ Optionale Attributvarianten:
 | `[barmbini_promotion show_description="0"]` | Beschreibung ausblenden |
 | `[barmbini_promotion empty_message="Aktuell keine Aktionen."]` | Text bei keiner gültigen Aktion |
 
-Weitere Details siehe `Barmbini_Aufgabe_Startseite_Aktionen.md`.
+Weitere Details siehe `Tasks/Barmbini_Aufgabe_Startseite_Aktionen.md`.
 
 Eine praktische Kurzanleitung für Redakteure und Administratoren findet sich in `Barmbini_Anleitung_Aktionen_Admin.md`.
 
@@ -90,7 +90,7 @@ Alle Attribute:
 | `orderby` | `menu_order` | Sortierkriterium für `get_terms` |
 | `order` | `ASC` | Sortierrichtung (`ASC` oder `DESC`) |
 
-Weitere Details zur Migration siehe `Barmbini_Aufgabe_Sortiment_Shortcode_Migration.md`.
+Weitere Details zur Migration siehe `Tasks/Barmbini_Aufgabe_Sortiment_Shortcode_Migration.md`.
 
 ---
 

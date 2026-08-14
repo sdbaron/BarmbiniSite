@@ -38,7 +38,7 @@ class Barmbini_Core_Rest_Api_Hardening {
 	 * Deaktiviert XML-RPC-Methoden. Dies ist eine ergänzende Maßnahme
 	 * auf WP-Ebene; für eine echte Blockade des Endpoints ist zusätzlich
 	 * ein nginx-Block (return 403) erforderlich (siehe Server-Runbook
-	 * `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
+	 * `Tasks/Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
 	 *
 	 * @param bool $enabled Aktueller XML-RPC-Status.
 	 * @return bool

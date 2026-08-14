@@ -237,7 +237,7 @@ Verantwortung:
 
 Hinweis:
 
-- Reine Server-Maßnahmen (nginx-Sicherheitsheader, `readme.html`, `xmlrpc.php`, HTTPS) liegen außerhalb des Plugins und werden über Server-Runbooks dokumentiert (`Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, `Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
+- Reine Server-Maßnahmen (nginx-Sicherheitsheader, `readme.html`, `xmlrpc.php`, HTTPS) liegen außerhalb des Plugins und werden über Server-Runbooks dokumentiert (`Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, `Tasks/Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
 
 ## Datenmodell
 

@@ -67,7 +67,7 @@ user-invocable: true
 
 ## Recommended Sources
 
-- `Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md`
+- `Tasks/Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md`
 - `Barmbini_Technisches_Konzept_v2.5.md`
 - `Barmbini_Vorbereitung_Features_und_Bugfixes.md`
 - `Docs/Barmbini_Rechtliche_Seiten.md`

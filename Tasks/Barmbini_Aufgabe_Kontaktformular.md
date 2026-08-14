@@ -10,7 +10,7 @@ Die Website Sozialkaufhaus Barmbini erhält ein **barrierefreies, DSGVO-konforme
 - `Docs/Barmbini_Seiteninhalte.md` – Platzhalter „[Kontaktformular hier einfügen – Contact Form 7]"
 - `Docs/Barmbini_Rechtliche_Seiten.md` – Datenschutzerklärung §4 (Kontaktformular bereits beschrieben, Speicherdauer 6 Monate)
 - Plugin-Bestand: **Contact Form 7** ist bereits installiert (Phase 1)
-- `Barmbini_Aufgabe_Benutzerregistrierung_und_Kontobearbeitung.md` – Hinweis: „E-Mail-Versand (wp_mail) – ungetestet"
+- `Tasks/Barmbini_Aufgabe_Benutzerregistrierung_und_Kontobearbeitung.md` – Hinweis: „E-Mail-Versand (wp_mail) – ungetestet"
 
 ## Fachliche Leitplanken
 
@@ -55,7 +55,7 @@ Die Validierung per SSH hat ergeben, dass der Server **keinen Mail-Server (MTA)*
 1. **Postfix/Sendmail installieren** (einfachster Weg; Server-Mail via PHP `mail()`), oder
 2. **SMTP-Plugin** (z. B. WP Mail SMTP) mit externem Relay (z. B. IONOS/Posteo) – robuster gegen Spam-Absender-Problem, benötigt SMTP-Zugangsdaten.
 
-> Siehe `Barmbini_Aufgabe_Server_Mail_Zustellung.md` (wird bei Umsetzung angelegt).
+> Siehe `Tasks/Barmbini_Aufgabe_Server_Mail_Zustellung.md` (wird bei Umsetzung angelegt).
 
 ## Aufgabe
 

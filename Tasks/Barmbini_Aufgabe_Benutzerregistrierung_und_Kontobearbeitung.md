@@ -20,7 +20,7 @@ Die Aufgabe basiert auf:
 - `Barmbini_Plugin_Architektur_barmbini-core.md` — Zielstruktur, Modulzuschnitt Account, §2 Account-Modul
 - `Barmbini_Vorbereitung_Features_und_Bugfixes.md` — verifizierter Ist-Stand und Einbauorte
 - `Docs/Barmbini_Rechtliche_Seiten.md` — Datenschutzerklärung, Impressum
-- `Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md` — bestehende Abo-Logik
+- `Tasks/Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md` — bestehende Abo-Logik
 - dem vorhandenen Account-Modul: `wp-content/plugins/barmbini-core/includes/account/`
 - der bestehenden WooCommerce-Account-Infrastruktur (Seite `/mein-konto/`, Endpoint `abonnements`)
 
@@ -247,7 +247,7 @@ In der lokalen Entwicklungsumgebung (Local by Flywheel) funktioniert `wp_mail()`
 
 ## Abgrenzung zu anderen Aufgaben
 
-- **NICHT Teil dieser Aufgabe**: Abonnements und Benachrichtigungen (→ `Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md`)
+- **NICHT Teil dieser Aufgabe**: Abonnements und Benachrichtigungen (→ `Tasks/Barmbini_Aufgabe_Kundenkonto_Abonnements_und_Benachrichtigungen.md`)
 - **NICHT Teil dieser Aufgabe**: Checkout, Warenkorb oder Zahlungslogik (kein Bestandteil des Projekts)
 - **NICHT Teil dieser Aufgabe**: E-Mail-Design und -Templates für Benachrichtigungen (separate Aufgabe)
 - **NICHT Teil dieser Aufgabe**: Admin-Übersicht der Benutzerkonten (WordPress-Bordmittel vorhanden)

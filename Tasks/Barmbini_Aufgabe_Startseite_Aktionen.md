@@ -825,7 +825,7 @@ wp-content/plugins/barmbini-core/
 - Modulregistrierung: `includes/class-plugin.php` (`register_latest_news_module()` als Vorlage)
 - Startseiten-Konzept: `Barmbini_Technisches_Konzept_v2.5.md` §7.1
 - Plugin-Architektur: `Barmbini_Plugin_Architektur_barmbini-core.md`
-- Deployment-Workflow: `Barmbini_Aufgabe_Update_von_local_auf_Server.md`
+- Deployment-Workflow: `Tasks/Barmbini_Aufgabe_Update_von_local_auf_Server.md`
 - Admin-Anleitung: `Docs/Barmbini_Anleitung_Aktionen_Admin.md`
 
 ---
@@ -857,7 +857,7 @@ Die Aktionen erhielten eine eigene Einzelansicht, erreichbar unter `/aktion/{slu
 
 ### Detaildokument
 
-Siehe `Barmbini_Aufgabe_Aktionen_Einzelansicht.md`.
+Siehe `Tasks/Barmbini_Aufgabe_Aktionen_Einzelansicht.md`.
 
 ---
 
