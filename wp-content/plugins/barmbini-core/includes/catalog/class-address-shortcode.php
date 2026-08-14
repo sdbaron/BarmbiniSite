@@ -159,7 +159,8 @@ class Barmbini_Core_Address_Shortcode {
 
 		// Kontaktdaten
 		if ( ! empty( $data['phone'] ) ) {
-			$lines[] = '📞 ' . esc_html( $data['phone'] );
+			$phone_href = 'tel:' . preg_replace( '/[^0-9+]/', '', $data['phone'] );
+			$lines[]    = '<a href="' . esc_attr( $phone_href ) . '">📞 ' . esc_html( $data['phone'] ) . '</a>';
 		}
 		if ( ! empty( $data['email'] ) ) {
 			$lines[] = '✉️&nbsp;<a href="mailto:' . esc_attr( $data['email'] ) . '">' . esc_html( $data['email'] ) . '</a>';

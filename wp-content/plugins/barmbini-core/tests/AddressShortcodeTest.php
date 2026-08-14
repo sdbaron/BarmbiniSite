@@ -381,6 +381,17 @@ class AddressShortcodeTest extends TestCase {
 		$this->assertStringNotContainsString( 'mailto:', $html );
 	}
 
+	public function test_render_phone_is_clickable_tel_link(): void {
+		$html = Barmbini_Core_Address_Shortcode::render_html( array(
+			'phone' => '040 / 4294 5339',
+		) );
+
+		// Anklickbarer tel:-Link (Sonderzeichen entfernt, nur Ziffern/Plus)
+		$this->assertStringContainsString( 'href="tel:04042945339"', $html );
+		// Anzeigetext bleibt unverändert lesbar
+		$this->assertStringContainsString( '📞 040 / 4294 5339', $html );
+	}
+
 	public function test_render_html_with_only_shortname(): void {
 		$html = Barmbini_Core_Address_Shortcode::render_html( array(
 			'shortname' => 'Kurz',
