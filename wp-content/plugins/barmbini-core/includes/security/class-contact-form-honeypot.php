@@ -34,14 +34,16 @@ class Barmbini_Core_Contact_Form_Honeypot {
 	 * Filter: wpcf7_spam
 	 *
 	 * Markiert die Einreichung als Spam, wenn das versteckte Honeypot-Feld
-	 * `your-company` ausgefüllt wurde.
+	 * `your-website` ausgefüllt wurde. Der Feldname ist bewusst nicht
+	 * `your-company`, weil dieser von Browsern als „Organisation"
+	 * automatisch ausgefüllt werden kann (Autofill-Fehlalarm).
 	 *
 	 * @param bool                $spam       Bisheriger Spam-Status.
 	 * @param WPCF7_Submission    $submission Die aktuelle CF7-Einreichung.
 	 * @return bool
 	 */
 	public function check_honeypot( $spam, $submission ) {
-		if ( isset( $_POST['your-company'] ) && '' !== trim( (string) $_POST['your-company'] ) ) {
+		if ( isset( $_POST['your-website'] ) && '' !== trim( (string) $_POST['your-website'] ) ) {
 			$spam = true;
 		}
 
