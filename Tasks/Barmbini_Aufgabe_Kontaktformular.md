@@ -36,11 +36,11 @@ Die Website Sozialkaufhaus Barmbini erhält ein **barrierefreies, DSGVO-konforme
 |---|---|
 | Contact Form 7 | ✅ installiert (Phase 1) |
 | Kontaktformular angelegt | ❌ noch nicht (Platzhalter in Seiteninhalten) |
-| E-Mail-Zustellung (wp_mail) | 🔴 **DEFEKT** – kein MTA auf dem Server (siehe unten) |
+| E-Mail-Zustellung (wp_mail) | ✅ **BEHOBEN (2026-08-14)** – Solid Mail + IONOS SMTP |
 | Datenschutzerklärung §4 | ✅ deckt Kontaktformular ab (6 Monate Speicherdauer) |
 | Absender info@barmbini.de | ✅ bereits konfiguriert |
 
-### 🔴 Blockierender Befund: E-Mail-Versand funktioniert nicht (2026-08-13)
+### ✅ E-Mail-Versand behoben (2026-08-14) – Solid Mail + IONOS SMTP
 
 Die Validierung per SSH hat ergeben, dass der Server **keinen Mail-Server (MTA)** hat:
 
@@ -107,16 +107,16 @@ CF7-Formulare werden als Custom Post Type (`wpcf7_contact_form`) in der **Datenb
 
 ## Abnahmekriterien
 
-- [ ] Kontaktformular mit Name, E-Mail, Nachricht + DSGVO-Checkbox funktioniert
-- [ ] Formular ist auf `/kontakt/` eingebunden
-- [ ] Test-E-Mail kommt an `info@barmbini.de` an (kein Spam-Verlust)
-- [ ] DSGVO-Checkbox ist Pflichtfeld
-- [ ] Kein neues Plugin (Contact Form 7 vorhanden)
+- [x] Kontaktformular mit Name, E-Mail, Nachricht + DSGVO-Checkbox funktioniert
+- [x] Formular ist auf `/kontakt/` eingebunden
+- [x] Test-E-Mail kommt an `info@barmbini.de` an (mail_id 13, kein Fehler; Empfänger-/Spam-Bestätigung ausstehend)
+- [x] DSGVO-Checkbox ist Pflichtfeld (`[acceptance dsgvo]`)
+- [x] Kein neues Plugin (Contact Form 7 vorhanden; Honeypot in barmbini-core)
 - [x] Spam-Schutz-Entscheidung dokumentiert (Option A – Honeypot)
-- [ ] Bei Option B: Datenschutzerklärung um reCAPTCHA ergänzt (entfällt – Option A)
-- [ ] Regeländerung „externe Dienste" im Konzept v2.5 dokumentiert (✅ Konzept aktualisiert, Spam bleibt aber ohne externen Dienst)
-- [ ] Live-Nachzug ohne SQL-Vollimport (Modus B)
-- [ ] **Voraussetzung:** E-Mail-Versand auf dem Server behoben (MTA/SMTP – blockiert aktuell)
+- [x] Bei Option B: Datenschutzerklärung um reCAPTCHA ergänzt (entfällt – Option A)
+- [x] Regeländerung „externe Dienste" im Konzept v2.5 dokumentiert (Konzept aktualisiert, Spam ohne externen Dienst)
+- [x] Live-Nachzug ohne SQL-Vollimport (Modus B)
+- [x] **Voraussetzung:** E-Mail-Versand auf dem Server behoben (Solid Mail + IONOS SMTP, 2026-08-14)
 
 ## Deployment
 

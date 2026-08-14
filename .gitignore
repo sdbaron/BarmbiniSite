@@ -7,3 +7,5 @@ server-backup.sh
 *.zip
 Images/
 server-backups/
+wp-cli.phar
+.tmp-barmbini/

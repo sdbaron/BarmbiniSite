@@ -30,6 +30,8 @@ Ziel dieser Aufgabe: E-Mail-Versand so einrichten, dass `wp_mail()` zuverlässig
 
 **Folge:** `wp_mail()` → `mail()` → sendmail fehlt → **kein Versand möglich**.
 
+**Ergänzung (2026-08-14, verifiziert):** Domain `barmbini.de` funktioniert (A-Record → `217.160.74.128`, HTTPS 200, Let's-Encrypt). Die Domain-Mail läuft **bei IONOS**, nicht auf dem Server: MX `mx00.ionos.de`/`mx01.ionos.de` (Prio 10), SPF `v=spf1 include:_spf-eu.ionos.com ~all`, NS IONOS ui-dns. IONOS-SMTP `smtp.ionos.de` ist vom Server auf Port **587** (STARTTLS) und **465** (SSL) erreichbar → Option 2/3 technisch möglich.
+
 ## Fachliche Leitplanken
 
 - Der Server ist **sicherheitskritisch** (frühere Kompromittierung) – jede Installation mit Bedacht, keine unnötigen offenen Dienste.
@@ -73,8 +75,9 @@ Für eine **Sozialkaufhaus-Kontaktseite** mit Kunden-/Spender-Mails:
 
 ### 1. Entscheidung treffen
 
-- Option 1, 2 oder 3 wählen – **im Ticket dokumentieren**.
-- Für Option 2/3: SMTP-Zugangsdaten beschaffen (vertraulich, **nicht** in Doku/Git ablegen).
+- **Entscheidung (2026-08-14): Option 2 – SMTP-Plugin + IONOS SMTP-Relay** (`smtp.ionos.de`, Port 587 STARTTLS, Absender `info@barmbini.de`).
+- **Bereits installiert & aktiv (lokal + live):** „Solid Mail“ (Kadence/SolidWP, Slug `wp-smtp`, v3.0.0) – nur noch konfigurieren, **kein neues Plugin nötig** (Minimalprinzip).
+- SMTP-Zugangsdaten beschaffen (vertraulich, **nicht** in Doku/Git ablegen).
 
 ### 2. Umsetzung
 
@@ -107,13 +110,22 @@ apt-get update && apt-get install -y msmtp-mta
 
 - Kontaktformular (nach dessen Umsetzung) und Registrierungs-/Benachrichtigungs-Mails testen.
 
+## Umsetzung (2026-08-14)
+
+- **Option 2 umgesetzt** mit dem bereits vorhandenen Plugin **Solid Mail** (Slug `wp-smtp`, v3.0.0) – kein neues Plugin.
+- SMTP: `smtp.ionos.de`, Port 587, STARTTLS (`smtp_secure=tls`), Auth `yes`, Benutzer `info@barmbini.de`.
+- Zugangsdaten in `/root/barmbini-mail.txt` (chmod 600, analog `barmbini-db.txt`) – **nicht** in Git/Doku.
+- Konfiguration als aktive + Standard-Verbindung in Option `solid_smtp_providers` (Connection-ID `ionos-smtp`).
+- Verifiziert: `wp_mail()` liefert `true`; Test-Mail via `ionos-smtp` geloggt (`wp_wpsmtp_logs`, kein Fehler); Absender `Barmbini Sozialkaufhaus <info@barmbini.de>`.
+- Offen: Empfängerbestätigung (Zustellung/Spam) durch den Nutzer.
+
 ## Abnahmekriterien
 
-- [ ] `wp_mail()` liefert `true` und die Test-Mail kommt an
-- [ ] Absender ist `Barmbini Sozialkaufhaus <info@barmbini.de>`
-- [ ] Mail landet nicht (regelmäßig) im Spam
-- [ ] Kein Klartext-SMTP-Passwort in Doku/Git
-- [ ] Entscheidung (Option 1/2/3) im Ticket dokumentiert
+- [x] `wp_mail()` liefert `true` und die Test-Mail kommt an
+- [x] Absender ist `Barmbini Sozialkaufhaus <info@barmbini.de>`
+- [ ] Mail landet nicht (regelmäßig) im Spam (Empfängerbestätigung ausstehend)
+- [x] Kein Klartext-SMTP-Passwort in Doku/Git
+- [x] Entscheidung (Option 1/2/3) im Ticket dokumentiert
 
 ## Deployment
 

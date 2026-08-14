@@ -32,6 +32,7 @@ class Barmbini_Core_Plugin {
 		$this->register_notifications_module();
 		$this->register_privacy_module();
 		$this->register_security_module();
+		$this->register_contact_form_honeypot_module();
 	}
 
 	protected function register_catalog_module() {
@@ -184,6 +185,16 @@ class Barmbini_Core_Plugin {
 	protected function register_security_module() {
 		$rest_hardening = new Barmbini_Core_Rest_Api_Hardening();
 		$rest_hardening->register();
+	}
+
+	/**
+	 * Registriert den CF7-Honeypot (Spam-Schutz Option A).
+	 *
+	 * @return void
+	 */
+	protected function register_contact_form_honeypot_module() {
+		$honeypot = new Barmbini_Core_Contact_Form_Honeypot();
+		$honeypot->register();
 	}
 
 	public function run() {

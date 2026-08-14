@@ -232,6 +232,8 @@ Alter Teichweg 11, 22081 Hamburg
 
 ### Kontaktformular
 
-*[Kontaktformular hier einfügen – Contact Form 7]*
+Auf der Seite **Kontakt & Anfahrt** ist das Contact-Form-7-Formular „Kontaktformular" eingebunden (Shortcode `[contact-form-7 id="9" title="Kontaktformular"]`).
 
-Felder: Name, E-Mail, Betreff, Nachricht, Datenschutz-Checkbox
+Felder: Name (Pflicht), E-Mail-Adresse (Pflicht), Nachricht (Pflicht), Datenschutz-Checkbox (Pflicht). Spam-Schutz über ein Honeypot-Feld (Option A, kein externer Dienst).
+
+Empfänger: `info@barmbini.de`; Betreff: `[Barmbini] Neue Kontaktanfrage von [Name]`.
