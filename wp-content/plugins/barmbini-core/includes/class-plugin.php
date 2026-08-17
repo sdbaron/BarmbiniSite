@@ -33,6 +33,7 @@ class Barmbini_Core_Plugin {
 		$this->register_privacy_module();
 		$this->register_security_module();
 		$this->register_contact_form_honeypot_module();
+		$this->register_address_settings_module();
 	}
 
 	protected function register_catalog_module() {
@@ -195,6 +196,16 @@ class Barmbini_Core_Plugin {
 	protected function register_contact_form_honeypot_module() {
 		$honeypot = new Barmbini_Core_Contact_Form_Honeypot();
 		$honeypot->register();
+	}
+
+	/**
+	 * Registriert die Adress-Einstellungsseite (Einstellungen > Barmbini Adresse).
+	 *
+	 * @return void
+	 */
+	protected function register_address_settings_module() {
+		$settings = new Barmbini_Core_Address_Settings();
+		$settings->register();
 	}
 
 	public function run() {

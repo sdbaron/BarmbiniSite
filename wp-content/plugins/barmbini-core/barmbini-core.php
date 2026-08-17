@@ -40,6 +40,7 @@ require_once BARMBINI_CORE_PATH . 'includes/notifications/class-delivery-service
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-digest-scheduler.php';
 require_once BARMBINI_CORE_PATH . 'includes/notifications/class-event-collector.php';
 require_once BARMBINI_CORE_PATH . 'includes/admin/class-admin-menu.php';
+require_once BARMBINI_CORE_PATH . 'includes/admin/class-address-settings.php';
 require_once BARMBINI_CORE_PATH . 'includes/privacy/class-consent-recorder.php';
 require_once BARMBINI_CORE_PATH . 'includes/privacy/class-privacy-exporter.php';
 require_once BARMBINI_CORE_PATH . 'includes/security/class-rest-api-hardening.php';
