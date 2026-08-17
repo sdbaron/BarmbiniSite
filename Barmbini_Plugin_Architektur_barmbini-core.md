@@ -239,6 +239,7 @@ Verantwortung:
 
 - `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Deaktiviert zusätzlich XML-RPC (`xmlrpc_enabled` → `false`), wodurch WordPress-XML-RPC-Methoden (z. B. `wp.getUsersBlogs`) mit Fehler 405 „XML-RPC-Dienst deaktiviert" antworten. Registriert in `class-plugin.php`/`register_security_module()`.
 - `class-contact-form-honeypot.php` (Barmbini_Core_Contact_Form_Honeypot): setzt einen minimalen, datenschutzfreundlichen Spam-Schutz für das Contact Form 7-Kontaktformular um. Ein per CSS verstecktes Feld (`your-website`) wird von Spambots typischerweise ausgefüllt; der Filter `wpcf7_spam` markiert die Einreichung dann als Spam. Kein externer Dienst, keine Cookies. Registriert in `class-plugin.php`/`register_contact_form_honeypot_module()`.
+- `class-login-limiter.php` (Barmbini_Core_Login_Limiter): begrenzt fehlgeschlagene Anmeldeversuche pro IP (5 Fehlversuche → 15 Minuten Sperre) über Transients; Filter `authenticate` + Actions `wp_login_failed`/`wp_login`. Keine Cookies, keine externen Dienste. Registriert in `class-plugin.php`/`register_login_limiter_module()`.
 
 Hinweis:
 

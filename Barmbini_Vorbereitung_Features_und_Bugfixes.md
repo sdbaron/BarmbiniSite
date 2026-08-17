@@ -148,6 +148,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Telefonnummer im Adressblock als anklickbarer `tel:`-Link (mobil antippbar; Anzeigetext unverändert, nur Ziffern/`+` im href)
 - Adress-Einstellungsseite `class-address-settings.php` (Barmbini_Core_Address_Settings): **Einstellungen → Barmbini Adresse** (Settings-API, Option `barmbini_address_data`)
 - CF7-Kontaktformular auf `/kontakt/` (Name/E-Mail/Nachricht/DSGVO-Pflicht-Checkbox) + Honeypot-Spam-Schutz `class-contact-form-honeypot.php` (Filter `wpcf7_spam`, Feld `your-website`)
+- Login-Brute-Force-Schutz `class-login-limiter.php` (Barmbini_Core_Login_Limiter): 5 Fehlversuche → 15 Minuten Sperre pro IP (Transients, Filter `authenticate`)
 
 Dort wurden bereits unter anderem umgesetzt:
 

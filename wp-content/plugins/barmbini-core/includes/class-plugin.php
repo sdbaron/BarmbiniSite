@@ -34,6 +34,7 @@ class Barmbini_Core_Plugin {
 		$this->register_security_module();
 		$this->register_contact_form_honeypot_module();
 		$this->register_address_settings_module();
+		$this->register_login_limiter_module();
 	}
 
 	protected function register_catalog_module() {
@@ -206,6 +207,16 @@ class Barmbini_Core_Plugin {
 	protected function register_address_settings_module() {
 		$settings = new Barmbini_Core_Address_Settings();
 		$settings->register();
+	}
+
+	/**
+	 * Registriert den Login-Brute-Force-Schutz (Limit Login Attempts).
+	 *
+	 * @return void
+	 */
+	protected function register_login_limiter_module() {
+		$limiter = new Barmbini_Core_Login_Limiter();
+		$limiter->register();
 	}
 
 	public function run() {
