@@ -96,7 +96,7 @@ curl -sI http://217.160.74.128/xmlrpc.php    # erwartet: 403
 ## Abnahmekriterien
 
 - [ ] `GET /readme.html` → 404 (keine Versions-Info mehr)
-- [ ] `GET /xmlrpc.php` → 403 (blockiert)
+- [x] `GET /xmlrpc.php` → 403 (blockiert)
 - [ ] Backup von `readme.html` existiert unter `/root/`
 - [ ] Backup der nginx-Konfiguration existiert (siehe Aufgabe HTTP-Header, falls noch nicht vorhanden)
 - [ ] `nginx -t` erfolgreich vor dem Reload
@@ -113,7 +113,7 @@ curl -sI http://217.160.74.128/xmlrpc.php    # erwartet: 403
 | Teil | Status |
 |---|---|
 | WP-Ebene: `xmlrpc_enabled` → `false` | ✅ **Umgesetzt & live deployed** (Security-Modul, Commit `19280f8`, deploy.ps1 Modus B) – live verifiziert: `wp.getUsersBlogs` → 405 |
-| Server: nginx-Block `xmlrpc.php` → 403 | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
+| Server: nginx-Block `xmlrpc.php` → 403 | ✅ **Umgesetzt (2026-08-17)** – `location = /xmlrpc.php { deny all; return 403; }` in `/etc/nginx/sites-available/barmbini`, Backup `/root/barmbini-nginx-backup-2026-08-17` |
 | Server: `readme.html` löschen | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
 
 ### Server-Schritte (per SSH, nach Freigabe)
