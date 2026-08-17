@@ -27,6 +27,8 @@ Alle Klassen liegen unter `wp-content/plugins/barmbini-core/includes/catalog/`.
 
 **Verfügbare Felder:** `shortname`, `name`, `street`, `address2`, `zip`, `city`, `phone`, `email`
 
+**Hinweis (Telefon):** Das Feld `phone` wird als anklickbarer `tel:`-Link ausgegeben (z. B. `<a href="tel:04042945339">📞 040 / 4294 5339</a>`), damit die Nummer auf Mobilgeräten antippbar ist.
+
 ### Attribute
 
 | Attribut | Typ | Standard | Beschreibung |

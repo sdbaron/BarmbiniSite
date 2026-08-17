@@ -159,7 +159,7 @@ Wichtig:
 - `class-homepage-layout.php` (Barmbini_Core_Homepage_Layout) lädt nur auf `is_front_page()` das Stylesheet `assets/css/homepage-hero.css`. Damit bleibt der Startseiten-Hero (Block-ID `.kb-row-layout-id13_93d54b-9c`) bis **600 px** zweispaltig (`grid-template-columns: repeat(2, minmax(0,1fr)) !important`), damit das Logo nicht überbreit gestapelt wird. Hinweis: Die Block-ID kann sich bei Neu-Erstellung des Hero-Blocks ändern (CSS-Kommentar).
 - `class-promotion-shortcode.php` rendert die Aktions-Karten mit `assets/css/promotion.css`: max. **500 px** Breite, Grid `minmax(300px, 500px)`, zentriert.
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
-- `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`).
+- `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`). Das Telefonfeld wird als anklickbarer `tel:`-Link ausgegeben (nur Ziffern/`+`, z. B. `tel:04042945339`).
 - `class-latest-news-shortcode.php` stellt die letzten Beiträge aus der Kategorie "Neuigkeiten" als Shortcode bereit (Attribute: `count`, `show_excerpt`, `show_date`, `empty_message`).
 - `class-promotion-post-type.php` registriert den CPT `barmbini_aktion` (capability_type='post', rewrite-Slug 'aktion', has_archive=true) mit Metaboxen für Gültigkeitszeitraum und Startseiten-Anzeige, Archiv-Filtern (Aktiv/Archiv/Alle), Template-freier Einzelansicht (the_content-Filter), Rewrite-Flush und Kategorie-Cleanup. Enthält außerdem `filter_archive_for_visitors()` (`pre_get_posts`): Blendet im Frontend-Archiv für Besucher ohne Redakteurs-/Admin-Rolle (`current_user_can('edit_others_posts')`) Aktionen mit zukünftigem Startdatum aus (Meta-Abfrage: `_barmbini_promotion_start_date <= heute OR NOT EXISTS`). Admins/Redakteure sehen das ungefilterte Archiv.
 - `class-promotion-shortcode.php` stellt den Shortcode `[barmbini_promotion]` bereit (Attribute: `show_image`, `show_date`, `show_description`, `empty_message`). Gezeigt werden nur Aktionen, deren Zeitraum das heutige Datum umfasst. Flyer und Titel verlinken auf die Einzelansicht.
@@ -216,6 +216,10 @@ Empfohlene Platzierung im Backend:
 - Untermenue unter `WooCommerce`
 - alternativ unter `Werkzeuge`, falls die Oberflaeche nur technisch orientiert sein soll
 
+Zusätzlich:
+
+- `class-address-settings.php` (Barmbini_Core_Address_Settings) stellt die Unterseite **Einstellungen → Barmbini Adresse** bereit (Settings-API, Option `barmbini_address_data`), über die die zentralen Adress-/Kontaktdaten inkl. Telefon im Admin gepflegt werden. Registriert in `class-plugin.php`/`register_address_settings_module()`.
+
 ### 5. Privacy-Modul
 
 Zweck:
@@ -234,6 +238,7 @@ Zweck:
 Verantwortung:
 
 - `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Deaktiviert zusätzlich XML-RPC (`xmlrpc_enabled` → `false`), wodurch WordPress-XML-RPC-Methoden (z. B. `wp.getUsersBlogs`) mit Fehler 405 „XML-RPC-Dienst deaktiviert" antworten. Registriert in `class-plugin.php`/`register_security_module()`.
+- `class-contact-form-honeypot.php` (Barmbini_Core_Contact_Form_Honeypot): setzt einen minimalen, datenschutzfreundlichen Spam-Schutz für das Contact Form 7-Kontaktformular um. Ein per CSS verstecktes Feld (`your-website`) wird von Spambots typischerweise ausgefüllt; der Filter `wpcf7_spam` markiert die Einreichung dann als Spam. Kein externer Dienst, keine Cookies. Registriert in `class-plugin.php`/`register_contact_form_honeypot_module()`.
 
 Hinweis:
 

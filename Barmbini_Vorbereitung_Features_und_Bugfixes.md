@@ -145,6 +145,9 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Deployment-Tooling: `sync.ps1` (auto-discover), `deploy.ps1` (-Full/-Force/-NoBackup), `dump-db.php`
 - Katalog-Styling über `class-catalog-hooks.php`/`get_inline_styles()`: u. a. Breadcrumb-Einrückung (`woocommerce-breadcrumb`, 15px mit `!important` wegen Kadence-Ladereihenfolge), Ausblenden von `.kadence-breadcrumbs`, Hover-Kategoriebeschreibungen
 - Startseiten-Layout-Modul `class-homepage-layout.php` (Barmbini_Core_Homepage_Layout) mit `assets/css/homepage-hero.css`: hält den Hero bis 600 px zweispaltig (nur `is_front_page()`)
+- Telefonnummer im Adressblock als anklickbarer `tel:`-Link (mobil antippbar; Anzeigetext unverändert, nur Ziffern/`+` im href)
+- Adress-Einstellungsseite `class-address-settings.php` (Barmbini_Core_Address_Settings): **Einstellungen → Barmbini Adresse** (Settings-API, Option `barmbini_address_data`)
+- CF7-Kontaktformular auf `/kontakt/` (Name/E-Mail/Nachricht/DSGVO-Pflicht-Checkbox) + Honeypot-Spam-Schutz `class-contact-form-honeypot.php` (Filter `wpcf7_spam`, Feld `your-website`)
 
 Dort wurden bereits unter anderem umgesetzt:
 
