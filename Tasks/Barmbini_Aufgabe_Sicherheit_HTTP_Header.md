@@ -40,7 +40,7 @@ Ziel ist es, die fehlenden HTTP-Sicherheits-Header in der nginx-Konfiguration zu
 |---|---|
 | Planung / Runbook | ✅ **Freigegeben** – dieses Dokument ist umsetzungsreif (Backup, nginx-Blöcke, Test, Verify, Rollback) |
 | CSP-Entscheidung | ✅ **Empfehlung: Option A** (keine CSP im ersten Schritt) – Begründung unten |
-| nginx-Header setzen | ⏳ **Offen** – nur per SSH ausführbar, Abschnitt „Server-Schritte" unten |
+| nginx-Header setzen | ✅ **Umgesetzt (2026-08-17)** – `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` + `server_tokens off` in `/etc/nginx/sites-available/barmbini`, Backup `/root/barmbini-nginx-backup-2026-08-17-headers` |
 
 ## Empfohlene Entscheidung: CSP-Option A (keine CSP im ersten Schritt)
 
