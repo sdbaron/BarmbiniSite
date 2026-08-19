@@ -270,9 +270,9 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 **Umgesetzt und live:**
 
 - Rolle `barmbini_verkaeufer` (Anzeigename „Verkäufer") im Plugin `barmbini-core` 0.6.0
-- `includes/roles/class-seller-role.php` (Barmbini_Core_Seller_Role): Capability-Matrix, idempotente statische `maybe_create_role()`, `prevent_permanent_delete()` via `map_meta_cap`
+- `includes/roles/class-seller-role.php` (Barmbini_Core_Seller_Role): Capability-Matrix, idempotente statische `maybe_create_role()`, `prevent_permanent_delete()` via `map_meta_cap`, `allow_admin_access()` (Filter `woocommerce_prevent_admin_access`) und `redirect_to_admin()` (Filter `login_redirect`)
 - `barmbini-core.php` (require + Version 0.6.0), `class-plugin.php` (`register_seller_role_module()`), `class-activator.php` (Rollen-Anlage bei Aktivierung)
-- Unit-Tests `tests/SellerRoleTest.php` (8 Tests) + Rollen-/`user_can`-/`get_post`-Mocks in `tests/bootstrap.php` — **61/61 Tests grün**
+- Unit-Tests `tests/SellerRoleTest.php` (12 Tests) + WP-Rollen-/`WP_User`-/`current_user_can`-/`user_can`-/`get_post`-/`admin_url`-Mocks in `tests/bootstrap.php` — **65/65 Tests grün**
 - Doku aktualisiert: `Barmbini_Technisches_Konzept_v2.5.md` (§5), `Barmbini_Plugin_Architektur_barmbini-core.md` (Rollen-Modul), `Barmbini_Vorbereitung_Features_und_Bugfixes.md`
 
 **Deployment (Modus B, nur Code, Live-Daten sicher):**
@@ -282,10 +282,15 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 - Rollen-Anlage auf dem Server per WP-CLI: `wp eval 'Barmbini_Core_Seller_Role::maybe_create_role();' --allow-root`
 - Verifiziert: `wp role list` zeigt `Verkäufer` → `barmbini_verkaeufer`; `wp cap list barmbini_verkaeufer` bestätigt exakt die vorgesehenen Capabilities (read, upload_files, Produkt-Caps, assign_product_terms)
 
-**Git:** Commits `1b62824` (Rolle, Tests, Doku) und `5d704bf` (Fix: `maybe_create_role()` statisch) gepusht nach `main`.
+**Git:** Commits `1b62824` (Rolle, Tests, Doku), `5d704bf` (Fix: `maybe_create_role()` statisch), `2369e24` (Fix: wp-admin-Zugriff) gepusht nach `main`.
+
+**Nachtest / Erkenntnis (2026-08-19):**
+
+- **Problem:** Der Verkäufer sah anfangs „keine WP-Möglichkeiten“. Ursache: WooCommerce (`wc_prevent_admin_access`) leitet Nutzer ohne `edit_posts`/`manage_woocommerce`/`manage_options` vom wp-admin auf `/mein-konto/` um.
+- **Fix:** Zwei Filter im Plugin — `woocommerce_prevent_admin_access` → false für den Verkäufer (Admin-Zugriff ohne zusätzliche Capabilities) und `login_redirect` → `/wp-admin/` nach Login. Deploy Modus B (`2369e24`).
+- **Live verifiziert (Browser, Testnutzer `test_verkaeufer`):** Verkäufer sieht jetzt Dashboard, Medien (Mediathek + hochladen), Produkte (Alle + Neues Produkt), Profil — keine Beiträge/Seiten, keine WooCommerce-Einstellungen, keine Benutzer. Produktliste `edit.php?post_type=product` erreichbar. Login landet im Admin. Testnutzer danach entfernt (ID 14).
 
 **Noch offen / optional:**
 
-- Lokaler Integrationstest 7b (Testnutzer als Verkäufer einloggen und Menü/Rechte prüfen) — kann bei Bedarf durchgeführt werden
-- Live-Testnutzer mit Rolle anlegen und Frontend-/Admin-Check (7c) — nur auf ausdrücklichen Wunsch, danach Testnutzer entfernen
+- Lokaler Integrationstest 7b auf der Local-Umgebung (dort muss die Rolle beim ersten Admin-Besuch per Selbstheilung angelegt werden) — kann bei Bedarf durchgeführt werden
 - Eigene „Ausverkauft"-Badge im Frontend: bewusst **nicht** Teil dieser Aufgabe
