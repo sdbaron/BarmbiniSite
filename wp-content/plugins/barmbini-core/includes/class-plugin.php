@@ -36,6 +36,7 @@ class Barmbini_Core_Plugin {
 		$this->register_address_settings_module();
 		$this->register_login_limiter_module();
 		$this->register_seller_role_module();
+		$this->register_staff_guides_module();
 	}
 
 	protected function register_catalog_module() {
@@ -198,6 +199,16 @@ class Barmbini_Core_Plugin {
 	protected function register_seller_role_module() {
 		$seller_role = new Barmbini_Core_Seller_Role();
 		$seller_role->register();
+	}
+
+	/**
+	 * Registriert die internen Anleitungen (Redakteur & Verkäufer).
+	 *
+	 * @return void
+	 */
+	protected function register_staff_guides_module() {
+		$guides = new Barmbini_Core_Staff_Guides();
+		$guides->register();
 	}
 
 	/**
