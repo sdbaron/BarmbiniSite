@@ -99,7 +99,7 @@ class SellerRoleTest extends TestCase {
 	// =================================================================
 
 	public function test_maybe_create_role_creates_role(): void {
-		$this->role->maybe_create_role();
+		Barmbini_Core_Seller_Role::maybe_create_role();
 
 		$role = get_role( 'barmbini_verkaeufer' );
 		$this->assertNotNull( $role, 'Rolle wurde nicht angelegt' );
@@ -110,8 +110,8 @@ class SellerRoleTest extends TestCase {
 	}
 
 	public function test_maybe_create_role_is_idempotent(): void {
-		$this->role->maybe_create_role();
-		$this->role->maybe_create_role();
+		Barmbini_Core_Seller_Role::maybe_create_role();
+		Barmbini_Core_Seller_Role::maybe_create_role();
 
 		$this->assertCount( 1, $GLOBALS['__wp_roles'], 'Rolle wurde mehrfach angelegt' );
 		$this->assertNotNull( get_role( 'barmbini_verkaeufer' ) );

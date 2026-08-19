@@ -37,7 +37,7 @@ class Barmbini_Core_Seller_Role {
 	 * @return void
 	 */
 	public function register() {
-		add_action( 'admin_init', array( $this, 'maybe_create_role' ) );
+		add_action( 'admin_init', array( 'Barmbini_Core_Seller_Role', 'maybe_create_role' ) );
 		add_filter( 'map_meta_cap', array( $this, 'prevent_permanent_delete' ), 10, 4 );
 	}
 
@@ -78,9 +78,12 @@ class Barmbini_Core_Seller_Role {
 	/**
 	 * Legt die Rolle idempotent an, falls sie noch nicht existiert.
 	 *
+	 * Statisch, damit sie sowohl aus der Aktivierung (class-activator.php)
+	 * als auch per WP-CLI auf dem Server aufgerufen werden kann.
+	 *
 	 * @return void
 	 */
-	public function maybe_create_role() {
+	public static function maybe_create_role() {
 		if ( get_role( self::ROLE_SLUG ) ) {
 			return;
 		}
