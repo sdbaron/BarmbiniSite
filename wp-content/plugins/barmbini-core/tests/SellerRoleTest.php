@@ -188,4 +188,23 @@ class SellerRoleTest extends TestCase {
 
 		$this->assertSame( 'http://example.test/mein-konto/', $result );
 	}
+
+	// =================================================================
+	// enable_admin_bar_for_seller() – Admin-Bar für Verkäufer aktivieren
+	// =================================================================
+
+	public function test_enable_admin_bar_for_seller_returns_false(): void {
+		$GLOBALS['__wp_user_caps'][1] = array( 'barmbini_verkaeufer' );
+		$GLOBALS['__wp_current_user'] = 1;
+
+		$this->assertFalse( $this->role->enable_admin_bar_for_seller( true ) );
+	}
+
+	public function test_enable_admin_bar_for_seller_returns_original_for_non_seller(): void {
+		$GLOBALS['__wp_user_caps'][1] = array( 'edit_posts' );
+		$GLOBALS['__wp_current_user'] = 1;
+
+		$this->assertTrue( $this->role->enable_admin_bar_for_seller( true ) );
+		$this->assertFalse( $this->role->enable_admin_bar_for_seller( false ) );
+	}
 }

@@ -46,6 +46,10 @@ class Barmbini_Core_Seller_Role {
 		// Admin-Zugriff wieder freigeschaltet werden.
 		add_filter( 'woocommerce_prevent_admin_access', array( $this, 'allow_admin_access' ) );
 		add_filter( 'login_redirect', array( $this, 'redirect_to_admin' ), 10, 3 );
+
+		// WooCommerce blendet den Admin-Bar (schwarzes Menü oben) für Nutzer ohne
+		// edit_posts/manage_woocommerce aus. Für den Verkäufer wieder aktivieren.
+		add_filter( 'woocommerce_disable_admin_bar', array( $this, 'enable_admin_bar_for_seller' ) );
 	}
 
 	/**
@@ -136,6 +140,24 @@ class Barmbini_Core_Seller_Role {
 		}
 
 		return $redirect_to;
+	}
+
+	/**
+	 * Hebt die WooCommerce-Ausblendung des Admin-Bars für die Verkäufer-Rolle auf.
+	 *
+	 * WooCommerce blendet den schwarzen Admin-Bar (oben) für Nutzer ohne
+	 * `edit_posts`/`manage_woocommerce` aus (Filter `woocommerce_disable_admin_bar`).
+	 * Der Verkäufer soll den Bar sehen, ohne dafür zusätzliche Capabilities zu erhalten.
+	 *
+	 * @param bool $enabled Aktueller Aktivierungs-Status aus WooCommerce.
+	 * @return bool
+	 */
+	public function enable_admin_bar_for_seller( $enabled ) {
+		if ( current_user_can( self::ROLE_SLUG ) ) {
+			return false;
+		}
+
+		return $enabled;
 	}
 
 	/**
