@@ -83,6 +83,8 @@ wp-content/plugins/barmbini-core/
 |       `-- class-rest-api-hardening.php
 |   `-- roles/
 |       `-- class-seller-role.php
+|   `-- guides/
+|       `-- class-staff-guides.php
 |-- templates/
 |   |-- account/
 |   |   `-- subscriptions.php
@@ -263,6 +265,23 @@ Verantwortung:
   - Selbstheilung über `admin_init` (nur für `manage_options`-Nutzer), damit die Rolle auch nach einem reinen Code-Deploy angelegt wird
   - `prevent_permanent_delete()` über `map_meta_cap` blockiert das permanente Löschen aus dem Papierkorb für diese Rolle (nur Papierkorb = reversibel)
   - Registriert in `class-plugin.php`/`register_seller_role_module()`; Aktivierung in `class-activator.php`/`activate()`
+
+### 8. Anleitungs-Modul
+
+Zweck:
+
+- interne, ausführliche Schritt-für-Schritt-Anleitungen für die Rollen **„Redakteur“** und **„Verkäufer“**
+- Zugriff ausschließlich für Administrator, Redakteur und Verkäufer (Capability `barmbini_view_guides`)
+- Einstieg über Admin-Menüpunkt „Anleitungen“ und Links in der Admin-Bar
+
+Verantwortung:
+
+- `class-staff-guides.php` (Barmbini_Core_Staff_Guides):
+  - legt die Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-verkaeufer/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
+  - vergibt `barmbini_view_guides` idempotent an Administrator/Redakteur/Verkäufer (`ensure_capabilities()`)
+  - Gating über `template_redirect`: Besucher ohne Capability werden zur Login-Seite umgeleitet; Seiten mit `noindex` gegen Suchmaschinen-Indexierung
+  - Admin-Menüpunkt „Anleitungen“ (Landingpage mit zwei Karten) + Admin-Bar-Links
+  - Registriert in `class-plugin.php`/`register_staff_guides_module()`
 
 ## Datenmodell
 
