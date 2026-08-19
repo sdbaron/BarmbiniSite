@@ -150,7 +150,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - CF7-Kontaktformular auf `/kontakt/` (Name/E-Mail/Nachricht/DSGVO-Pflicht-Checkbox) + Honeypot-Spam-Schutz `class-contact-form-honeypot.php` (Filter `wpcf7_spam`, Feld `your-website`)
 - Login-Brute-Force-Schutz `class-login-limiter.php` (Barmbini_Core_Login_Limiter): 5 Fehlversuche → 15 Minuten Sperre pro IP (Transients, Filter `authenticate`)
 - Benutzerrolle „Verkäufer" `class-seller-role.php` (Barmbini_Core_Seller_Role): Rolle `barmbini_verkaeufer`, ausschließlich Sortiment-Produkte (anlegen, Preise, Ausverkauft-Lagerstatus, Papierkorb), kein permanentes Löschen, keine Inhalte/System-/Benutzerrechte, idempotente Anlage + `admin_init`-Selbstheilung (Detail: `Tasks/Barmbini_Aufgabe_Rolle_Verkäufer.md`)
-- Interne Anleitungen `class-staff-guides.php` (Barmbini_Core_Staff_Guides): Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-verkaeufer/` (ausführliche Schritt-für-Schritt-Anleitungen), idempotent vom Plugin angelegt; Zugriff nur für Administrator/Redakteur/Verkäufer via Capability `barmbini_view_guides` (Login-Umleitung für andere, `noindex`); Admin-Menüpunkt „Anleitungen" + Admin-Bar-Links als Einstieg
+- Interne Anleitungen `class-staff-guides.php` (Barmbini_Core_Staff_Guides): Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-verkaeufer/` (ausführliche Schritt-für-Schritt-Anleitungen), idempotent vom Plugin angelegt; **pro Seite** berechtigt (`barmbini_view_guide_redakteur` = Admin+Redakteur, `barmbini_view_guide_verkaeufer` = Admin+Redakteur+Verkäufer) — Redakteur sieht beide, Verkäufer nur seine; Login-/Fallback-Umleitung + `noindex`; Admin-Menüpunkt „Anleitungen" + Admin-Bar-Links als Einstieg
 
 Dort wurden bereits unter anderem umgesetzt:
 

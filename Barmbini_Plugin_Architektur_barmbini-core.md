@@ -271,16 +271,16 @@ Verantwortung:
 Zweck:
 
 - interne, ausführliche Schritt-für-Schritt-Anleitungen für die Rollen **„Redakteur“** und **„Verkäufer“**
-- Zugriff ausschließlich für Administrator, Redakteur und Verkäufer (Capability `barmbini_view_guides`)
+- **pro Seite** berechtigt: Redakteur sieht beide Anleitungen, der Verkäufer nur seine eigene
 - Einstieg über Admin-Menüpunkt „Anleitungen“ und Links in der Admin-Bar
 
 Verantwortung:
 
 - `class-staff-guides.php` (Barmbini_Core_Staff_Guides):
   - legt die Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-verkaeufer/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
-  - vergibt `barmbini_view_guides` idempotent an Administrator/Redakteur/Verkäufer (`ensure_capabilities()`)
-  - Gating über `template_redirect`: Besucher ohne Capability werden zur Login-Seite umgeleitet; Seiten mit `noindex` gegen Suchmaschinen-Indexierung
-  - Admin-Menüpunkt „Anleitungen“ (Landingpage mit zwei Karten) + Admin-Bar-Links
+  - zwei Capabilities: `barmbini_view_guide_redakteur` (Administrator + Redakteur) und `barmbini_view_guide_verkaeufer` (Administrator + Redakteur + Verkäufer); veraltete Sammel-Capability `barmbini_view_guides` wird entfernt
+  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zu einer zugänglichen Anleitung (angemeldet); Seiten mit `noindex` gegen Suchmaschinen-Indexierung
+  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt nur zugängliche Karten) + Admin-Bar-Links (nur zugängliche Anleitungen)
   - Registriert in `class-plugin.php`/`register_staff_guides_module()`
 
 ## Datenmodell
