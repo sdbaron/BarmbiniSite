@@ -147,4 +147,45 @@ class SellerRoleTest extends TestCase {
 
 		$this->assertSame( array( 'edit_products' ), $result );
 	}
+
+	// =================================================================
+	// allow_admin_access() – WooCommerce-Admin-Blockade aufheben
+	// =================================================================
+
+	public function test_allow_admin_access_returns_false_for_seller(): void {
+		$GLOBALS['__wp_user_caps'][1] = array( 'barmbini_verkaeufer' );
+		$GLOBALS['__wp_current_user'] = 1;
+
+		$this->assertFalse( $this->role->allow_admin_access( true ) );
+	}
+
+	public function test_allow_admin_access_returns_original_for_non_seller(): void {
+		$GLOBALS['__wp_user_caps'][1] = array( 'edit_posts' );
+		$GLOBALS['__wp_current_user'] = 1;
+
+		$this->assertTrue( $this->role->allow_admin_access( true ) );
+		$this->assertFalse( $this->role->allow_admin_access( false ) );
+	}
+
+	// =================================================================
+	// redirect_to_admin() – Login-Umleitung auf /wp-admin/
+	// =================================================================
+
+	public function test_redirect_to_admin_for_seller(): void {
+		$user = new WP_User( 1 );
+		$GLOBALS['__wp_user_caps'][1] = array( 'barmbini_verkaeufer' );
+
+		$result = $this->role->redirect_to_admin( 'http://example.test/mein-konto/', '', $user );
+
+		$this->assertStringContainsString( '/wp-admin/', $result );
+	}
+
+	public function test_redirect_to_admin_returns_original_for_non_seller(): void {
+		$user = new WP_User( 1 );
+		$GLOBALS['__wp_user_caps'][1] = array( 'edit_posts' );
+
+		$result = $this->role->redirect_to_admin( 'http://example.test/mein-konto/', '', $user );
+
+		$this->assertSame( 'http://example.test/mein-konto/', $result );
+	}
 }

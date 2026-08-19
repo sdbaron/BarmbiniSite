@@ -305,6 +305,16 @@ if ( ! class_exists( 'WP_Widget' ) ) {
 // Rollen-API (get_role / add_role / remove_role) + user_can / get_post
 // =====================================================================
 
+if ( ! class_exists( 'WP_User' ) ) {
+	class WP_User {
+		public $ID;
+
+		public function __construct( $id = 0 ) {
+			$this->ID = $id;
+		}
+	}
+}
+
 if ( ! class_exists( 'WP_Role' ) ) {
 	class WP_Role {
 		public $name;
@@ -352,9 +362,31 @@ if ( ! function_exists( 'remove_role' ) ) {
 }
 
 if ( ! function_exists( 'user_can' ) ) {
-	function user_can( $user_id, $capability, ...$args ) {
-		$caps = isset( $GLOBALS['__wp_user_caps'][ $user_id ] ) ? $GLOBALS['__wp_user_caps'][ $user_id ] : array();
+	function user_can( $user, $capability, ...$args ) {
+		if ( is_object( $user ) && isset( $user->ID ) ) {
+			$user = $user->ID;
+		}
+		$caps = isset( $GLOBALS['__wp_user_caps'][ $user ] ) ? $GLOBALS['__wp_user_caps'][ $user ] : array();
 		return in_array( $capability, $caps, true );
+	}
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+	function current_user_can( $capability, ...$args ) {
+		$uid = isset( $GLOBALS['__wp_current_user'] ) ? $GLOBALS['__wp_current_user'] : 0;
+		return user_can( $uid, $capability, ...$args );
+	}
+}
+
+if ( ! function_exists( 'wp_set_current_user' ) ) {
+	function wp_set_current_user( $id ) {
+		$GLOBALS['__wp_current_user'] = $id;
+	}
+}
+
+if ( ! function_exists( 'admin_url' ) ) {
+	function admin_url( $path = '' ) {
+		return 'http://example.test/wp-admin/' . $path;
 	}
 }
 
@@ -394,4 +426,5 @@ function _test_reset_all() {
 	$GLOBALS['__wp_roles']    = array();
 	$GLOBALS['__wp_user_caps'] = array();
 	$GLOBALS['__wp_posts']    = array();
+	$GLOBALS['__wp_current_user'] = 0;
 }

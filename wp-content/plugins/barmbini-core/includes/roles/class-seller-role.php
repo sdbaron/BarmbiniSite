@@ -39,6 +39,13 @@ class Barmbini_Core_Seller_Role {
 	public function register() {
 		add_action( 'admin_init', array( 'Barmbini_Core_Seller_Role', 'maybe_create_role' ) );
 		add_filter( 'map_meta_cap', array( $this, 'prevent_permanent_delete' ), 10, 4 );
+
+		// WooCommerce leitet Nutzer ohne edit_posts/manage_woocommerce/manage_options
+		// standardmäßig vom wp-admin auf die „Mein Konto“-Seite um. Für den Verkäufer
+		// (der bewusst diese Caps nicht hat, aber Produkte verwalten soll) muss der
+		// Admin-Zugriff wieder freigeschaltet werden.
+		add_filter( 'woocommerce_prevent_admin_access', array( $this, 'allow_admin_access' ) );
+		add_filter( 'login_redirect', array( $this, 'redirect_to_admin' ), 10, 3 );
 	}
 
 	/**
@@ -89,6 +96,46 @@ class Barmbini_Core_Seller_Role {
 		}
 
 		add_role( self::ROLE_SLUG, __( 'Verkäufer', 'barmbini-core' ), self::get_capabilities() );
+	}
+
+	/**
+	 * Hebt die WooCommerce-Admin-Blockade für die Verkäufer-Rolle auf.
+	 *
+	 * WooCommerce verhindert den wp-admin-Zugriff für Nutzer ohne
+	 * `edit_posts`/`manage_woocommerce`/`manage_options`. Da der Verkäufer
+	 * Produkte im Admin verwaltet, aber bewusst diese Caps nicht hat, wird
+	 * die Blockade (Filter `woocommerce_prevent_admin_access`) für ihn
+	 * deaktiviert. Der Nutzer erhält dadurch keinen zusätzlichen Capability-
+	 * Zugriff – er darf nur in den Admin-Bereich.
+	 *
+	 * @param bool $prevent Aktueller Verhinderungs-Status aus WooCommerce.
+	 * @return bool
+	 */
+	public function allow_admin_access( $prevent ) {
+		if ( current_user_can( self::ROLE_SLUG ) ) {
+			return false;
+		}
+
+		return $prevent;
+	}
+
+	/**
+	 * Leitet den Verkäufer nach dem Login in den WordPress-Admin um.
+	 *
+	 * Ohne diesen Filter würde WooCommerce den Verkäufer nach dem Login auf
+	 * die „Mein Konto“-Seite schicken, wo er keine Admin-Optionen sieht.
+	 *
+	 * @param string   $redirect_to           Zieldatum aus dem Login.
+	 * @param string   $requested_redirect_to Ursprünglich angeforderte URL.
+	 * @param WP_User  $user                  Eingeloggter Nutzer.
+	 * @return string
+	 */
+	public function redirect_to_admin( $redirect_to, $requested_redirect_to, $user ) {
+		if ( $user instanceof WP_User && user_can( $user, self::ROLE_SLUG ) ) {
+			return admin_url();
+		}
+
+		return $redirect_to;
 	}
 
 	/**
