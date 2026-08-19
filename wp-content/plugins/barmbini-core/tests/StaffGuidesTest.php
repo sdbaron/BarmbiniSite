@@ -48,7 +48,7 @@ class StaffGuidesTest extends TestCase {
 	}
 
 	// =================================================================
-	// ensure_capabilities() – Capability nur an erlaubte Rollen
+	// ensure_capabilities() – Pro-Seite-Capabilities je Rolle
 	// =================================================================
 
 	public function test_ensure_capabilities_adds_cap_to_allowed_roles(): void {
@@ -60,10 +60,27 @@ class StaffGuidesTest extends TestCase {
 
 		$this->guides->ensure_capabilities();
 
-		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guides' ) );
-		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guides' ) );
-		$this->assertTrue( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_guides' ) );
-		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guides' ) );
+		// Administrator: beide Anleitungen.
+		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
+		// Redakteur: beide Anleitungen.
+		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
+		// Verkäufer: nur Verkäufer-Anleitung.
+		$this->assertFalse( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertTrue( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
+		// Subscriber: keine.
+		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
+	}
+
+	public function test_ensure_capabilities_removes_obsolete_capability(): void {
+		Barmbini_Core_Seller_Role::maybe_create_role();
+		add_role( 'administrator', 'Administrator', array( 'manage_options' => true, 'barmbini_view_guides' => true ) );
+
+		$this->guides->ensure_capabilities();
+
+		$this->assertFalse( get_role( 'administrator' )->has_cap( 'barmbini_view_guides' ) );
 	}
 
 	// =================================================================
@@ -105,6 +122,33 @@ class StaffGuidesTest extends TestCase {
 	}
 
 	// =================================================================
+	// can_view_page() – Pro-Seite-Berechtigung
+	// =================================================================
+
+	public function test_can_view_page_redakteur_only_with_redakteur_cap(): void {
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur' );
+
+		$this->assertTrue( $this->guides->can_view_page( 'anleitung-redakteur' ) );
+		$this->assertFalse( $this->guides->can_view_page( 'anleitung-verkaeufer' ) );
+	}
+
+	public function test_can_view_page_verkaeufer_only_with_verkaeufer_cap(): void {
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_verkaeufer' );
+
+		$this->assertTrue( $this->guides->can_view_page( 'anleitung-verkaeufer' ) );
+		$this->assertFalse( $this->guides->can_view_page( 'anleitung-redakteur' ) );
+	}
+
+	public function test_can_view_page_unknown_slug_returns_false(): void {
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_verkaeufer' );
+
+		$this->assertFalse( $this->guides->can_view_page( 'impressum' ) );
+	}
+
+	// =================================================================
 	// should_redirect() – Gating
 	// =================================================================
 
@@ -116,10 +160,27 @@ class StaffGuidesTest extends TestCase {
 		$this->assertTrue( $this->guides->should_redirect() );
 	}
 
-	public function test_should_redirect_false_for_guide_page_with_cap(): void {
+	public function test_should_redirect_false_for_verkaeufer_page_with_verkaeufer_cap(): void {
 		$GLOBALS['__wp_current_page'] = 'anleitung-verkaeufer';
 		$GLOBALS['__wp_current_user'] = 2;
-		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guides' );
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_verkaeufer' );
+
+		$this->assertFalse( $this->guides->should_redirect() );
+	}
+
+	public function test_should_redirect_redakteur_page_for_seller(): void {
+		// Verkäufer hat nur die Verkäufer-Cap → Redakteur-Seite wird umgeleitet.
+		$GLOBALS['__wp_current_page'] = 'anleitung-redakteur';
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_verkaeufer' );
+
+		$this->assertTrue( $this->guides->should_redirect() );
+	}
+
+	public function test_should_redirect_false_for_redakteur_page_with_redakteur_cap(): void {
+		$GLOBALS['__wp_current_page'] = 'anleitung-redakteur';
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur' );
 
 		$this->assertFalse( $this->guides->should_redirect() );
 	}

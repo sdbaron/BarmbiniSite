@@ -431,6 +431,16 @@ if ( ! function_exists( 'get_post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_queried_object' ) ) {
+	function get_queried_object() {
+		$slug = isset( $GLOBALS['__wp_current_page'] ) ? $GLOBALS['__wp_current_page'] : '';
+		if ( '' === $slug ) {
+			return null;
+		}
+		return (object) array( 'post_name' => $slug );
+	}
+}
+
 // =====================================================================
 // Test-Helfer
 // =====================================================================

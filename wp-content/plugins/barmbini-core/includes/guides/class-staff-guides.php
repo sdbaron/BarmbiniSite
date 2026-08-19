@@ -8,16 +8,19 @@
  * - `/anleitung-verkaeufer/` – für die Rolle „Verkäufer"
  *
  * Die Seiten werden vom Plugin automatisch angelegt (idempotent) und sind
- * ausschließlich für Benutzer mit der Capability `barmbini_view_guides`
- * sichtbar (Administrator, Redakteur, Verkäufer). Besucher und andere Rollen
- * werden auf die Login-Seite umgeleitet; die Seiten sind zusätzlich mit
+ * rollenabhängig sichtbar:
+ *
+ * - `/anleitung-redakteur/` – Administrator und Redakteur (Capability `barmbini_view_guide_redakteur`)
+ * - `/anleitung-verkaeufer/` – Administrator, Redakteur und Verkäufer (Capability `barmbini_view_guide_verkaeufer`)
+ *
+ * Besucher und andere Rollen werden umgeleitet; die Seiten sind zusätzlich mit
  * `noindex` gegen Suchmaschinen-Indexierung markiert.
  *
- * Zusätzlich gibt es einen kurzen Admin-Menüpunkt „Anleitungen" sowie Links
+ * Zusätzlich gibt es einen kurzen Admin-Menüpunkt „Anleitungen“ sowie Links
  * in der Admin-Bar, damit die berechtigten Rollen die Seiten schnell finden.
  *
  * @package Barmbini_Core
- * @since 0.7.0
+ * @since 0.7.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -26,9 +29,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Barmbini_Core_Staff_Guides {
 
-	const PAGE_REDAKTEUR = 'anleitung-redakteur';
+	const PAGE_REDAKTEUR  = 'anleitung-redakteur';
 	const PAGE_VERKAEUFER = 'anleitung-verkaeufer';
-	const CAP_VIEW        = 'barmbini_view_guides';
+	const CAP_REDAKTEUR   = 'barmbini_view_guide_redakteur';
+	const CAP_VERKAEUFER  = 'barmbini_view_guide_verkaeufer';
 	const MENU_SLUG       = 'barmbini-anleitungen';
 
 	/**
@@ -64,15 +68,38 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Ergänzt die Anleitungs-Capability idempotent an den erlaubten Rollen.
+	 * Vergibt die Anleitungs-Capabilities idempotent an die erlaubten Rollen.
+	 *
+	 * Administrator und Redakteur sehen beide Anleitungen, der Verkäufer nur
+	 * die Verkäufer-Anleitung. Die veraltete Sammel-Capability
+	 * `barmbini_view_guides` wird dabei entfernt.
 	 *
 	 * @return void
 	 */
 	public function ensure_capabilities() {
-		foreach ( self::role_slugs() as $slug ) {
+		foreach ( array( 'administrator', 'editor' ) as $slug ) {
 			$role = get_role( $slug );
-			if ( $role && ! $role->has_cap( self::CAP_VIEW ) ) {
-				$role->add_cap( self::CAP_VIEW );
+			if ( ! $role ) {
+				continue;
+			}
+			if ( ! $role->has_cap( self::CAP_REDAKTEUR ) ) {
+				$role->add_cap( self::CAP_REDAKTEUR );
+			}
+			if ( ! $role->has_cap( self::CAP_VERKAEUFER ) ) {
+				$role->add_cap( self::CAP_VERKAEUFER );
+			}
+		}
+
+		$seller = get_role( Barmbini_Core_Seller_Role::get_role_slug() );
+		if ( $seller && ! $seller->has_cap( self::CAP_VERKAEUFER ) ) {
+			$seller->add_cap( self::CAP_VERKAEUFER );
+		}
+
+		// Veraltete Sammel-Capability entfernen (seit 0.7.0).
+		foreach ( array( 'administrator', 'editor', Barmbini_Core_Seller_Role::get_role_slug() ) as $slug ) {
+			$role = get_role( $slug );
+			if ( $role && $role->has_cap( 'barmbini_view_guides' ) ) {
+				$role->remove_cap( 'barmbini_view_guides' );
 			}
 		}
 	}
@@ -110,12 +137,70 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Prüft, ob der aktuelle Besucher umgeleitet werden muss.
+	 * Prüft, ob die aktuelle Seite eine der Anleitungsseiten ist.
+	 *
+	 * @return bool
+	 */
+	public function is_guide_page() {
+		return is_page( self::get_guide_slugs() );
+	}
+
+	/**
+	 * Prüft, ob der aktuelle Besucher eine bestimmte Anleitung sehen darf.
+	 *
+	 * @param string $slug Seiten-Slug der Anleitung.
+	 * @return bool
+	 */
+	public function can_view_page( $slug ) {
+		if ( self::PAGE_REDAKTEUR === $slug ) {
+			return current_user_can( self::CAP_REDAKTEUR );
+		}
+		if ( self::PAGE_VERKAEUFER === $slug ) {
+			return current_user_can( self::CAP_VERKAEUFER );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Prüft, ob der Besucher mindestens eine Anleitung sehen darf.
+	 *
+	 * @return bool
+	 */
+	public function can_view_any() {
+		return current_user_can( self::CAP_REDAKTEUR ) || current_user_can( self::CAP_VERKAEUFER );
+	}
+
+	/**
+	 * Prüft, ob für die aktuelle Seite eine Umleitung nötig ist.
 	 *
 	 * @return bool
 	 */
 	public function should_redirect() {
-		return is_page( self::get_guide_slugs() ) && ! current_user_can( self::CAP_VIEW );
+		if ( ! $this->is_guide_page() ) {
+			return false;
+		}
+
+		$post = get_queried_object();
+		$slug = ( $post && isset( $post->post_name ) ) ? $post->post_name : '';
+
+		return ! $this->can_view_page( $slug );
+	}
+
+	/**
+	 * Liefert die URL der ersten für den Besucher zugänglichen Anleitung.
+	 *
+	 * @return string Leer, wenn keine Anleitung zugänglich ist.
+	 */
+	public function first_accessible_guide_url() {
+		if ( current_user_can( self::CAP_REDAKTEUR ) ) {
+			return home_url( '/' . self::PAGE_REDAKTEUR . '/' );
+		}
+		if ( current_user_can( self::CAP_VERKAEUFER ) ) {
+			return home_url( '/' . self::PAGE_VERKAEUFER . '/' );
+		}
+
+		return '';
 	}
 
 	/**
@@ -128,7 +213,15 @@ class Barmbini_Core_Staff_Guides {
 			return;
 		}
 
-		wp_safe_redirect( wp_login_url( get_permalink() ) );
+		// Nicht angemeldet → Login-Seite.
+		if ( ! is_user_logged_in() ) {
+			wp_safe_redirect( wp_login_url( get_permalink() ) );
+			exit;
+		}
+
+		// Angemeldet, aber ohne Zugriff → zu einer zugänglichen Anleitung oder Startseite.
+		$fallback = $this->first_accessible_guide_url();
+		wp_safe_redirect( $fallback ? $fallback : home_url( '/' ) );
 		exit;
 	}
 
@@ -156,7 +249,7 @@ class Barmbini_Core_Staff_Guides {
 		add_menu_page(
 			__( 'Anleitungen', 'barmbini-core' ),
 			__( 'Anleitungen', 'barmbini-core' ),
-			self::CAP_VIEW,
+			self::CAP_VERKAEUFER,
 			self::MENU_SLUG,
 			array( $this, 'render_admin_landing' ),
 			'dashicons-welcome-learn-more',
@@ -171,7 +264,7 @@ class Barmbini_Core_Staff_Guides {
 	 * @return void
 	 */
 	public function register_admin_bar_links( $wp_admin_bar ) {
-		if ( ! current_user_can( self::CAP_VIEW ) ) {
+		if ( ! $this->can_view_any() ) {
 			return;
 		}
 
@@ -180,18 +273,24 @@ class Barmbini_Core_Staff_Guides {
 			'title' => __( 'Anleitungen', 'barmbini-core' ),
 			'href'  => admin_url( 'admin.php?page=' . self::MENU_SLUG ),
 		) );
-		$wp_admin_bar->add_node( array(
-			'id'     => 'barmbini-guide-redakteur',
-			'parent' => 'barmbini-guides',
-			'title'  => __( 'Für Redakteure', 'barmbini-core' ),
-			'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
-		) );
-		$wp_admin_bar->add_node( array(
-			'id'     => 'barmbini-guide-verkaeufer',
-			'parent' => 'barmbini-guides',
-			'title'  => __( 'Für Verkäufer', 'barmbini-core' ),
-			'href'   => home_url( '/' . self::PAGE_VERKAEUFER . '/' ),
-		) );
+
+		if ( current_user_can( self::CAP_REDAKTEUR ) ) {
+			$wp_admin_bar->add_node( array(
+				'id'     => 'barmbini-guide-redakteur',
+				'parent' => 'barmbini-guides',
+				'title'  => __( 'Für Redakteure', 'barmbini-core' ),
+				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
+			) );
+		}
+
+		if ( current_user_can( self::CAP_VERKAEUFER ) ) {
+			$wp_admin_bar->add_node( array(
+				'id'     => 'barmbini-guide-verkaeufer',
+				'parent' => 'barmbini-guides',
+				'title'  => __( 'Für Verkäufer', 'barmbini-core' ),
+				'href'   => home_url( '/' . self::PAGE_VERKAEUFER . '/' ),
+			) );
+		}
 	}
 
 	/**
@@ -205,19 +304,26 @@ class Barmbini_Core_Staff_Guides {
 		echo '<p>' . esc_html__( 'Hier findest du die Schritt-für-Schritt-Anleitungen für deine Aufgabe.', 'barmbini-core' ) . '</p>';
 		echo '<div style="display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;">';
 
-		foreach ( array(
+		$cards = array(
 			array(
+				'slug'  => self::PAGE_REDAKTEUR,
 				'title' => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'desc'  => __( 'Aktionen anlegen, Beiträge pflegen, Produkte erstellen.', 'barmbini-core' ),
-				'url'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
 			),
 			array(
+				'slug'  => self::PAGE_VERKAEUFER,
 				'title' => __( 'Anleitung für Verkäufer', 'barmbini-core' ),
 				'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren.', 'barmbini-core' ),
-				'url'   => home_url( '/' . self::PAGE_VERKAEUFER . '/' ),
 			),
-		) as $card ) {
-			echo '<a href="' . esc_url( $card['url'] ) . '" style="display:block;width:320px;padding:20px;border:1px solid #ccd0d4;border-radius:8px;text-decoration:none;color:#1d2327;background:#fff;">';
+		);
+
+		foreach ( $cards as $card ) {
+			if ( ! $this->can_view_page( $card['slug'] ) ) {
+				continue;
+			}
+
+			$url = home_url( '/' . $card['slug'] . '/' );
+			echo '<a href="' . esc_url( $url ) . '" style="display:block;width:320px;padding:20px;border:1px solid #ccd0d4;border-radius:8px;text-decoration:none;color:#1d2327;background:#fff;">';
 			echo '<strong style="font-size:16px;">' . esc_html( $card['title'] ) . '</strong>';
 			echo '<p style="margin-top:8px;">' . esc_html( $card['desc'] ) . '</p>';
 			echo '<span style="color:#2271b1;">' . esc_html__( 'Anleitung öffnen →', 'barmbini-core' ) . '</span>';
