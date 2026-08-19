@@ -270,9 +270,9 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 **Umgesetzt und live:**
 
 - Rolle `barmbini_verkaeufer` (Anzeigename „Verkäufer") im Plugin `barmbini-core` 0.6.0
-- `includes/roles/class-seller-role.php` (Barmbini_Core_Seller_Role): Capability-Matrix, idempotente statische `maybe_create_role()`, `prevent_permanent_delete()` via `map_meta_cap`, `allow_admin_access()` (Filter `woocommerce_prevent_admin_access`) und `redirect_to_admin()` (Filter `login_redirect`)
+- `includes/roles/class-seller-role.php` (Barmbini_Core_Seller_Role): Capability-Matrix, idempotente statische `maybe_create_role()`, `prevent_permanent_delete()` via `map_meta_cap`, `allow_admin_access()` (Filter `woocommerce_prevent_admin_access`), `redirect_to_admin()` (Filter `login_redirect`), `enable_admin_bar_for_seller()` (Filter `woocommerce_disable_admin_bar`)
 - `barmbini-core.php` (require + Version 0.6.0), `class-plugin.php` (`register_seller_role_module()`), `class-activator.php` (Rollen-Anlage bei Aktivierung)
-- Unit-Tests `tests/SellerRoleTest.php` (12 Tests) + WP-Rollen-/`WP_User`-/`current_user_can`-/`user_can`-/`get_post`-/`admin_url`-Mocks in `tests/bootstrap.php` — **65/65 Tests grün**
+- Unit-Tests `tests/SellerRoleTest.php` (14 Tests) + WP-Rollen-/`WP_User`-/`current_user_can`-/`user_can`-/`get_post`-/`admin_url`-Mocks in `tests/bootstrap.php` — **67/67 Tests grün**
 - Doku aktualisiert: `Barmbini_Technisches_Konzept_v2.5.md` (§5), `Barmbini_Plugin_Architektur_barmbini-core.md` (Rollen-Modul), `Barmbini_Vorbereitung_Features_und_Bugfixes.md`
 
 **Deployment (Modus B, nur Code, Live-Daten sicher):**
@@ -289,6 +289,12 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 - **Problem:** Der Verkäufer sah anfangs „keine WP-Möglichkeiten“. Ursache: WooCommerce (`wc_prevent_admin_access`) leitet Nutzer ohne `edit_posts`/`manage_woocommerce`/`manage_options` vom wp-admin auf `/mein-konto/` um.
 - **Fix:** Zwei Filter im Plugin — `woocommerce_prevent_admin_access` → false für den Verkäufer (Admin-Zugriff ohne zusätzliche Capabilities) und `login_redirect` → `/wp-admin/` nach Login. Deploy Modus B (`2369e24`).
 - **Live verifiziert (Browser, Testnutzer `test_verkaeufer`):** Verkäufer sieht jetzt Dashboard, Medien (Mediathek + hochladen), Produkte (Alle + Neues Produkt), Profil — keine Beiträge/Seiten, keine WooCommerce-Einstellungen, keine Benutzer. Produktliste `edit.php?post_type=product` erreichbar. Login landet im Admin. Testnutzer danach entfernt (ID 14).
+
+**Nachtest / Erkenntnis 2 (2026-08-19):**
+
+- **Problem:** Der Verkäufer sah kein „WP-Menü oberhalb der Seite“ (Admin-Bar). Ursache: WooCommerce `wc_disable_admin_bar` blendet den Bar für Nutzer ohne `edit_posts`/`manage_woocommerce` aus.
+- **Fix:** Filter `woocommerce_disable_admin_bar` → false für den Verkäufer (`enable_admin_bar_for_seller()`), ohne zusätzliche Capabilities. Deploy Modus B (`495f5b9`).
+- **Live verifiziert:** Admin-Bar (Werkzeugleiste) erscheint oben für den Verkäufer. Testnutzer danach entfernt (ID 15).
 
 **Noch offen / optional:**
 
