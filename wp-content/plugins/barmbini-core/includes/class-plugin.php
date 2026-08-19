@@ -35,6 +35,7 @@ class Barmbini_Core_Plugin {
 		$this->register_contact_form_honeypot_module();
 		$this->register_address_settings_module();
 		$this->register_login_limiter_module();
+		$this->register_seller_role_module();
 	}
 
 	protected function register_catalog_module() {
@@ -187,6 +188,16 @@ class Barmbini_Core_Plugin {
 	protected function register_security_module() {
 		$rest_hardening = new Barmbini_Core_Rest_Api_Hardening();
 		$rest_hardening->register();
+	}
+
+	/**
+	 * Registriert die Benutzerrolle „Verkäufer“ (Sortiment-Produktverwaltung).
+	 *
+	 * @return void
+	 */
+	protected function register_seller_role_module() {
+		$seller_role = new Barmbini_Core_Seller_Role();
+		$seller_role->register();
 	}
 
 	/**

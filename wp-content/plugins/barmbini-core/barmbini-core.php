@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Barmbini Core
  * Description: Projektspezifische Fachlogik für Sozialkaufhaus Barmbini.
- * Version: 0.5.2
+ * Version: 0.6.0
  * Author: Barmbini
  */
 
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'BARMBINI_CORE_VERSION', '0.5.2' );
+define( 'BARMBINI_CORE_VERSION', '0.6.0' );
 define( 'BARMBINI_CORE_FILE', __FILE__ );
 define( 'BARMBINI_CORE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'BARMBINI_CORE_URL', plugin_dir_url( __FILE__ ) );
@@ -46,6 +46,7 @@ require_once BARMBINI_CORE_PATH . 'includes/privacy/class-privacy-exporter.php';
 require_once BARMBINI_CORE_PATH . 'includes/security/class-rest-api-hardening.php';
 require_once BARMBINI_CORE_PATH . 'includes/security/class-contact-form-honeypot.php';
 require_once BARMBINI_CORE_PATH . 'includes/security/class-login-limiter.php';
+require_once BARMBINI_CORE_PATH . 'includes/roles/class-seller-role.php';
 require_once BARMBINI_CORE_PATH . 'includes/class-plugin.php';
 
 register_activation_hook( __FILE__, array( 'Barmbini_Core_Activator', 'activate' ) );

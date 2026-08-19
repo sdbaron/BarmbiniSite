@@ -149,6 +149,7 @@ Im Plugin `barmbini-core` sind bereits umgesetzt und lokal validiert:
 - Adress-Einstellungsseite `class-address-settings.php` (Barmbini_Core_Address_Settings): **Einstellungen → Barmbini Adresse** (Settings-API, Option `barmbini_address_data`)
 - CF7-Kontaktformular auf `/kontakt/` (Name/E-Mail/Nachricht/DSGVO-Pflicht-Checkbox) + Honeypot-Spam-Schutz `class-contact-form-honeypot.php` (Filter `wpcf7_spam`, Feld `your-website`)
 - Login-Brute-Force-Schutz `class-login-limiter.php` (Barmbini_Core_Login_Limiter): 5 Fehlversuche → 15 Minuten Sperre pro IP (Transients, Filter `authenticate`)
+- Benutzerrolle „Verkäufer" `class-seller-role.php` (Barmbini_Core_Seller_Role): Rolle `barmbini_verkaeufer`, ausschließlich Sortiment-Produkte (anlegen, Preise, Ausverkauft-Lagerstatus, Papierkorb), kein permanentes Löschen, keine Inhalte/System-/Benutzerrechte, idempotente Anlage + `admin_init`-Selbstheilung (Detail: `Tasks/Barmbini_Aufgabe_Rolle_Verkäufer.md`)
 
 Dort wurden bereits unter anderem umgesetzt:
 

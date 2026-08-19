@@ -302,6 +302,69 @@ if ( ! class_exists( 'WP_Widget' ) ) {
 }
 
 // =====================================================================
+// Rollen-API (get_role / add_role / remove_role) + user_can / get_post
+// =====================================================================
+
+if ( ! class_exists( 'WP_Role' ) ) {
+	class WP_Role {
+		public $name;
+		public $capabilities = array();
+
+		public function __construct( $role, $capabilities ) {
+			$this->name         = $role;
+			$this->capabilities = $capabilities;
+		}
+
+		public function has_cap( $cap ) {
+			return isset( $this->capabilities[ $cap ] ) && $this->capabilities[ $cap ];
+		}
+
+		public function add_cap( $cap ) {
+			$this->capabilities[ $cap ] = true;
+		}
+
+		public function remove_cap( $cap ) {
+			unset( $this->capabilities[ $cap ] );
+		}
+	}
+}
+
+if ( ! function_exists( 'get_role' ) ) {
+	function get_role( $role ) {
+		return isset( $GLOBALS['__wp_roles'][ $role ] ) ? $GLOBALS['__wp_roles'][ $role ] : null;
+	}
+}
+
+if ( ! function_exists( 'add_role' ) ) {
+	function add_role( $role, $display_name, $capabilities = array() ) {
+		// WordPress ergaenzt den Rollennamen als Capability.
+		$caps                         = $capabilities;
+		$caps[ $role ]                = true;
+		$GLOBALS['__wp_roles'][ $role ] = new WP_Role( $role, $caps );
+		return $GLOBALS['__wp_roles'][ $role ];
+	}
+}
+
+if ( ! function_exists( 'remove_role' ) ) {
+	function remove_role( $role ) {
+		unset( $GLOBALS['__wp_roles'][ $role ] );
+	}
+}
+
+if ( ! function_exists( 'user_can' ) ) {
+	function user_can( $user_id, $capability, ...$args ) {
+		$caps = isset( $GLOBALS['__wp_user_caps'][ $user_id ] ) ? $GLOBALS['__wp_user_caps'][ $user_id ] : array();
+		return in_array( $capability, $caps, true );
+	}
+}
+
+if ( ! function_exists( 'get_post' ) ) {
+	function get_post( $post_id ) {
+		return isset( $GLOBALS['__wp_posts'][ $post_id ] ) ? $GLOBALS['__wp_posts'][ $post_id ] : null;
+	}
+}
+
+// =====================================================================
 // Test-Helfer
 // =====================================================================
 
@@ -328,4 +391,7 @@ function _test_reset_all() {
 	$GLOBALS['__wp_actions']  = array();
 	$GLOBALS['__wp_filters']  = array();
 	$GLOBALS['__wp_widgets']  = array();
+	$GLOBALS['__wp_roles']    = array();
+	$GLOBALS['__wp_user_caps'] = array();
+	$GLOBALS['__wp_posts']    = array();
 }

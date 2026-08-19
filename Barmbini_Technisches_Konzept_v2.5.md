@@ -79,6 +79,17 @@ Die Website ist einsprachig auf Deutsch. Keine Mehrsprachigkeit geplant.
 * WooCommerce-Produkte erstellen und pflegen
 * Kein Zugriff auf Plugins, Theme, Einstellungen
 
+### Verkäufer
+
+* **Ausschließlich** Sortiment-Produkte (WooCommerce) verwalten:
+  * neue Artikel anlegen und veröffentlichen
+  * Preise anpassen
+  * Artikel als ausverkauft markieren (nativer WooCommerce-Lagerstatus)
+  * Artikel in den Papierkorb verschieben (kein permanentes Löschen)
+* Kategorien nur zuordnen (bestehende), nicht anlegen/umbenennen/löschen
+* Kein Zugriff auf Inhalte/Blog, `barmbini_aktion`, Plugins, Theme, Einstellungen, Benutzerverwaltung
+* Umsetzung: Plugin `barmbini-core`, Rolle `barmbini_verkaeufer` (Detail: `Tasks/Barmbini_Aufgabe_Rolle_Verkäufer.md`)
+
 ---
 
 ## 6. Seitenstruktur

@@ -81,6 +81,8 @@ wp-content/plugins/barmbini-core/
 |       `-- class-privacy-exporter.php
 |   `-- security/
 |       `-- class-rest-api-hardening.php
+|   `-- roles/
+|       `-- class-seller-role.php
 |-- templates/
 |   |-- account/
 |   |   `-- subscriptions.php
@@ -244,6 +246,23 @@ Verantwortung:
 Hinweis:
 
 - Reine Server-Maßnahmen (nginx-Sicherheitsheader, `readme.html`, `xmlrpc.php`, HTTPS) liegen außerhalb des Plugins und werden über Server-Runbooks dokumentiert (`Tasks/Barmbini_Aufgabe_Sicherheit_HTTP_Header.md`, `Tasks/Barmbini_Aufgabe_Sicherheit_Information_Disclosure.md`).
+
+### 7. Rollen-Modul
+
+Zweck:
+
+- Definition und idempotente Anlage der Projektrolle **„Verkäufer“** (`barmbini_verkaeufer`)
+- ausschließliche Verwaltung der Sortiment-Produkte (WooCommerce): anlegen, Preise anpassen, als ausverkauft markieren (nativer Lagerstatus), in den Papierkorb verschieben
+- keine Inhalte/Blog, keine Kategorien-Verwaltung, keine System- oder Benutzerrechte
+
+Verantwortung:
+
+- `class-seller-role.php` (Barmbini_Core_Seller_Role):
+  - `get_capabilities()` liefert die Capability-Matrix (ein Ort der Wahrheit, testbar)
+  - `maybe_create_role()` legt die Rolle idempotent an (`get_role`-Check), kein Auto-Cleanup (konsistent zu `uninstall.php`)
+  - Selbstheilung über `admin_init` (nur für `manage_options`-Nutzer), damit die Rolle auch nach einem reinen Code-Deploy angelegt wird
+  - `prevent_permanent_delete()` über `map_meta_cap` blockiert das permanente Löschen aus dem Papierkorb für diese Rolle (nur Papierkorb = reversibel)
+  - Registriert in `class-plugin.php`/`register_seller_role_module()`; Aktivierung in `class-activator.php`/`activate()`
 
 ## Datenmodell
 
