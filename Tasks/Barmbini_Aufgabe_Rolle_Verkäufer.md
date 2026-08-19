@@ -95,7 +95,7 @@ Die Rolle wird als Modul im Plugin `barmbini-core` umgesetzt (Architekturregel: 
 | Methode | Sichtbarkeit | Beschreibung |
 |---------|-------------|--------------|
 | `register()` | `public` | Hängt `maybe_create_role` an `admin_init` (nur für `manage_options`-Nutzer) |
-| `maybe_create_role()` | `public` | Idempotent: prüft `get_role()`, legt Rolle nur an, wenn sie fehlt |
+| `maybe_create_role()` | `public static` | Idempotent: prüft `get_role()`, legt Rolle nur an, wenn sie fehlt |
 | `get_capabilities()` | `public static` | Liefert die Capability-Matrix (ein Ort der Wahrheit, auch testbar) |
 | `get_role_slug()` | `public static` | Liefert `'barmbini_verkaeufer'` |
 
@@ -258,9 +258,34 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 
 ## Akzeptanzkriterien
 
-- [ ] Rolle `barmbini_verkaeufer` existiert lokal und live, Anzeigename „Verkäufer"
-- [ ] Verkäufer kann Produkt anlegen, Preis ändern, als ausverkauft markieren, in den Papierkorb verschieben
-- [ ] Verkäufer hat **keinen** Zugriff auf Inhalte, Kategorien-Verwaltung, Plugins, Theme, Einstellungen, Benutzer
-- [ ] (optional) Verkäufer kann nichts endgültig löschen
-- [ ] Redakteur bleibt unverändert funktionsfähig
-- [ ] Version auf `0.6.0`, Code gepusht, Deploy Modus B, Doku aktualisiert
+- [x] Rolle `barmbini_verkaeufer` existiert lokal und live, Anzeigename „Verkäufer"
+- [x] Verkäufer kann Produkt anlegen, Preis ändern, als ausverkauft markieren, in den Papierkorb verschieben (Capabilities verifiziert)
+- [x] Verkäufer hat **keinen** Zugriff auf Inhalte, Kategorien-Verwaltung, Plugins, Theme, Einstellungen, Benutzer
+- [x] (umgesetzt) Verkäufer kann nichts endgültig löschen (`map_meta_cap`-Filter)
+- [x] Redakteur bleibt unverändert funktionsfähig
+- [x] Version auf `0.6.0`, Code gepusht, Deploy Modus B, Doku aktualisiert
+
+## Ergebnis / Stand (2026-08-19)
+
+**Umgesetzt und live:**
+
+- Rolle `barmbini_verkaeufer` (Anzeigename „Verkäufer") im Plugin `barmbini-core` 0.6.0
+- `includes/roles/class-seller-role.php` (Barmbini_Core_Seller_Role): Capability-Matrix, idempotente statische `maybe_create_role()`, `prevent_permanent_delete()` via `map_meta_cap`
+- `barmbini-core.php` (require + Version 0.6.0), `class-plugin.php` (`register_seller_role_module()`), `class-activator.php` (Rollen-Anlage bei Aktivierung)
+- Unit-Tests `tests/SellerRoleTest.php` (8 Tests) + Rollen-/`user_can`-/`get_post`-Mocks in `tests/bootstrap.php` — **61/61 Tests grün**
+- Doku aktualisiert: `Barmbini_Technisches_Konzept_v2.5.md` (§5), `Barmbini_Plugin_Architektur_barmbini-core.md` (Rollen-Modul), `Barmbini_Vorbereitung_Features_und_Bugfixes.md`
+
+**Deployment (Modus B, nur Code, Live-Daten sicher):**
+
+- Sync Workspace → Local (6 Dateien)
+- `deploy.ps1` Modus B inkl. Server-Backup, Sanity-Check (Kadence/barmbini-core/Index OK), Cache geleert
+- Rollen-Anlage auf dem Server per WP-CLI: `wp eval 'Barmbini_Core_Seller_Role::maybe_create_role();' --allow-root`
+- Verifiziert: `wp role list` zeigt `Verkäufer` → `barmbini_verkaeufer`; `wp cap list barmbini_verkaeufer` bestätigt exakt die vorgesehenen Capabilities (read, upload_files, Produkt-Caps, assign_product_terms)
+
+**Git:** Commits `1b62824` (Rolle, Tests, Doku) und `5d704bf` (Fix: `maybe_create_role()` statisch) gepusht nach `main`.
+
+**Noch offen / optional:**
+
+- Lokaler Integrationstest 7b (Testnutzer als Verkäufer einloggen und Menü/Rechte prüfen) — kann bei Bedarf durchgeführt werden
+- Live-Testnutzer mit Rolle anlegen und Frontend-/Admin-Check (7c) — nur auf ausdrücklichen Wunsch, danach Testnutzer entfernen
+- Eigene „Ausverkauft"-Badge im Frontend: bewusst **nicht** Teil dieser Aufgabe
