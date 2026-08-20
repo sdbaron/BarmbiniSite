@@ -1,5 +1,9 @@
 # Internes Technisches Konzept (Version 2.0)
 
+> **Hinweis:** Dies ist eine **veraltete Konzeptfassung (2.0)**. Aktuelles
+> Zielkonzept ist **`Barmbini_Technisches_Konzept_v2.5.md`**; für die
+> Server-Neuinstallation gilt **`Barmbini_Server_Installation.md`**.
+
 ## Website – Sozialkaufhaus Barmbini
 
 ---

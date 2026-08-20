@@ -1,5 +1,9 @@
 # Detaillierte Aufgabe: Serverbereinigung, WordPress-Installation und Migration
 
+> **Hinweis (2026-08-20):** Dieses Dokument beschreibt die **Erstmigration**
+> (historischer Stand). Für eine Neuinstallation auf einem leeren Server gilt
+> die aktuelle Referenz: **`Barmbini_Server_Installation.md`**.
+
 ## Ziel
 
 Der Server `217.160.74.128` soll exklusiv fuer die Produktivumgebung der Website Sozialkaufhaus Barmbini vorbereitet werden. Danach soll WordPress installiert und die lokale Website aus `D:\Local Sites\barmbini` auf den Server migriert werden.

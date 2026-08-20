@@ -1,5 +1,9 @@
 # Aenderungsdokumentation Server 217.160.74.128
 
+> **Hinweis (2026-08-20):** Dieses Dokument ist ein **historisches Protokoll**
+> der Bereinigung. Für eine Neuinstallation auf einem leeren Server gilt die
+> aktuelle Referenz: **`Barmbini_Server_Installation.md`**.
+
 Stand: 2026-04-22
 
 ## Anlass

@@ -1,5 +1,9 @@
 # Barmbini Migrationsdurchfuehrung 2026-04-22
 
+> **Hinweis (2026-08-20):** Dieses Dokument ist ein **historisches Protokoll**
+> der Erstmigration. Für eine Neuinstallation auf einem leeren Server gilt die
+> aktuelle Referenz: **`Barmbini_Server_Installation.md`**.
+
 ## Ziel
 
 Migration der lokalen WordPress-Instanz `barmbini` auf den Server `217.160.74.128` als IP-basierte Bereitstellung unter `http://217.160.74.128`.

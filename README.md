@@ -106,10 +106,22 @@ Vollständige Referenz mit allen Attributen und Beispielen: **`Docs/Barmbini_Sho
 ## Server-Infos
 
 - **IP:** `217.160.74.128`
+- **OS:** Ubuntu 24.04.4 LTS
 - **Webroot:** `/var/www/barmbini`
-- **DB-Name:** `barmbini_wp`
+- **DB-Name:** `barmbini_wp` (User `barmbini_user`, Präfix `wp_`)
 - **DB-Credentials:** `/root/barmbini-db.txt`
-- **Stack:** nginx, php8.3-fpm, mariadb, wp-cli
+- **Stack:** nginx 1.24, php8.3-fpm, MariaDB 10.11, wp-cli 2.12
+- **Domain:** `barmbini.de` (HTTPS via Let’s Encrypt)
+
+## Server-Neuinstallation
+
+Die vollständige, schrittweise Anleitung zum Aufsetzen der Website auf einem
+**leeren Linux-Server** (alle Dienste, Härtung, Mail, Statistik, Backups):
+
+**`Barmbini_Server_Installation.md`**
+
+Die aktuelle nginx-Konfiguration liegt zusätzlich als Referenz unter
+`server-config/barmbini-nginx.conf`.
 
 ## Projektstruktur
 
@@ -132,6 +144,10 @@ Vollständige Referenz mit allen Attributen und Beispielen: **`Docs/Barmbini_Sho
 ├── Barmbini_Technisches_Konzept_v2.5.md
 ├── Barmbini_Migrationsdurchfuehrung_2026-04-22.md
 ├── Barmbini_Vorbereitung_Features_und_Bugfixes.md
+├── Barmbini_Server_Installation.md   # Neuinstallation auf leerem Linux-Server
+├── server-config/                    # Server-Konfiguration
+│   ├── barmbini-nginx.conf           #   nginx-Site (Live-Stand)
+│   └── barmbini-stats/               #   Besucherstatistik (install.sh, process.php, …)
 ├── wp-content/
 │   └── plugins/
 │       └── barmbini-core/       # Haupt-Plugin
