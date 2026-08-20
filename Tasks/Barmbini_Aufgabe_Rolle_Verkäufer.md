@@ -300,3 +300,10 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 
 - Lokaler Integrationstest 7b auf der Local-Umgebung (dort muss die Rolle beim ersten Admin-Besuch per Selbstheilung angelegt werden) — kann bei Bedarf durchgeführt werden
 - Eigene „Ausverkauft"-Badge im Frontend: bewusst **nicht** Teil dieser Aufgabe
+
+## Nachtrag (2026-08-20): Rollen umbenannt (Anzeigenamen)
+
+- **„Verkäufer" → „Seller"** und **„Redakteur" → „Editor"** — nur die **Anzeigenamen**; die technischen Slugs (`barmbini_verkaeufer`, `editor`) bleiben unverändert (keine Migration von Benutzerzuordnungen nötig).
+- Umsetzung: `Barmbini_Core_Seller_Role::get_role_names()` + `ensure_role_names()` (idempotent, `admin_init`), Plugin `barmbini-core` **0.8.1**.
+- Anleitungs-Seiten (`/anleitung-redakteur/`, `/anleitung-verkaeufer/`) auf „Editor"/„Seller" umbenannt (Titel + Inhalt) — live migriert (Backup: `/root/barmbini-roles-backup-*`).
+- Verifiziert: `wp role list` zeigt `Editor` und `Seller`; keine Alt-Begriffe mehr in den Anleitungsinhalten; Suite **95 Tests grün**.
