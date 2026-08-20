@@ -307,3 +307,14 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 - Umsetzung: `Barmbini_Core_Seller_Role::get_role_names()` + `ensure_role_names()` (idempotent, `admin_init`), Plugin `barmbini-core` **0.8.1**.
 - Anleitungs-Seiten (`/anleitung-redakteur/`, `/anleitung-verkaeufer/`) auf „Editor"/„Seller" umbenannt (Titel + Inhalt) — live migriert (Backup: `/root/barmbini-roles-backup-*`).
 - Verifiziert: `wp role list` zeigt `Editor` und `Seller`; keine Alt-Begriffe mehr in den Anleitungsinhalten; Suite **95 Tests grün**.
+## Nachtrag (2026-08-20): Eigene Rolle abgelöst – Shop Manager statt Verkäufer/Seller (0.9.0)
+
+**Rücknahme der Umbenennung + Ersatz der eigenen Rolle:**
+
+- **Redakteur** bleibt die **Standardrolle `editor`** (Anzeigename „Redakteur“) — die Umbenennung auf „Editor“ war effektiv ein No-Op, weil Kernrollen-Namen in `user_roles` englisch gespeichert und erst bei der Anzeige übersetzt werden. Es wird nichts weiter unternommen; Standardrollen bleiben unangetastet.
+- Die **eigene Rolle `barmbini_verkaeufer`** („Verkäufer“/„Seller“) wird durch die **WooCommerce-Standardrolle `shop_manager`** („Shop Manager“) ersetzt.
+- Neues Modul `includes/roles/class-roles.php` (`Barmbini_Core_Roles`): `migrate_legacy_seller_role()` hängt Nutzer per `add_role('shop_manager')`/`remove_role('barmbini_verkaeufer')` um und entfernt die Alt-Rolle idempotent; Selbstheilung über `admin_init` (`manage_options`-Nutzer).
+- `class-seller-role.php` und `tests/SellerRoleTest.php` wurden **gelöscht**; `barmbini-core.php`/`class-plugin.php`/`class-activator.php` entsprechend bereinigt (keine eigene Rollen-Anlage mehr).
+- Anleitungen: Zugriff auf `/anleitung-verkaeufer/` jetzt für `shop_manager` (`barmbini_view_guide_verkaeufer`); Titel/Inhalt „Anleitung für Shop Manager“/„Shop Manager/in“ mit **korrigierter** Capability-Beschreibung (Kategorien verwalten, endgültiges Löschen aus dem Papierkorb möglich). `/anleitung-redakteur/` wieder „Anleitung für Redakteure“/„Redakteur/in“.
+- Tests: `RolesTest.php` neu (Migration), `StaffGuidesTest.php`/`VisitorStatsTest.php` auf `shop_manager` umgestellt — **81 Tests grün**.
+- Live (Modus B, Backup im Deploy-Backup `/root/barmbini-backup-*/live-before-deploy.sql`): Nutzer #13 `Seller` → `shop_manager` migriert, `barmbini_verkaeufer` entfernt (`wp role list` bestätigt: nur noch Standard-/WooCommerce-Rollen), Guide-Caps gesetzt, Seiten 594/596 Titel+Inhalt aktualisiert. Verifiziert per `wp` (Caps `JA`/`NEIN` korrekt) und Browser (Seite ohne Login → Login-Redirect).

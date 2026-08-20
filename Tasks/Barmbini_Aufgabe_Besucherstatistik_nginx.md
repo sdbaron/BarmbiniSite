@@ -29,7 +29,7 @@ Die Rohdaten (nginx-Log mit IPs) werden **nicht dauerhaft gespeichert**; es werd
 - `Barmbini_Plugin_Architektur_barmbini-core.md` — Zielstruktur, Modulzuschnitt
 - `Barmbini_Vorbereitung_Features_und_Bugfixes.md` — verifizierter Ist-Stand (WP Fastest Cache aktiv)
 - `Docs/Barmbini_Rechtliche_Seiten.md` + Datenschutzerklärungs-Seite — müssen erweitert werden
-- Bestehende Plugin-Muster: `includes/guides/class-staff-guides.php` (rollenbasierte Capability + Gating), `includes/roles/class-seller-role.php`
+- Bestehende Plugin-Muster: `includes/guides/class-staff-guides.php` (rollenbasierte Capability + Gating), `includes/roles/class-roles.php`
 
 ## Fachliche Leitplanken
 

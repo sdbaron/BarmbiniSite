@@ -79,16 +79,16 @@ Die Website ist einsprachig auf Deutsch. Keine Mehrsprachigkeit geplant.
 * WooCommerce-Produkte erstellen und pflegen
 * Kein Zugriff auf Plugins, Theme, Einstellungen
 
-### Verkäufer
+### Shop Manager (ehemals „Verkäufer“)
 
-* **Ausschließlich** Sortiment-Produkte (WooCommerce) verwalten:
+* Verwaltet die Sortiment-Produkte (WooCommerce):
   * neue Artikel anlegen und veröffentlichen
   * Preise anpassen
   * Artikel als ausverkauft markieren (nativer WooCommerce-Lagerstatus)
-  * Artikel in den Papierkorb verschieben (kein permanentes Löschen)
-* Kategorien nur zuordnen (bestehende), nicht anlegen/umbenennen/löschen
+  * Artikel in den Papierkorb verschieben; endgültiges Löschen aus dem Papierkorb möglich (WooCommerce-Standardrechte des Shop Managers)
+* Kategorien verwalten (anlegen/umbenennen/löschen, WooCommerce-Standardrechte)
 * Kein Zugriff auf Inhalte/Blog, `barmbini_aktion`, Plugins, Theme, Einstellungen, Benutzerverwaltung
-* Umsetzung: Plugin `barmbini-core`, Rolle `barmbini_verkaeufer` (Detail: `Tasks/Barmbini_Aufgabe_Rolle_Verkäufer.md`)
+* Umsetzung: Plugin `barmbini-core`, Standardrolle `shop_manager` (WooCommerce Shop Manager). Die frühere Projektrolle `barmbini_verkaeufer` wurde in Version 0.9.0 abgelöst: Nutzer wurden per Migration zu `shop_manager` umgehängt, die Rolle entfernt (Detail: `Tasks/Barmbini_Aufgabe_Rolle_Verkäufer.md`).
 
 ---
 

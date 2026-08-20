@@ -82,7 +82,7 @@ wp-content/plugins/barmbini-core/
 |   `-- security/
 |       `-- class-rest-api-hardening.php
 |   `-- roles/
-|       `-- class-seller-role.php
+|       `-- class-roles.php
 |   `-- guides/
 |       `-- class-staff-guides.php
 |-- templates/
@@ -253,18 +253,16 @@ Hinweis:
 
 Zweck:
 
-- Definition und idempotente Anlage der Projektrolle **„Verkäufer“** (`barmbini_verkaeufer`)
-- ausschließliche Verwaltung der Sortiment-Produkte (WooCommerce): anlegen, Preise anpassen, als ausverkauft markieren (nativer Lagerstatus), in den Papierkorb verschieben
-- keine Inhalte/Blog, keine Kategorien-Verwaltung, keine System- oder Benutzerrechte
+- Migration der früheren Projektrolle **„Verkäufer“** (`barmbini_verkaeufer`) zur WooCommerce-Standardrolle **Shop Manager** (`shop_manager`)
+- die Standardrolle `editor` („Redakteur“) bleibt unangetastet (Kernrollen werden nicht umbenannt)
+- nach der Migration existiert keine eigene Projektrolle mehr – Shop Manager ist eine WooCommerce-Standardrolle (Produkte, Kategorien, Preise, Lagerstatus, Papierkorb, endgültiges Löschen)
 
 Verantwortung:
 
-- `class-seller-role.php` (Barmbini_Core_Seller_Role):
-  - `get_capabilities()` liefert die Capability-Matrix (ein Ort der Wahrheit, testbar)
-  - `maybe_create_role()` legt die Rolle idempotent an (`get_role`-Check), kein Auto-Cleanup (konsistent zu `uninstall.php`)
-  - Selbstheilung über `admin_init` (nur für `manage_options`-Nutzer), damit die Rolle auch nach einem reinen Code-Deploy angelegt wird
-  - `prevent_permanent_delete()` über `map_meta_cap` blockiert das permanente Löschen aus dem Papierkorb für diese Rolle (nur Papierkorb = reversibel)
-  - Registriert in `class-plugin.php`/`register_seller_role_module()`; Aktivierung in `class-activator.php`/`activate()`
+- `class-roles.php` (Barmbini_Core_Roles):
+  - `migrate_legacy_seller_role()`: hängt alle Nutzer der Rolle `barmbini_verkaeufer` per `add_role('shop_manager')`/`remove_role('barmbini_verkaeufer')` um und entfernt die Alt-Rolle danach idempotent über `remove_role()` (No-op, wenn Alt-Rolle oder `shop_manager` fehlt)
+  - Selbstheilung über `admin_init` (nur für `manage_options`-Nutzer), damit die Migration auch nach einem reinen Code-Deploy ausgeführt wird
+  - Registriert in `class-plugin.php`/`register_roles_module()`; in `class-activator.php` keine Rollen-Anlage mehr nötig (Standardrollen verwaltet WooCommerce)
 
 ### 8. Anleitungs-Modul
 
