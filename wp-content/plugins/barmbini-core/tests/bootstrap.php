@@ -384,6 +384,8 @@ if ( ! function_exists( 'wp_roles' ) ) {
 		if ( ! isset( $GLOBALS['__wp_roles_obj'] ) || ! ( $GLOBALS['__wp_roles_obj'] instanceof Barmbini_Test_WP_Roles ) ) {
 			$GLOBALS['__wp_roles_obj'] = new Barmbini_Test_WP_Roles();
 		}
+		// Rolle-Auflistung mit den per add_role() angelegten Rollen synchronisieren.
+		$GLOBALS['__wp_roles_obj']->roles = $GLOBALS['__wp_roles'];
 		return $GLOBALS['__wp_roles_obj'];
 	}
 }
@@ -464,6 +466,18 @@ if ( ! function_exists( 'get_post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_trash_post' ) ) {
+	function wp_trash_post( $post_id ) {
+		$GLOBALS['__wp_trashed_posts'][] = $post_id;
+		foreach ( $GLOBALS['__wp_pages_by_path'] as $slug => $page ) {
+			if ( isset( $page->ID ) && (int) $page->ID === (int) $post_id ) {
+				unset( $GLOBALS['__wp_pages_by_path'][ $slug ] );
+			}
+		}
+		return (object) array( 'ID' => $post_id );
+	}
+}
+
 if ( ! function_exists( 'get_queried_object' ) ) {
 	function get_queried_object() {
 		$slug = isset( $GLOBALS['__wp_current_page'] ) ? $GLOBALS['__wp_current_page'] : '';
@@ -510,4 +524,5 @@ function _test_reset_all() {
 	$GLOBALS['__wp_current_page'] = '';
 	$GLOBALS['__wp_pages_by_path'] = array();
 	$GLOBALS['__wp_inserted_posts'] = array();
+	$GLOBALS['__wp_trashed_posts'] = array();
 }
