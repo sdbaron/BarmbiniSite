@@ -193,10 +193,32 @@ Eine JSON-Datei pro Tag, z. B. `/var/lib/barmbini-stats/stats/stats-2026-08-19.j
 
 ## Akzeptanzkriterien
 
-- [ ] Server: `process.sh` erzeugt täglich `stats-YYYY-MM-DD.json` (nur Aggregate, keine IPs/keine vollen Referrer-URLs)
-- [ ] Roh-Log-Rotation ≤ 7 Tage, Aggregate-Bereinigung nach 90 Tagen
-- [ ] Plugin 0.8.0: Admin-Seite „Statistiken“ zeigt Views, Besucher, Geräte, Top-Seiten, Top-Referrer (Zeitraum wählbar)
-- [ ] Shortcode `[barmbini_visitor_stats]` rendert Frontend-Block nur für Administrator/Redakteur
-- [ ] Verkäufer/Subscriber/Besucher sehen keine Statistik
-- [ ] Datenschutzerklärung aktualisiert + rechtliche Prüfung dokumentiert
-- [ ] Tests grün, Code gepusht, Deploy Modus B, Server-Runbook ausgeführt
+- [x] Server: `process.sh` erzeugt täglich `stats-YYYY-MM-DD.json` (nur Aggregate, keine IPs/keine vollen Referrer-URLs)
+- [x] Roh-Log-Rotation ≤ 7 Tage, Aggregate-Bereinigung nach 90 Tagen
+- [x] Plugin 0.8.0: Admin-Seite „Statistiken“ zeigt Views, Besucher, Geräte, Top-Seiten, Top-Referrer (Zeitraum wählbar)
+- [x] Shortcode `[barmbini_visitor_stats]` rendert Frontend-Block nur für Administrator/Redakteur
+- [x] Verkäufer/Subscriber/Besucher sehen keine Statistik
+- [x] Datenschutzerklärung aktualisiert + rechtliche Prüfung dokumentiert
+- [x] Tests grün, Code gepusht, Deploy Modus B, Server-Runbook ausgeführt
+
+## Ergebnis / Stand (2026-08-20)
+
+**Umgesetzt und live:**
+
+- Plugin `barmbini-core` **0.8.0**: `includes/stats/class-visitor-stats.php` (Barmbini_Core_Visitor_Stats) — Admin-Seite „Statistiken" (7/30/90 Tage) + Shortcode `[barmbini_visitor_stats]`; Capability `barmbini_view_stats` für Administrator + Redakteur.
+- Server-Runbook `server-config/barmbini-stats/` (process.php, process.sh, install.sh, logrotate, README) — installiert auf dem Live-Server:
+  - Verzeichnisse `/root/barmbini-stats`, `/var/lib/barmbini-stats/stats`
+  - logrotate `/etc/logrotate.d/nginx` angepasst (rotate 14 → **7**, delaycompress, Backup unter `/root/barmbini-stats/backups/`)
+  - Cron `/etc/cron.d/barmbini-stats` (täglich 07:15)
+- **Erste Daten** (Testlauf gegen `barmbini_access.log.1` vom 19.08.): `views=138`, `unique_visitors=57`, Geräte (mobile 32 / tablet 4 / desktop 102), Top-Seiten, Top-Referrer, `bots=3`. Aggregat in `/var/lib/barmbini-stats/stats/stats-2026-08-19.json`.
+- Plugin liest Aggregate auf dem Server korrekt (`read_aggregates` → views=138, uniques=57); Capabilities `admin`/`editor` = YES verifiziert.
+- Datenschutzerklärungs-Seite (`/datenschutz/`, ID 32) live aktualisiert: neuer Abschnitt „6. Besucherstatistik (anonymisiert)", Stand August 2026, Bullet in Abschnitt 2, Renummerierung (7/8/9). Backup: `/root/barmbini-dsgvo-backup-20260820-090123.txt`.
+
+**Git:** Commits `f7e81c8` (Plan), `82a4536` (Runbook + Plugin), `6b00212` (Datenschutzerklärung Doku) auf `main`.
+
+**Hinweise / offene Punkte:**
+
+- **Frontend-Einbindung:** Der Shortcode `[barmbini_visitor_stats]` kann auf einer internen Seite platziert werden (z. B. Seite „Statistiken"); bisher noch nicht auf einer Seite eingebunden.
+- **Referrer-Datenqualität:** Der Testlauf zeigt die Server-IP/Hostname (`217.160.74.128`, `ip217-160-74-128.pbiaas.com`) als Referrer — intern/Admin-Traffic. Optional als interne Hosts in `process.php` ergänzbar.
+- **Live-Seiten-Divergenz:** Die Live-Datenschutzerklärung enthielt vorher keinen Abschnitt „Kundenkonto, Abonnements und Benachrichtigungen" (anders als die Doku) — separates Folge-Ticket empfohlen.
+- **Rechtliche Prüfung:** Formulierung ist dokumentiert; abschließende datenschutzrechtliche Freigabe liegt beim Verantwortlichen.

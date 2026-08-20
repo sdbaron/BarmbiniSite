@@ -35,10 +35,15 @@ touch "$RUN_LOG"
 chmod 750 "$STATS_DIR"
 echo "[1/4] Verzeichnisse ok ($DEST, $STATS_DIR)"
 
-# 2. Skripte installieren
-cp "$SRC/process.php" "$SRC/process.sh" "$DEST/"
-chmod +x "$DEST/process.sh"
-echo "[2/4] Skripte nach $DEST kopiert"
+# 2. Skripte installieren (überspringen, wenn bereits im Zielverzeichnis)
+if [ "$SRC" != "$DEST" ]; then
+	cp "$SRC/process.php" "$SRC/process.sh" "$DEST/"
+	chmod +x "$DEST/process.sh"
+	echo "[2/4] Skripte nach $DEST kopiert"
+else
+	chmod +x "$DEST/process.sh"
+	echo "[2/4] Skripte bereits im Zielverzeichnis (kein Kopieren nötig)"
+fi
 
 # 3. logrotate: barmbini_access.log täglich, rotate 7, delaycompress
 if [ -f "$NGINX_LOGROTATE" ] && grep -q '/var/log/nginx/\*.log' "$NGINX_LOGROTATE"; then
