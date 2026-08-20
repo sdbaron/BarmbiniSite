@@ -220,5 +220,5 @@ Eine JSON-Datei pro Tag, z. B. `/var/lib/barmbini-stats/stats/stats-2026-08-19.j
 
 - **Frontend-Einbindung:** Der Shortcode `[barmbini_visitor_stats]` kann auf einer internen Seite platziert werden (z. B. Seite „Statistiken"); bisher noch nicht auf einer Seite eingebunden.
 - **Referrer-Datenqualität:** Der Testlauf zeigt die Server-IP/Hostname (`217.160.74.128`, `ip217-160-74-128.pbiaas.com`) als Referrer — intern/Admin-Traffic. Optional als interne Hosts in `process.php` ergänzbar.
-- **Live-Seiten-Divergenz:** Die Live-Datenschutzerklärung enthielt vorher keinen Abschnitt „Kundenkonto, Abonnements und Benachrichtigungen" (anders als die Doku) — separates Folge-Ticket empfohlen.
+- **Live-Seiten-Divergenz (behoben):** Die Live-Datenschutzerklärung enthielt zunächst keinen Abschnitt „Kundenkonto, Abonnements und Benachrichtigungen" (anders als die Doku). Am 2026-08-20 wurde der Abschnitt als „7. Kundenkonto, Abonnements und Benachrichtigungen" in die Live-Seite eingefügt (Backup: `/root/barmbini-dsgvo-backup-20260820-091655.txt`); Folgeabschnitte auf 8/9/10 renummeriert. Die Seite `/datenschutz/` entspricht damit wieder der Doku (`Docs/Barmbini_Rechtliche_Seiten.md`, Abschnitte 1–10).
 - **Rechtliche Prüfung:** Formulierung ist dokumentiert; abschließende datenschutzrechtliche Freigabe liegt beim Verantwortlichen.
