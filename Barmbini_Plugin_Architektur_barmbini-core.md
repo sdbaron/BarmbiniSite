@@ -268,17 +268,18 @@ Verantwortung:
 
 Zweck:
 
-- interne, ausführliche Schritt-für-Schritt-Anleitungen für die Rollen **„Redakteur“** und **„Verkäufer“**
-- **pro Seite** berechtigt: Redakteur sieht beide Anleitungen, der Verkäufer nur seine eigene
+- interne, ausführliche Schritt-für-Schritt-Anleitung für die Rolle **„Redakteur“**
+- nur die Seite `/anleitung-redakteur/` (Capability `barmbini_view_guide_redakteur` für Administrator + Redakteur)
 - Einstieg über Admin-Menüpunkt „Anleitungen“ und Links in der Admin-Bar
 
 Verantwortung:
 
 - `class-staff-guides.php` (Barmbini_Core_Staff_Guides):
-  - legt die Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-verkaeufer/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
-  - zwei Capabilities: `barmbini_view_guide_redakteur` (Administrator + Redakteur) und `barmbini_view_guide_verkaeufer` (Administrator + Redakteur + Verkäufer); veraltete Sammel-Capability `barmbini_view_guides` wird entfernt
-  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zu einer zugänglichen Anleitung (angemeldet); Seiten mit `noindex` gegen Suchmaschinen-Indexierung
-  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt nur zugängliche Karten) + Admin-Bar-Links (nur zugängliche Anleitungen)
+  - legt die Frontend-Seite `/anleitung-redakteur/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
+  - eine Capability: `barmbini_view_guide_redakteur` (Administrator + Redakteur); die veralteten Capabilities `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus allen Rollen entfernt
+  - seit 0.9.1 gibt es **keine Shop-Manager-Anleitung** mehr: Die frühere Seite `/anleitung-verkaeufer/` wird bei `admin_init` automatisch in den Papierkorb verschoben (`maybe_remove_obsolete_verkaeufer_page()` via `wp_trash_post`)
+  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zur Startseite (angemeldet); Seite mit `noindex` gegen Suchmaschinen-Indexierung
+  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt die Karte) + Admin-Bar-Link (nur zugänglich)
   - Registriert in `class-plugin.php`/`register_staff_guides_module()`
 
 ## Datenmodell
