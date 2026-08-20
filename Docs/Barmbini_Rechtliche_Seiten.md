@@ -39,7 +39,7 @@ Alter Teichweg 11, 22081 Hamburg
 ## Datenschutzerklärung
 
 **Sozialkaufhaus Barmbini**
-Stand: April 2026
+Stand: August 2026
 
 ---
 
@@ -63,6 +63,7 @@ Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Dat
 Diese Website:
 
 - verwendet keine Tracking-Tools (kein Google Analytics o.ä.)
+- erhebt keine personenbezogenen Besucherdaten; eine Besucherstatistik erfolgt ausschließlich anonymisiert (siehe Abschnitt 6)
 - lädt keine externen Schriften oder Dienste
 - bettet keine Google Maps iframes ein
 - setzt keine nicht notwendigen Cookies ein
@@ -104,7 +105,25 @@ Technisch notwendige Cookies bedürfen keiner Einwilligung gemäß § 25 Abs. 2 
 
 ---
 
-## 6. Kundenkonto, Abonnements und Benachrichtigungen
+## 6. Besucherstatistik (anonymisiert)
+
+Diese Website erstellt eine anonymisierte Besucherstatistik auf Basis der Server-Zugriffslogs. Dabei werden ausschließlich zusammengefasste Zählerwerte ausgewertet:
+
+- Anzahl der Seitenaufrufe (Views)
+- Anzahl der Besucher an einem Tag (anonym, ohne Cookies)
+- verwendete Gerätekategorien (Mobil / Tablet / Desktop)
+- verweisende Webseiten (nur die Domain, ohne einzelne Referrer-URLs)
+- besonders häufig aufgerufene Seiten
+
+Bei der Auswertung werden IP-Adressen nicht gespeichert und nicht über diesen Zweck hinaus verwendet. Es werden keine Cookies gesetzt, keine Besucherprofile erstellt und keine Daten an Dritte weitergegeben.
+
+Die zugrunde liegenden Rohdaten (Server-Logs) werden – wie unter „Hosting“ beschrieben – nach spätestens 7 Tagen gelöscht. Die anonymisierten Zählerwerte werden höchstens 90 Tage gespeichert und danach automatisch gelöscht.
+
+Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung unseres Angebots). Sie können der Verarbeitung jederzeit widersprechen (Art. 21 DSGVO).
+
+---
+
+## 7. Kundenkonto, Abonnements und Benachrichtigungen
 
 Wenn Sie ein Kundenkonto anlegen oder im Bereich `Mein Konto -> Abonnements` Benachrichtigungen aktivieren, verarbeiten wir zusätzlich die dafür erforderlichen personenbezogenen Daten.
 
@@ -140,7 +159,7 @@ Die Abo-Einstellungen werden grundsätzlich für die Dauer des aktiven Kundenkon
 
 ---
 
-## 7. Ihre Rechte
+## 8. Ihre Rechte
 
 Sie haben gegenüber uns folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:
 
@@ -156,7 +175,7 @@ Zur Ausübung Ihrer Rechte wenden Sie sich bitte an:
 
 ---
 
-## 8. Beschwerderecht
+## 9. Beschwerderecht
 
 Sie haben das Recht, sich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren:
 
@@ -166,6 +185,6 @@ Ludwig-Erhard-Str. 22, 20459 Hamburg
 
 ---
 
-## 9. Änderungen dieser Datenschutzerklärung
+## 10. Änderungen dieser Datenschutzerklärung
 
 Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, um sie stets den aktuellen rechtlichen Anforderungen entsprechend zu halten. Die jeweils aktuelle Version finden Sie auf dieser Seite.
