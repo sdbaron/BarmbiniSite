@@ -9,7 +9,7 @@
  *
  * - Admin-Seite „Statistiken" (Zeitraum 7/30/90 Tage)
  * - Shortcode `[barmbini_visitor_stats]` für die Frontend-Anzeige
- *   (rendert nur für Admin/Redakteur, sonst leerer String)
+ *   (rendert nur für Admin/Editor, sonst leerer String)
  *
  * Die Server-Seite erzeugt ausschließlich aggregierte, anonymisierte Werte
  * (keine IPs, keine vollen Referrer-URLs, keine Cookies). Siehe
@@ -44,7 +44,7 @@ class Barmbini_Core_Visitor_Stats {
 	}
 
 	/**
-	 * Vergibt die Statistik-Capability idempotent an Administrator + Redakteur.
+	 * Vergibt die Statistik-Capability idempotent an Administrator + Editor.
 	 *
 	 * @return void
 	 */
@@ -261,7 +261,7 @@ class Barmbini_Core_Visitor_Stats {
 	}
 
 	/**
-	 * Shortcode-Handler: rendert nur für Admin/Redakteur.
+	 * Shortcode-Handler: rendert nur für Admin/Editor.
 	 *
 	 * @param array|string $atts Shortcode-Attribute (optional `days`).
 	 * @return string

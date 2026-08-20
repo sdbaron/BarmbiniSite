@@ -193,7 +193,7 @@ class Barmbini_Core_Plugin {
 	}
 
 	/**
-	 * Registriert die Benutzerrolle „Verkäufer“ (Sortiment-Produktverwaltung).
+	 * Registriert die Benutzerrolle „Seller“ (Sortiment-Produktverwaltung).
 	 *
 	 * @return void
 	 */
@@ -203,7 +203,7 @@ class Barmbini_Core_Plugin {
 	}
 
 	/**
-	 * Registriert die internen Anleitungen (Redakteur & Verkäufer).
+	 * Registriert die internen Anleitungen (Editor & Seller).
 	 *
 	 * @return void
 	 */

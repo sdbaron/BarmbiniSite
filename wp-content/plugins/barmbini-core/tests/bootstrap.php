@@ -361,6 +361,22 @@ if ( ! function_exists( 'remove_role' ) ) {
 	}
 }
 
+if ( ! class_exists( 'Barmbini_Test_WP_Roles' ) ) {
+	class Barmbini_Test_WP_Roles {
+		public $role_key = 'user_roles';
+		public $roles    = array();
+	}
+}
+
+if ( ! function_exists( 'wp_roles' ) ) {
+	function wp_roles() {
+		if ( ! isset( $GLOBALS['__wp_roles_obj'] ) || ! ( $GLOBALS['__wp_roles_obj'] instanceof Barmbini_Test_WP_Roles ) ) {
+			$GLOBALS['__wp_roles_obj'] = new Barmbini_Test_WP_Roles();
+		}
+		return $GLOBALS['__wp_roles_obj'];
+	}
+}
+
 if ( ! function_exists( 'user_can' ) ) {
 	function user_can( $user, $capability, ...$args ) {
 		if ( is_object( $user ) && isset( $user->ID ) ) {
@@ -469,6 +485,7 @@ function _test_reset_all() {
 	$GLOBALS['__wp_filters']  = array();
 	$GLOBALS['__wp_widgets']  = array();
 	$GLOBALS['__wp_roles']    = array();
+	$GLOBALS['__wp_roles_obj'] = null;
 	$GLOBALS['__wp_user_caps'] = array();
 	$GLOBALS['__wp_posts']    = array();
 	$GLOBALS['__wp_current_user'] = 0;

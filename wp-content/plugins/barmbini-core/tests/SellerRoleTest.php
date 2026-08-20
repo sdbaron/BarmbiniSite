@@ -118,6 +118,46 @@ class SellerRoleTest extends TestCase {
 	}
 
 	// =================================================================
+	// get_role_names() / ensure_role_names() – Anzeigenamen Seller/Editor
+	// =================================================================
+
+	public function test_get_role_names_returns_seller_and_editor(): void {
+		$names = Barmbini_Core_Seller_Role::get_role_names();
+
+		$this->assertSame( 'Seller', $names['barmbini_verkaeufer'] );
+		$this->assertSame( 'Editor', $names['editor'] );
+	}
+
+	public function test_ensure_role_names_renames_to_seller_and_editor(): void {
+		$roles_obj            = wp_roles();
+		$roles_obj->roles     = array(
+			'barmbini_verkaeufer' => array( 'name' => 'Verkäufer', 'capabilities' => array() ),
+			'editor'              => array( 'name' => 'Redakteur', 'capabilities' => array() ),
+			'subscriber'          => array( 'name' => 'Abonnent', 'capabilities' => array() ),
+		);
+
+		$this->role->ensure_role_names();
+
+		$stored = get_option( 'user_roles' );
+		$this->assertSame( 'Seller', $stored['barmbini_verkaeufer']['name'] );
+		$this->assertSame( 'Editor', $stored['editor']['name'] );
+		// Unbeteiligte Rolle bleibt unverändert.
+		$this->assertSame( 'Abonnent', $stored['subscriber']['name'] );
+	}
+
+	public function test_ensure_role_names_is_idempotent(): void {
+		$roles_obj            = wp_roles();
+		$roles_obj->roles     = array(
+			'barmbini_verkaeufer' => array( 'name' => 'Seller', 'capabilities' => array() ),
+			'editor'              => array( 'name' => 'Editor', 'capabilities' => array() ),
+		);
+
+		$this->role->ensure_role_names();
+
+		$this->assertArrayNotHasKey( 'user_roles', $GLOBALS['__wp_options'], 'Kein erneuter Schreibvorgang bei unveränderten Namen' );
+	}
+
+	// =================================================================
 	// prevent_permanent_delete() – nur Papierkorb, kein permanentes Löschen
 	// =================================================================
 

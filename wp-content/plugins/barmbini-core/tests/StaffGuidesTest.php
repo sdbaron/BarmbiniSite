@@ -119,6 +119,9 @@ class StaffGuidesTest extends TestCase {
 		$this->assertStringContainsString( 'Deine Rolle', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 		$this->assertStringContainsString( 'Einen neuen Artikel anlegen', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 		$this->assertStringContainsString( 'Eine Aktion erstellen', Barmbini_Core_Staff_Guides::redakteur_content() );
+		// Umbenannte Rollenbezeichnungen.
+		$this->assertStringContainsString( 'Editor/in', Barmbini_Core_Staff_Guides::redakteur_content() );
+		$this->assertStringContainsString( 'Seller/in', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 	}
 
 	// =================================================================

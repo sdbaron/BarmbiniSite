@@ -1,17 +1,17 @@
 <?php
 /**
- * Barmbini Core – Interne Anleitungen (Redakteur & Verkäufer)
+ * Barmbini Core – Interne Anleitungen (Editor & Seller)
  *
  * Stellt zwei ausführliche Anleitungen für interne Mitarbeiter-Rollen bereit:
  *
- * - `/anleitung-redakteur/` – für die Rolle „Redakteur"
- * - `/anleitung-verkaeufer/` – für die Rolle „Verkäufer"
+ * - `/anleitung-redakteur/` – für die Rolle „Editor“
+ * - `/anleitung-verkaeufer/` – für die Rolle „Seller“
  *
  * Die Seiten werden vom Plugin automatisch angelegt (idempotent) und sind
  * rollenabhängig sichtbar:
  *
- * - `/anleitung-redakteur/` – Administrator und Redakteur (Capability `barmbini_view_guide_redakteur`)
- * - `/anleitung-verkaeufer/` – Administrator, Redakteur und Verkäufer (Capability `barmbini_view_guide_verkaeufer`)
+ * - `/anleitung-redakteur/` – Administrator und Editor (Capability `barmbini_view_guide_redakteur`)
+ * - `/anleitung-verkaeufer/` – Administrator, Editor und Seller (Capability `barmbini_view_guide_verkaeufer`)
  *
  * Besucher und andere Rollen werden umgeleitet; die Seiten sind zusätzlich mit
  * `noindex` gegen Suchmaschinen-Indexierung markiert.
@@ -70,8 +70,8 @@ class Barmbini_Core_Staff_Guides {
 	/**
 	 * Vergibt die Anleitungs-Capabilities idempotent an die erlaubten Rollen.
 	 *
-	 * Administrator und Redakteur sehen beide Anleitungen, der Verkäufer nur
-	 * die Verkäufer-Anleitung. Die veraltete Sammel-Capability
+	 * Administrator und Editor sehen beide Anleitungen, der Seller nur
+	 * die Seller-Anleitung. Die veraltete Sammel-Capability
 	 * `barmbini_view_guides` wird dabei entfernt.
 	 *
 	 * @return void
@@ -112,11 +112,11 @@ class Barmbini_Core_Staff_Guides {
 	public function ensure_pages() {
 		$pages = array(
 			self::PAGE_REDAKTEUR => array(
-				'title'   => __( 'Anleitung für Redakteure', 'barmbini-core' ),
+			'title'   => __( 'Anleitung für Editor', 'barmbini-core' ),
 				'content' => self::redakteur_content(),
 			),
 			self::PAGE_VERKAEUFER => array(
-				'title'   => __( 'Anleitung für Verkäufer', 'barmbini-core' ),
+			'title'   => __( 'Anleitung für Seller', 'barmbini-core' ),
 				'content' => self::verkaeufer_content(),
 			),
 		);
@@ -278,7 +278,7 @@ class Barmbini_Core_Staff_Guides {
 			$wp_admin_bar->add_node( array(
 				'id'     => 'barmbini-guide-redakteur',
 				'parent' => 'barmbini-guides',
-				'title'  => __( 'Für Redakteure', 'barmbini-core' ),
+				'title'  => __( 'Für Editor', 'barmbini-core' ),
 				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
 			) );
 		}
@@ -287,7 +287,7 @@ class Barmbini_Core_Staff_Guides {
 			$wp_admin_bar->add_node( array(
 				'id'     => 'barmbini-guide-verkaeufer',
 				'parent' => 'barmbini-guides',
-				'title'  => __( 'Für Verkäufer', 'barmbini-core' ),
+				'title'  => __( 'Für Seller', 'barmbini-core' ),
 				'href'   => home_url( '/' . self::PAGE_VERKAEUFER . '/' ),
 			) );
 		}
@@ -307,12 +307,12 @@ class Barmbini_Core_Staff_Guides {
 		$cards = array(
 			array(
 				'slug'  => self::PAGE_REDAKTEUR,
-				'title' => __( 'Anleitung für Redakteure', 'barmbini-core' ),
+				'title' => __( 'Anleitung für Editor', 'barmbini-core' ),
 				'desc'  => __( 'Aktionen anlegen, Beiträge pflegen, Produkte erstellen.', 'barmbini-core' ),
 			),
 			array(
 				'slug'  => self::PAGE_VERKAEUFER,
-				'title' => __( 'Anleitung für Verkäufer', 'barmbini-core' ),
+				'title' => __( 'Anleitung für Seller', 'barmbini-core' ),
 				'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren.', 'barmbini-core' ),
 			),
 		);
@@ -335,14 +335,14 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Inhalt der Anleitung für Redakteure.
+	 * Inhalt der Anleitung für Editor.
 	 *
 	 * @return string
 	 */
 	public static function redakteur_content() {
 		return <<<HTML
-<h2>1. Deine Rolle: Was du als Redakteur/in darfst</h2>
-<p>Du bist <strong>Redakteur/in</strong> auf der Website des Sozialkaufhauses Barmbini. Deine Aufgabe ist es, Inhalte zu pflegen: Neuigkeiten schreiben, Aktionen anlegen und Sortiment-Produkte erstellen und bearbeiten.</p>
+<h2>1. Deine Rolle: Was du als Editor/in darfst</h2>
+<p>Du bist <strong>Editor/in</strong> auf der Website des Sozialkaufhauses Barmbini. Deine Aufgabe ist es, Inhalte zu pflegen: Neuigkeiten schreiben, Aktionen anlegen und Sortiment-Produkte erstellen und bearbeiten.</p>
 <h3>Das kannst du tun</h3>
 <ul>
 <li><strong>Beiträge („Neuigkeiten“)</strong> erstellen und bearbeiten</li>
@@ -405,19 +405,19 @@ class Barmbini_Core_Staff_Guides {
 <h2>6. Häufige Fragen (FAQ)</h2>
 <p><strong>Kann ich eine Aktion wieder beenden?</strong><br>Ja. Öffne die Aktion und ändere das Enddatum auf ein Datum in der Vergangenheit – sie verschwindet dann automatisch.</p>
 <p><strong>Kann ich gelöschte Beiträge wiederherstellen?</strong><br>Ja. Gelöschte Inhalte landen zunächst im <strong>Papierkorb</strong> und können von dort wiederhergestellt werden.</p>
-<p><strong>Warum sehe ich manche Menüpunkte nicht?</strong><br>Als Redakteur/in hast du bewusst keinen Zugriff auf Plugins, Theme, Einstellungen und Benutzer. Das schützt die Website.</p>
+<p><strong>Warum sehe ich manche Menüpunkte nicht?</strong><br>Als Editor/in hast du bewusst keinen Zugriff auf Plugins, Theme, Einstellungen und Benutzer. Das schützt die Website.</p>
 HTML;
 	}
 
 	/**
-	 * Inhalt der Anleitung für Verkäufer.
+	 * Inhalt der Anleitung für Seller.
 	 *
 	 * @return string
 	 */
 	public static function verkaeufer_content() {
 		return <<<HTML
-<h2>1. Deine Rolle: Was du als Verkäufer/in darfst</h2>
-<p>Du bist <strong>Verkäufer/in</strong> im Sozialkaufhaus Barmbini. Deine Aufgabe ist es, das <strong>Sortiment</strong> zu pflegen: neue Artikel einstellen, Preise anpassen, Artikel als ausverkauft markieren und nicht mehr benötigte Artikel zu entfernen.</p>
+<h2>1. Deine Rolle: Was du als Seller/in darfst</h2>
+<p>Du bist <strong>Seller/in</strong> im Sozialkaufhaus Barmbini. Deine Aufgabe ist es, das <strong>Sortiment</strong> zu pflegen: neue Artikel einstellen, Preise anpassen, Artikel als ausverkauft markieren und nicht mehr benötigte Artikel zu entfernen.</p>
 <h3>Das kannst du tun</h3>
 <ul>
 <li><strong>Neue Artikel</strong> (Produkte) anlegen und veröffentlichen</li>
@@ -481,7 +481,7 @@ HTML;
 <h2>7. Häufige Fragen (FAQ)</h2>
 <p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
 <p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen im <strong>Papierkorb</strong>. Dort kannst du sie sehen und bei Bedarf wiederherstellen – oder der Papierkorb wird später geleert.</p>
-<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Nein. Als Verkäufer/in kannst du nur bestehende Kategorien zuordnen. Neue Kategorien legt ein Administrator an.</p>
+<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Nein. Als Seller/in kannst du nur bestehende Kategorien zuordnen. Neue Kategorien legt ein Administrator an.</p>
 <p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Du hast bewusst nur Zugriff auf die Produktverwaltung. Das hält die Website sicher und übersichtlich.</p>
 HTML;
 	}

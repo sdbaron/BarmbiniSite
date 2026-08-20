@@ -1,9 +1,9 @@
 <?php
 /**
- * Barmbini Core – Benutzerrolle „Verkäufer"
+ * Barmbini Core – Benutzerrolle „Seller“
  *
- * Definiert die Projektrolle `barmbini_verkaeufer` (Anzeigename „Verkäufer").
- * Der Verkäufer kann ausschließlich Sortiment-Produkte (WooCommerce) verwalten:
+ * Definiert die Projektrolle `barmbini_verkaeufer` (Anzeigename „Seller“).
+ * Der Seller kann ausschließlich Sortiment-Produkte (WooCommerce) verwalten:
  * neue Artikel anlegen, Preise anpassen, als ausverkauft markieren (nativer
  * Lagerstatus) und Artikel in den Papierkorb verschieben.
  *
@@ -38,6 +38,7 @@ class Barmbini_Core_Seller_Role {
 	 */
 	public function register() {
 		add_action( 'admin_init', array( 'Barmbini_Core_Seller_Role', 'maybe_create_role' ) );
+		add_action( 'admin_init', array( $this, 'ensure_role_names' ) );
 		add_filter( 'map_meta_cap', array( $this, 'prevent_permanent_delete' ), 10, 4 );
 
 		// WooCommerce leitet Nutzer ohne edit_posts/manage_woocommerce/manage_options
@@ -99,7 +100,47 @@ class Barmbini_Core_Seller_Role {
 			return;
 		}
 
-		add_role( self::ROLE_SLUG, __( 'Verkäufer', 'barmbini-core' ), self::get_capabilities() );
+		add_role( self::ROLE_SLUG, __( 'Seller', 'barmbini-core' ), self::get_capabilities() );
+	}
+
+	/**
+	 * Liefert die gewünschten Anzeigenamen je Rollen-Slug.
+	 *
+	 * Die technischen Slugs bleiben unverändert; nur die in der WP-Admin-Oberfläche
+	 * sichtbaren Namen werden auf die englischen Bezeichnungen gesetzt.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function get_role_names() {
+		return array(
+			self::ROLE_SLUG => 'Seller',
+			'editor'       => 'Editor',
+		);
+	}
+
+	/**
+	 * Aktualisiert die Anzeigenamen der Rollen idempotent (Self-Healing).
+	 *
+	 * Setzt den sichtbaren Namen von `barmbini_verkaeufer` auf „Seller“ und
+	 * der Kernrolle `editor` auf „Editor“ in der `user_roles`-Option, damit
+	 * die Umbenennung auch für bereits vorhandene Rollen greift.
+	 *
+	 * @return void
+	 */
+	public function ensure_role_names() {
+		$wp_roles = wp_roles();
+		$changed  = false;
+
+		foreach ( self::get_role_names() as $slug => $name ) {
+			if ( isset( $wp_roles->roles[ $slug ] ) && $wp_roles->roles[ $slug ]['name'] !== $name ) {
+				$wp_roles->roles[ $slug ]['name'] = $name;
+				$changed                          = true;
+			}
+		}
+
+		if ( $changed ) {
+			update_option( $wp_roles->role_key, $wp_roles->roles );
+		}
 	}
 
 	/**
