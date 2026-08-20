@@ -10,7 +10,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../includes/roles/class-seller-role.php';
+require_once __DIR__ . '/../includes/roles/class-roles.php';
 require_once __DIR__ . '/../includes/guides/class-staff-guides.php';
 
 class StaffGuidesTest extends TestCase {
@@ -39,12 +39,12 @@ class StaffGuidesTest extends TestCase {
 	// role_slugs()
 	// =================================================================
 
-	public function test_role_slugs_include_admin_editor_seller(): void {
+	public function test_role_slugs_include_admin_editor_shop_manager(): void {
 		$slugs = Barmbini_Core_Staff_Guides::role_slugs();
 
 		$this->assertContains( 'administrator', $slugs );
 		$this->assertContains( 'editor', $slugs );
-		$this->assertContains( 'barmbini_verkaeufer', $slugs );
+		$this->assertContains( 'shop_manager', $slugs );
 	}
 
 	// =================================================================
@@ -52,7 +52,7 @@ class StaffGuidesTest extends TestCase {
 	// =================================================================
 
 	public function test_ensure_capabilities_adds_cap_to_allowed_roles(): void {
-		Barmbini_Core_Seller_Role::maybe_create_role();
+		add_role( 'shop_manager', 'Shop Manager', array() );
 		// Standardrollen anlegen (administrator, editor, subscriber).
 		add_role( 'administrator', 'Administrator', array( 'manage_options' => true ) );
 		add_role( 'editor', 'Editor', array( 'edit_posts' => true ) );
@@ -66,16 +66,16 @@ class StaffGuidesTest extends TestCase {
 		// Redakteur: beide Anleitungen.
 		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_redakteur' ) );
 		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
-		// Verkäufer: nur Verkäufer-Anleitung.
-		$this->assertFalse( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_guide_redakteur' ) );
-		$this->assertTrue( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
+		// Shop Manager: nur Shop-Manager-Anleitung.
+		$this->assertFalse( get_role( 'shop_manager' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertTrue( get_role( 'shop_manager' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
 		// Subscriber: keine.
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_redakteur' ) );
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_verkaeufer' ) );
 	}
 
 	public function test_ensure_capabilities_removes_obsolete_capability(): void {
-		Barmbini_Core_Seller_Role::maybe_create_role();
+		add_role( 'shop_manager', 'Shop Manager', array() );
 		add_role( 'administrator', 'Administrator', array( 'manage_options' => true, 'barmbini_view_guides' => true ) );
 
 		$this->guides->ensure_capabilities();
@@ -119,9 +119,9 @@ class StaffGuidesTest extends TestCase {
 		$this->assertStringContainsString( 'Deine Rolle', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 		$this->assertStringContainsString( 'Einen neuen Artikel anlegen', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 		$this->assertStringContainsString( 'Eine Aktion erstellen', Barmbini_Core_Staff_Guides::redakteur_content() );
-		// Umbenannte Rollenbezeichnungen.
-		$this->assertStringContainsString( 'Editor/in', Barmbini_Core_Staff_Guides::redakteur_content() );
-		$this->assertStringContainsString( 'Seller/in', Barmbini_Core_Staff_Guides::verkaeufer_content() );
+		// Rollenbezeichnungen in den Anleitungen.
+		$this->assertStringContainsString( 'Redakteur/in', Barmbini_Core_Staff_Guides::redakteur_content() );
+		$this->assertStringContainsString( 'Shop Manager/in', Barmbini_Core_Staff_Guides::verkaeufer_content() );
 	}
 
 	// =================================================================

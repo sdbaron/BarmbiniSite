@@ -1,17 +1,17 @@
 <?php
 /**
- * Barmbini Core – Interne Anleitungen (Editor & Seller)
+ * Barmbini Core – Interne Anleitungen (Redakteur & Shop Manager)
  *
  * Stellt zwei ausführliche Anleitungen für interne Mitarbeiter-Rollen bereit:
  *
- * - `/anleitung-redakteur/` – für die Rolle „Editor“
- * - `/anleitung-verkaeufer/` – für die Rolle „Seller“
+ * - `/anleitung-redakteur/` – für die Rolle „Redakteur“
+ * - `/anleitung-verkaeufer/` – für die Rolle „Shop Manager“
  *
  * Die Seiten werden vom Plugin automatisch angelegt (idempotent) und sind
  * rollenabhängig sichtbar:
  *
- * - `/anleitung-redakteur/` – Administrator und Editor (Capability `barmbini_view_guide_redakteur`)
- * - `/anleitung-verkaeufer/` – Administrator, Editor und Seller (Capability `barmbini_view_guide_verkaeufer`)
+ * - `/anleitung-redakteur/` – Administrator und Redakteur (Capability `barmbini_view_guide_redakteur`)
+ * - `/anleitung-verkaeufer/` – Administrator, Redakteur und Shop Manager (Capability `barmbini_view_guide_verkaeufer`)
  *
  * Besucher und andere Rollen werden umgeleitet; die Seiten sind zusätzlich mit
  * `noindex` gegen Suchmaschinen-Indexierung markiert.
@@ -64,14 +64,14 @@ class Barmbini_Core_Staff_Guides {
 	 * @return array<int,string>
 	 */
 	public static function role_slugs() {
-		return array( 'administrator', 'editor', Barmbini_Core_Seller_Role::get_role_slug() );
+		return array( 'administrator', 'editor', 'shop_manager' );
 	}
 
 	/**
 	 * Vergibt die Anleitungs-Capabilities idempotent an die erlaubten Rollen.
 	 *
-	 * Administrator und Editor sehen beide Anleitungen, der Seller nur
-	 * die Seller-Anleitung. Die veraltete Sammel-Capability
+	 * Administrator und Redakteur sehen beide Anleitungen, der Shop Manager
+	 * nur die Shop-Manager-Anleitung. Die veraltete Sammel-Capability
 	 * `barmbini_view_guides` wird dabei entfernt.
 	 *
 	 * @return void
@@ -90,13 +90,13 @@ class Barmbini_Core_Staff_Guides {
 			}
 		}
 
-		$seller = get_role( Barmbini_Core_Seller_Role::get_role_slug() );
-		if ( $seller && ! $seller->has_cap( self::CAP_VERKAEUFER ) ) {
-			$seller->add_cap( self::CAP_VERKAEUFER );
+		$shop_manager = get_role( 'shop_manager' );
+		if ( $shop_manager && ! $shop_manager->has_cap( self::CAP_VERKAEUFER ) ) {
+			$shop_manager->add_cap( self::CAP_VERKAEUFER );
 		}
 
 		// Veraltete Sammel-Capability entfernen (seit 0.7.0).
-		foreach ( array( 'administrator', 'editor', Barmbini_Core_Seller_Role::get_role_slug() ) as $slug ) {
+		foreach ( array( 'administrator', 'editor', 'shop_manager' ) as $slug ) {
 			$role = get_role( $slug );
 			if ( $role && $role->has_cap( 'barmbini_view_guides' ) ) {
 				$role->remove_cap( 'barmbini_view_guides' );
@@ -112,11 +112,11 @@ class Barmbini_Core_Staff_Guides {
 	public function ensure_pages() {
 		$pages = array(
 			self::PAGE_REDAKTEUR => array(
-			'title'   => __( 'Anleitung für Editor', 'barmbini-core' ),
+			'title'   => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'content' => self::redakteur_content(),
 			),
 			self::PAGE_VERKAEUFER => array(
-			'title'   => __( 'Anleitung für Seller', 'barmbini-core' ),
+			'title'   => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
 				'content' => self::verkaeufer_content(),
 			),
 		);
@@ -278,7 +278,7 @@ class Barmbini_Core_Staff_Guides {
 			$wp_admin_bar->add_node( array(
 				'id'     => 'barmbini-guide-redakteur',
 				'parent' => 'barmbini-guides',
-				'title'  => __( 'Für Editor', 'barmbini-core' ),
+				'title'  => __( 'Für Redakteure', 'barmbini-core' ),
 				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
 			) );
 		}
@@ -287,7 +287,7 @@ class Barmbini_Core_Staff_Guides {
 			$wp_admin_bar->add_node( array(
 				'id'     => 'barmbini-guide-verkaeufer',
 				'parent' => 'barmbini-guides',
-				'title'  => __( 'Für Seller', 'barmbini-core' ),
+				'title'  => __( 'Für Shop Manager', 'barmbini-core' ),
 				'href'   => home_url( '/' . self::PAGE_VERKAEUFER . '/' ),
 			) );
 		}
@@ -307,12 +307,12 @@ class Barmbini_Core_Staff_Guides {
 		$cards = array(
 			array(
 				'slug'  => self::PAGE_REDAKTEUR,
-				'title' => __( 'Anleitung für Editor', 'barmbini-core' ),
+				'title' => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'desc'  => __( 'Aktionen anlegen, Beiträge pflegen, Produkte erstellen.', 'barmbini-core' ),
 			),
 			array(
 				'slug'  => self::PAGE_VERKAEUFER,
-				'title' => __( 'Anleitung für Seller', 'barmbini-core' ),
+				'title' => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
 				'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren.', 'barmbini-core' ),
 			),
 		);
@@ -335,14 +335,14 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Inhalt der Anleitung für Editor.
+	 * Inhalt der Anleitung für Redakteure.
 	 *
 	 * @return string
 	 */
 	public static function redakteur_content() {
 		return <<<HTML
-<h2>1. Deine Rolle: Was du als Editor/in darfst</h2>
-<p>Du bist <strong>Editor/in</strong> auf der Website des Sozialkaufhauses Barmbini. Deine Aufgabe ist es, Inhalte zu pflegen: Neuigkeiten schreiben, Aktionen anlegen und Sortiment-Produkte erstellen und bearbeiten.</p>
+<h2>1. Deine Rolle: Was du als Redakteur/in darfst</h2>
+<p>Du bist <strong>Redakteur/in</strong> auf der Website des Sozialkaufhauses Barmbini. Deine Aufgabe ist es, Inhalte zu pflegen: Neuigkeiten schreiben, Aktionen anlegen und Sortiment-Produkte erstellen und bearbeiten.</p>
 <h3>Das kannst du tun</h3>
 <ul>
 <li><strong>Beiträge („Neuigkeiten“)</strong> erstellen und bearbeiten</li>
@@ -405,32 +405,32 @@ class Barmbini_Core_Staff_Guides {
 <h2>6. Häufige Fragen (FAQ)</h2>
 <p><strong>Kann ich eine Aktion wieder beenden?</strong><br>Ja. Öffne die Aktion und ändere das Enddatum auf ein Datum in der Vergangenheit – sie verschwindet dann automatisch.</p>
 <p><strong>Kann ich gelöschte Beiträge wiederherstellen?</strong><br>Ja. Gelöschte Inhalte landen zunächst im <strong>Papierkorb</strong> und können von dort wiederhergestellt werden.</p>
-<p><strong>Warum sehe ich manche Menüpunkte nicht?</strong><br>Als Editor/in hast du bewusst keinen Zugriff auf Plugins, Theme, Einstellungen und Benutzer. Das schützt die Website.</p>
+<p><strong>Warum sehe ich manche Menüpunkte nicht?</strong><br>Als Redakteur/in hast du bewusst keinen Zugriff auf Plugins, Theme, Einstellungen und Benutzer. Das schützt die Website.</p>
 HTML;
 	}
 
 	/**
-	 * Inhalt der Anleitung für Seller.
+	 * Inhalt der Anleitung für Shop Manager.
 	 *
 	 * @return string
 	 */
 	public static function verkaeufer_content() {
 		return <<<HTML
-<h2>1. Deine Rolle: Was du als Seller/in darfst</h2>
-<p>Du bist <strong>Seller/in</strong> im Sozialkaufhaus Barmbini. Deine Aufgabe ist es, das <strong>Sortiment</strong> zu pflegen: neue Artikel einstellen, Preise anpassen, Artikel als ausverkauft markieren und nicht mehr benötigte Artikel zu entfernen.</p>
+<h2>1. Deine Rolle: Was du als Shop Manager/in darfst</h2>
+<p>Du bist <strong>Shop Manager/in</strong> im Sozialkaufhaus Barmbini. Deine Aufgabe ist es, das <strong>Sortiment</strong> zu pflegen: neue Artikel einstellen, Preise anpassen, Artikel als ausverkauft markieren und Artikel zu entfernen.</p>
 <h3>Das kannst du tun</h3>
 <ul>
 <li><strong>Neue Artikel</strong> (Produkte) anlegen und veröffentlichen</li>
 <li><strong>Preise</strong> anpassen</li>
 <li>Artikel als <strong>ausverkauft</strong> markieren</li>
-<li>Artikel in den <strong>Papierkorb</strong> verschieben</li>
+<li>Artikel löschen (Papierkorb oder endgültig)</li>
+<li><strong>Kategorien</strong> anlegen und pflegen</li>
 </ul>
 <h3>Das kannst du nicht tun</h3>
 <ul>
-<li>Beiträge, Seiten oder Aktionen bearbeiten</li>
-<li>Kategorien anlegen, umbenennen oder löschen (nur zuordnen)</li>
-<li>Plugins, Theme, Einstellungen oder Benutzer verwalten</li>
-<li>Artikel <strong>endgültig</strong> löschen – gelöschte Artikel landen im Papierkorb</li>
+<li>Plugins, Theme oder allgemeine WordPress-Einstellungen verwalten</li>
+<li>Benutzerkonten verwalten</li>
+<li>Systemupdates oder sicherheitsrelevante Änderungen</li>
 </ul>
 <hr>
 <h2>2. Einen neuen Artikel anlegen</h2>
@@ -463,12 +463,12 @@ HTML;
 </ol>
 <p>Der Artikel bleibt im Sortiment sichtbar, wird aber als nicht mehr verfügbar gekennzeichnet.</p>
 <hr>
-<h2>5. Einen Artikel entfernen (Papierkorb)</h2>
+<h2>5. Einen Artikel entfernen</h2>
 <ol>
 <li>Öffne unter <strong>Produkte → Alle Produkte</strong> die Liste.</li>
 <li>Fahre mit der Maus über den Artikel und klicke auf <strong>Papierkorb</strong> (oder öffne ihn und wähle <strong>In den Papierkorb verschieben</strong>).</li>
 </ol>
-<p><strong>Wichtig:</strong> Artikel werden nie endgültig gelöscht, sondern nur in den Papierkorb verschoben. So kannst du einen versehentlich entfernten Artikel wiederherstellen.</p>
+<p><strong>Tipp:</strong> Verschiebe Artikel zuerst in den <strong>Papierkorb</strong> – so kannst du versehentlich entfernte Artikel wiederherstellen. Endgültig löschen kannst du erst aus dem Papierkorb („Endgültig löschen“ oder „Papierkorb leeren“).</p>
 <hr>
 <h2>6. Tipps für die tägliche Arbeit</h2>
 <ul>
@@ -480,9 +480,9 @@ HTML;
 <hr>
 <h2>7. Häufige Fragen (FAQ)</h2>
 <p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
-<p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen im <strong>Papierkorb</strong>. Dort kannst du sie sehen und bei Bedarf wiederherstellen – oder der Papierkorb wird später geleert.</p>
-<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Nein. Als Seller/in kannst du nur bestehende Kategorien zuordnen. Neue Kategorien legt ein Administrator an.</p>
-<p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Du hast bewusst nur Zugriff auf die Produktverwaltung. Das hält die Website sicher und übersichtlich.</p>
+<p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen zunächst im <strong>Papierkorb</strong>. Dort kannst du sie wiederherstellen oder endgültig löschen.</p>
+<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Ja. Als Shop Manager/in kannst du unter <strong>Produkte → Kategorien</strong> Kategorien anlegen, umbenennen und löschen.</p>
+<p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen und Benutzer. Das hält die Website sicher und übersichtlich.</p>
 HTML;
 	}
 }

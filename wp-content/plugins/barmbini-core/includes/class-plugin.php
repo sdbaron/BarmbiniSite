@@ -35,7 +35,7 @@ class Barmbini_Core_Plugin {
 		$this->register_contact_form_honeypot_module();
 		$this->register_address_settings_module();
 		$this->register_login_limiter_module();
-		$this->register_seller_role_module();
+		$this->register_roles_module();
 		$this->register_staff_guides_module();
 		$this->register_visitor_stats_module();
 	}
@@ -193,13 +193,13 @@ class Barmbini_Core_Plugin {
 	}
 
 	/**
-	 * Registriert die Benutzerrolle „Seller“ (Sortiment-Produktverwaltung).
+	 * Registriert die Rollen-Pflege (Migration zu Shop Manager, alte Seller-Rolle entfernen).
 	 *
 	 * @return void
 	 */
-	protected function register_seller_role_module() {
-		$seller_role = new Barmbini_Core_Seller_Role();
-		$seller_role->register();
+	protected function register_roles_module() {
+		$roles = new Barmbini_Core_Roles();
+		$roles->register();
 	}
 
 	/**

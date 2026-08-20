@@ -10,9 +10,6 @@ class Barmbini_Core_Activator {
 		self::create_queue_table();
 		add_rewrite_endpoint( 'abonnements', EP_ROOT | EP_PAGES );
 		flush_rewrite_rules();
-
-		// Rolle „Seller“ idempotent anlegen.
-		Barmbini_Core_Seller_Role::maybe_create_role();
 	}
 
 	protected static function create_log_table() {

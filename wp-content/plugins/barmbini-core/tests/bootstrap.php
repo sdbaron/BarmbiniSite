@@ -308,9 +308,20 @@ if ( ! class_exists( 'WP_Widget' ) ) {
 if ( ! class_exists( 'WP_User' ) ) {
 	class WP_User {
 		public $ID;
+		public $roles = array();
 
 		public function __construct( $id = 0 ) {
 			$this->ID = $id;
+		}
+
+		public function add_role( $role ) {
+			if ( ! in_array( $role, $this->roles, true ) ) {
+				$this->roles[] = $role;
+			}
+		}
+
+		public function remove_role( $role ) {
+			$this->roles = array_values( array_diff( $this->roles, array( $role ) ) );
 		}
 	}
 }
@@ -374,6 +385,12 @@ if ( ! function_exists( 'wp_roles' ) ) {
 			$GLOBALS['__wp_roles_obj'] = new Barmbini_Test_WP_Roles();
 		}
 		return $GLOBALS['__wp_roles_obj'];
+	}
+}
+
+if ( ! function_exists( 'get_users' ) ) {
+	function get_users( $args = array() ) {
+		return isset( $GLOBALS['__wp_users'] ) ? $GLOBALS['__wp_users'] : array();
 	}
 }
 
@@ -486,6 +503,7 @@ function _test_reset_all() {
 	$GLOBALS['__wp_widgets']  = array();
 	$GLOBALS['__wp_roles']    = array();
 	$GLOBALS['__wp_roles_obj'] = null;
+	$GLOBALS['__wp_users']    = array();
 	$GLOBALS['__wp_user_caps'] = array();
 	$GLOBALS['__wp_posts']    = array();
 	$GLOBALS['__wp_current_user'] = 0;

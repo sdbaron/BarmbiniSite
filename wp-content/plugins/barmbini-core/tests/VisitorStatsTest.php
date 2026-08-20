@@ -10,7 +10,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-require_once __DIR__ . '/../includes/roles/class-seller-role.php';
+require_once __DIR__ . '/../includes/roles/class-roles.php';
 require_once __DIR__ . '/../includes/stats/class-visitor-stats.php';
 
 class VisitorStatsTest extends TestCase {
@@ -58,7 +58,7 @@ class VisitorStatsTest extends TestCase {
 	// =================================================================
 
 	public function test_capability_granted_to_admin_and_editor_only(): void {
-		Barmbini_Core_Seller_Role::maybe_create_role();
+		add_role( 'shop_manager', 'Shop Manager', array() );
 		add_role( 'administrator', 'Administrator', array( 'manage_options' => true ) );
 		add_role( 'editor', 'Editor', array( 'edit_posts' => true ) );
 		add_role( 'subscriber', 'Subscriber', array( 'read' => true ) );
@@ -67,7 +67,7 @@ class VisitorStatsTest extends TestCase {
 
 		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_stats' ) );
 		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_stats' ) );
-		$this->assertFalse( get_role( 'barmbini_verkaeufer' )->has_cap( 'barmbini_view_stats' ) );
+		$this->assertFalse( get_role( 'shop_manager' )->has_cap( 'barmbini_view_stats' ) );
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_stats' ) );
 	}
 
