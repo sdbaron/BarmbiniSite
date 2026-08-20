@@ -1,0 +1,16 @@
+# Barmbini – nginx-Zugriffslog für die Besucherstatistik
+# Wird nur installiert, falls /etc/logrotate.d/nginx die Datei nicht abdeckt.
+/var/log/nginx/barmbini_access.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+        if [ -f /run/nginx.pid ]; then
+            kill -USR1 $(cat /run/nginx.pid)
+        fi
+    endscript
+}
