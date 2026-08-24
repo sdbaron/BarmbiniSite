@@ -1,24 +1,28 @@
 <?php
 /**
- * Barmbini Core – Interne Anleitung für Redakteure
+ * Barmbini Core – Interne Anleitungen (Redakteur & Shop Manager)
  *
- * Stellt eine ausführliche Anleitung für die Rolle „Redakteur“ bereit:
+ * Stellt zwei ausführliche Anleitungen für interne Mitarbeiter-Rollen bereit:
  *
  * - `/anleitung-redakteur/` – für die Rolle „Redakteur“ (Capability `barmbini_view_guide_redakteur`)
+ * - `/anleitung-shop-manager/` – für die Rolle „Shop Manager“ (Capability `barmbini_view_guide_shop_manager`)
  *
- * Die Seite wird vom Plugin automatisch angelegt (idempotent) und ist
- * rollenabhängig sichtbar (Administrator und Redakteur).
+ * Die Seiten werden vom Plugin automatisch angelegt (idempotent) und sind
+ * rollenabhängig sichtbar:
  *
- * Besucher und andere Rollen werden umgeleitet; die Seite ist zusätzlich mit
+ * - `/anleitung-redakteur/` – Administrator und Redakteur
+ * - `/anleitung-shop-manager/` – Administrator, Redakteur und Shop Manager
+ *
+ * Besucher und andere Rollen werden umgeleitet; die Seiten sind zusätzlich mit
  * `noindex` gegen Suchmaschinen-Indexierung markiert.
  *
- * Zusätzlich gibt es einen kurzen Admin-Menüpunkt „Anleitungen“ sowie einen
- * Link in der Admin-Bar, damit die berechtigten Rollen die Seite schnell finden.
+ * Zusätzlich gibt es einen kurzen Admin-Menüpunkt „Anleitungen“ sowie Links
+ * in der Admin-Bar, damit die berechtigten Rollen die Seiten schnell finden.
  *
- * Seit 0.9.1 gibt es keine eigene Shop-Manager-Anleitung mehr: Die frühere
- * Seite `/anleitung-verkaeufer/` wird bei `admin_init` automatisch in den
- * Papierkorb verschoben und die veraltete Capability `barmbini_view_guide_verkaeufer`
- * wird entfernt.
+ * Seit 0.9.3 wird der frühere Slug `/anleitung-verkaeufer/` (aus der
+ * Verkäufer-/Seller-Ära) nicht mehr verwendet; eine veraltete Seite dieses
+ * Slugs wird bei `admin_init` endgültig gelöscht und die veraltete Capability
+ * `barmbini_view_guide_verkaeufer` wird aus allen Rollen entfernt.
  *
  * @package Barmbini_Core
  * @since 0.7.1
@@ -30,14 +34,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Barmbini_Core_Staff_Guides {
 
-	const PAGE_REDAKTEUR = 'anleitung-redakteur';
-	const CAP_REDAKTEUR  = 'barmbini_view_guide_redakteur';
-	const MENU_SLUG      = 'barmbini-anleitungen';
+	const PAGE_REDAKTEUR    = 'anleitung-redakteur';
+	const PAGE_SHOP_MANAGER = 'anleitung-shop-manager';
+	const CAP_REDAKTEUR     = 'barmbini_view_guide_redakteur';
+	const CAP_SHOP_MANAGER  = 'barmbini_view_guide_shop_manager';
+	const MENU_SLUG         = 'barmbini-anleitungen';
 
-	/** @deprecated Seit 0.9.1 – nur noch für die Entfernung der Alt-Seite. */
+	/** @deprecated Seit 0.9.3 – nur noch für den Cleanup der Alt-Seite. */
 	const PAGE_VERKAEUFER = 'anleitung-verkaeufer';
 
-	/** @deprecated Seit 0.9.1 – wird aus allen Rollen entfernt. */
+	/** @deprecated Seit 0.9.3 – wird aus allen Rollen entfernt. */
 	const CAP_VERKAEUFER = 'barmbini_view_guide_verkaeufer';
 
 	/**
@@ -48,7 +54,7 @@ class Barmbini_Core_Staff_Guides {
 	public function register() {
 		add_action( 'admin_init', array( $this, 'ensure_capabilities' ) );
 		add_action( 'admin_init', array( $this, 'ensure_pages' ) );
-		add_action( 'admin_init', array( $this, 'maybe_remove_obsolete_verkaeufer_page' ) );
+		add_action( 'admin_init', array( $this, 'maybe_cleanup_legacy_verkaeufer_page' ) );
 		add_action( 'template_redirect', array( $this, 'gate_frontend_pages' ) );
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 		add_action( 'admin_bar_menu', array( $this, 'register_admin_bar_links' ), 90 );
@@ -56,29 +62,30 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Liefert die Slugs der Anleitungsseiten.
+	 * Liefert die Slugs der beiden Anleitungsseiten.
 	 *
 	 * @return array<int,string>
 	 */
 	public static function get_guide_slugs() {
-		return array( self::PAGE_REDAKTEUR );
+		return array( self::PAGE_REDAKTEUR, self::PAGE_SHOP_MANAGER );
 	}
 
 	/**
-	 * Liefert die Rollen, die die Anleitung sehen dürfen.
+	 * Liefert die Rollen, die die Anleitungen sehen dürfen.
 	 *
 	 * @return array<int,string>
 	 */
 	public static function role_slugs() {
-		return array( 'administrator', 'editor' );
+		return array( 'administrator', 'editor', 'shop_manager' );
 	}
 
 	/**
-	 * Vergibt die Anleitungs-Capability idempotent an die erlaubten Rollen.
+	 * Vergibt die Anleitungs-Capabilities idempotent an die erlaubten Rollen.
 	 *
-	 * Administrator und Redakteur erhalten `barmbini_view_guide_redakteur`.
-	 * Die veralteten Capabilities `barmbini_view_guide_verkaeufer` und
-	 * `barmbini_view_guides` werden aus allen Rollen entfernt.
+	 * Administrator und Redakteur sehen beide Anleitungen, der Shop Manager nur
+	 * die Shop-Manager-Anleitung. Die veralteten Capabilities
+	 * `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus
+	 * allen Rollen entfernt.
 	 *
 	 * @return void
 	 */
@@ -91,9 +98,17 @@ class Barmbini_Core_Staff_Guides {
 			if ( ! $role->has_cap( self::CAP_REDAKTEUR ) ) {
 				$role->add_cap( self::CAP_REDAKTEUR );
 			}
+			if ( ! $role->has_cap( self::CAP_SHOP_MANAGER ) ) {
+				$role->add_cap( self::CAP_SHOP_MANAGER );
+			}
 		}
 
-		// Veraltete Capabilities entfernen (seit 0.9.1: keine Shop-Manager-Anleitung).
+		$shop_manager = get_role( 'shop_manager' );
+		if ( $shop_manager && ! $shop_manager->has_cap( self::CAP_SHOP_MANAGER ) ) {
+			$shop_manager->add_cap( self::CAP_SHOP_MANAGER );
+		}
+
+		// Veraltete Capabilities entfernen.
 		foreach ( wp_roles()->roles as $slug => $_role ) {
 			$role = get_role( $slug );
 			if ( ! $role ) {
@@ -109,43 +124,58 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Legt die Anleitungsseite an, falls sie noch nicht existiert.
+	 * Legt die beiden Anleitungsseiten an, falls sie noch nicht existieren.
 	 *
 	 * @return void
 	 */
 	public function ensure_pages() {
-		if ( get_page_by_path( self::PAGE_REDAKTEUR ) ) {
-			return;
-		}
+		$pages = array(
+			self::PAGE_REDAKTEUR => array(
+				'title'   => __( 'Anleitung für Redakteure', 'barmbini-core' ),
+				'content' => self::redakteur_content(),
+			),
+			self::PAGE_SHOP_MANAGER => array(
+				'title'   => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
+				'content' => self::shop_manager_content(),
+			),
+		);
 
-		wp_insert_post( array(
-			'post_type'    => 'page',
-			'post_status'  => 'publish',
-			'post_title'   => __( 'Anleitung für Redakteure', 'barmbini-core' ),
-			'post_name'    => self::PAGE_REDAKTEUR,
-			'post_content' => self::redakteur_content(),
-		) );
+		foreach ( $pages as $slug => $data ) {
+			if ( get_page_by_path( $slug ) ) {
+				continue;
+			}
+
+			wp_insert_post( array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => $data['title'],
+				'post_name'    => $slug,
+				'post_content' => $data['content'],
+			) );
+		}
 	}
 
 	/**
-	 * Entfernt die veraltete Shop-Manager-Anleitung (seit 0.9.1).
+	 * Entfernt eine veraltete Anleitungsseite mit dem alten Slug (seit 0.9.3).
 	 *
-	 * Die Seite wird in den Papierkorb verschoben (reversibel), damit keine
-	 * verwaiste, unberechtigte Anleitung mehr öffentlich erreichbar ist.
+	 * Der Slug `anleitung-verkaeufer` stammt aus der Verkäufer-/Seller-Ära und
+	 * wird nicht mehr genutzt. Eine veröffentlichte Alt-Seite wird endgültig
+	 * gelöscht (reversibel nur über das DB-Backup). Die Live-Seite im Papierkorb
+	 * wird bei der Migration manuell entfernt.
 	 *
 	 * @return void
 	 */
-	public function maybe_remove_obsolete_verkaeufer_page() {
+	public function maybe_cleanup_legacy_verkaeufer_page() {
 		$page = get_page_by_path( self::PAGE_VERKAEUFER );
 		if ( ! $page || empty( $page->ID ) ) {
 			return;
 		}
 
-		wp_trash_post( $page->ID );
+		wp_delete_post( $page->ID, true );
 	}
 
 	/**
-	 * Prüft, ob die aktuelle Seite die Anleitungsseite ist.
+	 * Prüft, ob die aktuelle Seite eine der Anleitungsseiten ist.
 	 *
 	 * @return bool
 	 */
@@ -154,7 +184,7 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Prüft, ob der aktuelle Besucher die Anleitung sehen darf.
+	 * Prüft, ob der aktuelle Besucher eine bestimmte Anleitung sehen darf.
 	 *
 	 * @param string $slug Seiten-Slug der Anleitung.
 	 * @return bool
@@ -163,17 +193,20 @@ class Barmbini_Core_Staff_Guides {
 		if ( self::PAGE_REDAKTEUR === $slug ) {
 			return current_user_can( self::CAP_REDAKTEUR );
 		}
+		if ( self::PAGE_SHOP_MANAGER === $slug ) {
+			return current_user_can( self::CAP_SHOP_MANAGER );
+		}
 
 		return false;
 	}
 
 	/**
-	 * Prüft, ob der Besucher die Anleitung sehen darf.
+	 * Prüft, ob der Besucher mindestens eine Anleitung sehen darf.
 	 *
 	 * @return bool
 	 */
 	public function can_view_any() {
-		return current_user_can( self::CAP_REDAKTEUR );
+		return current_user_can( self::CAP_REDAKTEUR ) || current_user_can( self::CAP_SHOP_MANAGER );
 	}
 
 	/**
@@ -193,7 +226,7 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Liefert die URL der für den Besucher zugänglichen Anleitung.
+	 * Liefert die URL der ersten für den Besucher zugänglichen Anleitung.
 	 *
 	 * @return string Leer, wenn keine Anleitung zugänglich ist.
 	 */
@@ -201,12 +234,15 @@ class Barmbini_Core_Staff_Guides {
 		if ( current_user_can( self::CAP_REDAKTEUR ) ) {
 			return home_url( '/' . self::PAGE_REDAKTEUR . '/' );
 		}
+		if ( current_user_can( self::CAP_SHOP_MANAGER ) ) {
+			return home_url( '/' . self::PAGE_SHOP_MANAGER . '/' );
+		}
 
 		return '';
 	}
 
 	/**
-	 * Schützt die Anleitungsseite vor nicht berechtigten Besuchern.
+	 * Schützt die Anleitungsseiten vor nicht berechtigten Besuchern.
 	 *
 	 * @return void
 	 */
@@ -228,7 +264,7 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Verhindert die Indexierung der Anleitungsseite durch Suchmaschinen.
+	 * Verhindert die Indexierung der Anleitungsseiten durch Suchmaschinen.
 	 *
 	 * @param array<string,bool> $robots Bestehende Robots-Direktiven.
 	 * @return array<string,bool>
@@ -251,7 +287,7 @@ class Barmbini_Core_Staff_Guides {
 		add_menu_page(
 			__( 'Anleitungen', 'barmbini-core' ),
 			__( 'Anleitungen', 'barmbini-core' ),
-			self::CAP_REDAKTEUR,
+			self::CAP_SHOP_MANAGER,
 			self::MENU_SLUG,
 			array( $this, 'render_admin_landing' ),
 			'dashicons-welcome-learn-more',
@@ -260,7 +296,7 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Registriert einen Schnellzugriff-Link in der Admin-Bar.
+	 * Registriert Schnellzugriff-Links in der Admin-Bar.
 	 *
 	 * @param WP_Admin_Bar $wp_admin_bar Admin-Bar-Objekt.
 	 * @return void
@@ -284,17 +320,26 @@ class Barmbini_Core_Staff_Guides {
 				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
 			) );
 		}
+
+		if ( current_user_can( self::CAP_SHOP_MANAGER ) ) {
+			$wp_admin_bar->add_node( array(
+				'id'     => 'barmbini-guide-shop-manager',
+				'parent' => 'barmbini-guides',
+				'title'  => __( 'Für Shop Manager', 'barmbini-core' ),
+				'href'   => home_url( '/' . self::PAGE_SHOP_MANAGER . '/' ),
+			) );
+		}
 	}
 
 	/**
-	 * Rendert die Einstiegsseite im Admin mit Link zur Anleitung.
+	 * Rendert die Einstiegsseite im Admin mit Links zu beiden Anleitungen.
 	 *
 	 * @return void
 	 */
 	public function render_admin_landing() {
 		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Interne Anleitung', 'barmbini-core' ) . '</h1>';
-		echo '<p>' . esc_html__( 'Hier findest du die Schritt-für-Schritt-Anleitung für deine Aufgabe.', 'barmbini-core' ) . '</p>';
+		echo '<h1>' . esc_html__( 'Interne Anleitungen', 'barmbini-core' ) . '</h1>';
+		echo '<p>' . esc_html__( 'Hier findest du die Schritt-für-Schritt-Anleitungen für deine Aufgabe.', 'barmbini-core' ) . '</p>';
 		echo '<div style="display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;">';
 
 		$cards = array(
@@ -302,6 +347,11 @@ class Barmbini_Core_Staff_Guides {
 				'slug'  => self::PAGE_REDAKTEUR,
 				'title' => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'desc'  => __( 'Aktionen anlegen, Beiträge pflegen, Seiten bearbeiten, Produkte erstellen.', 'barmbini-core' ),
+			),
+			array(
+				'slug'  => self::PAGE_SHOP_MANAGER,
+				'title' => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
+				'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren, Kategorien pflegen.', 'barmbini-core' ),
 			),
 		);
 
@@ -493,6 +543,92 @@ class Barmbini_Core_Staff_Guides {
 <p><strong>Kann ich einen Artikel endgültig löschen?</strong><br>Artikel verschiebst du am besten in den <strong>Papierkorb</strong>. Endgültig löschen ist im Normalfall nicht nötig – der Papierkorb hält das Sortiment sauber und erlaubt Korrekturen.</p>
 <p><strong>Ich habe einen Fehler veröffentlicht. Was tun?</strong><br>Kein Problem: Öffne den Inhalt, korrigiere den Text und klicke auf <strong>Aktualisieren</strong>. Die Korrektur ist sofort live.</p>
 <p><strong>Wie finde ich ein Bild in der Mediathek wieder?</strong><br>Nutze oben in der Mediathek das <strong>Suchfeld</strong> oder filtere nach Dateityp („Bilder“). Achte beim Hochladen auf sprechende Dateinamen.</p>
+HTML;
+	}
+
+	/**
+	 * Inhalt der Anleitung für Shop Manager.
+	 *
+	 * @return string
+	 */
+	public static function shop_manager_content() {
+		return <<<HTML
+<h2>1. Deine Rolle: Was du als Shop Manager/in darfst</h2>
+<p>Du bist <strong>Shop Manager/in</strong> im Sozialkaufhaus Barmbini. Deine Aufgabe ist es, das <strong>Sortiment</strong> zu pflegen: neue Artikel einstellen, Preise anpassen, Artikel als ausverkauft markieren, Kategorien pflegen und Artikel zu entfernen.</p>
+<h3>Das kannst du tun</h3>
+<ul>
+<li><strong>Neue Artikel</strong> (Produkte) anlegen und veröffentlichen</li>
+<li><strong>Preise</strong> anpassen</li>
+<li>Artikel als <strong>ausverkauft</strong> markieren</li>
+<li>Artikel löschen (Papierkorb oder endgültig aus dem Papierkorb)</li>
+<li><strong>Kategorien</strong> anlegen, umbenennen und löschen</li>
+</ul>
+<h3>Das kannst du nicht tun</h3>
+<ul>
+<li>Plugins, Theme oder allgemeine WordPress-Einstellungen verwalten</li>
+<li>Benutzerkonten verwalten</li>
+<li>Systemupdates oder sicherheitsrelevante Änderungen</li>
+<li>Beiträge, Seiten und Aktionen pflegen (dafür ist der Redakteur zuständig)</li>
+</ul>
+<hr>
+<h2>2. Einen neuen Artikel anlegen</h2>
+<ol>
+<li>Klicke im Menü auf <strong>Produkte → Neues Produkt hinzufügen</strong>.</li>
+<li>Vergib einen klaren <strong>Namen</strong>, z.&nbsp;B. „Kinderjacke Größe 110“.</li>
+<li>Schreibe eine kurze <strong>Beschreibung</strong> (Zustand, Größe, Besonderheiten).</li>
+<li>Setze den <strong>Preis</strong> unter <strong>Produktdaten → Allgemein</strong>.</li>
+<li>Lade unter <strong>Produktbild</strong> ein aussagekräftiges Foto hoch.</li>
+<li>Ordne rechts die passende <strong>Kategorie</strong> zu (z.&nbsp;B. „Kleidung“).</li>
+<li>Klicke auf <strong>Veröffentlichen</strong>.</li>
+</ol>
+<p><strong>Tipp:</strong> Ein gutes Foto und ein ehrlicher Zustandshinweis verkaufen sich am besten.</p>
+<hr>
+<h2>3. Einen Preis anpassen</h2>
+<ol>
+<li>Öffne unter <strong>Produkte → Alle Produkte</strong> den Artikel.</li>
+<li>Wechsle zum Bereich <strong>Produktdaten → Allgemein</strong>.</li>
+<li>Ändere das Feld <strong>Preis</strong>.</li>
+<li>Klicke auf <strong>Aktualisieren</strong> (rechts oben).</li>
+</ol>
+<p>Der neue Preis ist sofort im Sortiment sichtbar.</p>
+<hr>
+<h2>4. Einen Artikel als ausverkauft markieren</h2>
+<ol>
+<li>Öffne den Artikel unter <strong>Produkte → Alle Produkte</strong>.</li>
+<li>Wechsle zum Bereich <strong>Produktdaten → Lagerbestand</strong>.</li>
+<li>Setze das Feld <strong>Lagerstatus</strong> auf <strong>Auf Lager / Ausverkauft</strong> – wähle <strong>Ausverkauft</strong>.</li>
+<li>Klicke auf <strong>Aktualisieren</strong>.</li>
+</ol>
+<p>Der Artikel bleibt im Sortiment sichtbar, wird aber als nicht mehr verfügbar gekennzeichnet.</p>
+<hr>
+<h2>5. Kategorien pflegen</h2>
+<p>Unter <strong>Produkte → Kategorien</strong> kannst du Kategorien anlegen, umbenennen und löschen. Halte die Struktur übersichtlich:</p>
+<ul>
+<li>Verwende klare Namen (z.&nbsp;B. „Kleidung“, „Spielzeug“, „Bücher“).</li>
+<li>Lege nur neue Kategorien an, wenn es wirklich nötig ist – zu viele Kategorien verwirren beim Stöbern.</li>
+<li>Lösche nur Kategorien, die wirklich leer sind (oder deren Artikel vorher umsortiert wurden).</li>
+</ul>
+<hr>
+<h2>6. Einen Artikel entfernen</h2>
+<ol>
+<li>Öffne unter <strong>Produkte → Alle Produkte</strong> die Liste.</li>
+<li>Fahre mit der Maus über den Artikel und klicke auf <strong>Papierkorb</strong> (oder öffne ihn und wähle <strong>In den Papierkorb verschieben</strong>).</li>
+</ol>
+<p><strong>Tipp:</strong> Verschiebe Artikel zuerst in den <strong>Papierkorb</strong> – so kannst du versehentlich entfernte Artikel wiederherstellen. Endgültig löschen kannst du erst aus dem Papierkorb („Endgültig löschen“ oder „Papierkorb leeren“).</p>
+<hr>
+<h2>7. Tipps für die tägliche Arbeit</h2>
+<ul>
+<li>Speichere <strong>Entwürfe</strong> zwischendurch, bevor du veröffentlichst.</li>
+<li>Prüfe die <strong>Vorschau</strong>, bevor du einen Artikel online stellst.</li>
+<li>Beschreibe den <strong>Zustand</strong> ehrlich (z.&nbsp;B. „leichte Gebrauchsspuren“).</li>
+<li>Für ein neues Foto: <strong>Medien → Neu hinzufügen</strong> zuerst hochladen, dann im Artikel zuordnen.</li>
+</ul>
+<hr>
+<h2>8. Häufige Fragen (FAQ)</h2>
+<p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
+<p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen zunächst im <strong>Papierkorb</strong>. Dort kannst du sie wiederherstellen oder endgültig löschen.</p>
+<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Ja. Als Shop Manager/in kannst du unter <strong>Produkte → Kategorien</strong> Kategorien anlegen, umbenennen und löschen.</p>
+<p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen, Benutzer, Beiträge und Seiten. Das hält die Website sicher und übersichtlich.</p>
 HTML;
 	}
 }

@@ -478,6 +478,18 @@ if ( ! function_exists( 'wp_trash_post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_delete_post' ) ) {
+	function wp_delete_post( $post_id, $force = false ) {
+		$GLOBALS['__wp_deleted_posts'][] = $post_id;
+		foreach ( $GLOBALS['__wp_pages_by_path'] as $slug => $page ) {
+			if ( isset( $page->ID ) && (int) $page->ID === (int) $post_id ) {
+				unset( $GLOBALS['__wp_pages_by_path'][ $slug ] );
+			}
+		}
+		return (object) array( 'ID' => $post_id );
+	}
+}
+
 if ( ! function_exists( 'get_queried_object' ) ) {
 	function get_queried_object() {
 		$slug = isset( $GLOBALS['__wp_current_page'] ) ? $GLOBALS['__wp_current_page'] : '';
@@ -525,4 +537,5 @@ function _test_reset_all() {
 	$GLOBALS['__wp_pages_by_path'] = array();
 	$GLOBALS['__wp_inserted_posts'] = array();
 	$GLOBALS['__wp_trashed_posts'] = array();
+	$GLOBALS['__wp_deleted_posts'] = array();
 }
