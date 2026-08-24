@@ -268,25 +268,28 @@ Verantwortung:
 
 Zweck:
 
-- interne, ausführliche Schritt-für-Schritt-Anleitungen für die Rollen **„Redakteur“** und **„Shop Manager“**
-- Seiten: `/anleitung-redakteur/` und `/anleitung-shop-manager/`
-- **pro Seite** berechtigt: Redakteur/Administrator sehen beide, der Shop Manager nur seine eigene
-- Einstieg über Admin-Menüpunkt „Anleitungen“ und Links in der Admin-Bar
+- interne, ausführliche Schritt-für-Schritt-Anleitungen für interne Mitarbeiter-Rollen
+- **Seit 0.9.6 ist nur die Shop-Manager-Anleitung aktiv** (`/anleitung-shop-manager/`), da
+  die Standardrolle `editor`/„Redakteur“ derzeit nicht genutzt wird
+- Einstieg über Admin-Menüpunkt „Anleitungen“ und Admin-Bar-Link
 
 Verantwortung:
 
 - `class-staff-guides.php` (Barmbini_Core_Staff_Guides):
-  - legt die Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-shop-manager/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
-  - zwei Capabilities: `barmbini_view_guide_redakteur` (Administrator + Redakteur) und `barmbini_view_guide_shop_manager` (Administrator + Redakteur + Shop Manager); die veralteten Capabilities `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus allen Rollen entfernt
-  - seit 0.9.3 wird der alte Slug `/anleitung-verkaeufer/` nicht mehr verwendet: eine veraltete Seite dieses Slugs wird bei `admin_init` endgültig gelöscht (`maybe_cleanup_legacy_verkaeufer_page()` via `wp_delete_post`); die im Papierkorb liegende Alt-Seite (ID 596) wurde bei der Migration gelöscht
-  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zu einer zugänglichen Anleitung (angemeldet); Seiten mit `noindex` gegen Suchmaschinen-Indexierung
-  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt nur zugängliche Karten) + Admin-Bar-Links (nur zugängliche Anleitungen)
+  - legt die Frontend-Seite `/anleitung-shop-manager/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`); die Redakteur-Seite wird **nicht mehr geführt**
+  - Capability `barmbini_view_guide_shop_manager` (Administrator + Shop Manager); die veralteten Capabilities `barmbini_view_guide_redakteur`, `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus den Rollen entfernt
+  - **Redakteur-Anleitung ausgeblendet:** `get_guide_slugs()`/`role_slugs()` führen nur noch die Shop-Manager-Anleitung; `ensure_capabilities()` vergibt keine Redakteur-Cap mehr; Seite in Menü/Admin-Bar/Landing nicht enthalten. Der Redakteur-Inhalt (`redakteur_content()`) bleibt im Code und ist per Konstante `BARMBINI_GUIDE_REDAKTEUR_ENABLED` oder Filter `barmbini_guide_redakteur_enabled` reaktivierbar
+  - `is_redakteur_guide_enabled()` steuert die Reaktivierung einheitlich
+  - seit 0.9.3 wird der alte Slug `/anleitung-verkaeufer/` nicht mehr verwendet: eine veraltete Seite dieses Slugs wird bei `admin_init` endgültig gelöscht (`maybe_cleanup_legacy_verkaeufer_page()` via `wp_delete_post`)
+  - Gating über `template_redirect` (nur für geführte Slugs); Seite mit `noindex` gegen Suchmaschinen-Indexierung
+  - Admin-Menüpunkt „Anleitungen“ (Landingpage) + Admin-Bar-Link (nur zugänglich)
   - Registriert in `class-plugin.php`/`register_staff_guides_module()`
 
-> **Hinweis (Menü):** Das Footer-Menü war auf „neue Seiten automatisch hinzufügen“
-> (`nav_menu_options.auto_add`) gesetzt, wodurch neue Anleitungsseiten automatisch
-> im öffentlichen Footer landeten. Wurde am 2026-08-24 entfernt; künftig neue Seiten
-> manuell ins Menü aufnehmen, falls gewünscht.
+> **Hinweise (Live, 2026-08-24):**
+> - Die publizierte Redakteur-Seite (ID 594) wurde bei der Ausblendung in den Papierkorb
+>   verschoben → `/anleitung-redakteur/` liefert 404. Relevant nur bei einer späteren Reaktivierung.
+> - Das Footer-Menü war auf „neue Seiten automatisch hinzufügen“ (`nav_menu_options.auto_add`)
+>   gesetzt; wurde entfernt, damit keine neuen Anleitungsseiten automatisch im öffentlichen Footer landen.
 
 ## Datenmodell
 

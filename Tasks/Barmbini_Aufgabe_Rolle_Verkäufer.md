@@ -336,4 +336,13 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 - Tests: `StaffGuidesTest.php` umgebaut (2 Anleitungen, Cleanup) — **86 Tests grün**; Plugin-Version **0.9.3**.
 - Live: Seite 621 (`anleitung-shop-manager`, publish) angelegt, Caps gesetzt, Alt-Seite gelöscht. Browser: `/anleitung-shop-manager/` ohne Login → Login-Redirect; `/anleitung-verkaeufer/` → 404.
 - **Erkenntnis:** Das Footer-Menü hatte `nav_menu_options.auto_add` aktiv, wodurch neue Anleitungsseiten automatisch im öffentlichen Footer landeten. Eintrag entfernt + `auto_add` geleert, damit künftige neue Seiten nicht automatisch verlinkt werden.
+
+## Nachtrag (2026-08-24): Redakteur-Anleitung ausgeblendet (0.9.6)
+
+- Da die Standardrolle `editor`/„Redakteur“ derzeit **nicht genutzt** wird, wurden die **Redakteur-Anleitungen ausgeblendet**.
+- `class-staff-guides.php`: `get_guide_slugs()`/`role_slugs()` führen nur noch die Shop-Manager-Anleitung; `ensure_capabilities()` vergibt keine Redakteur-Cap mehr; Seite erscheint nicht mehr in Menü/Admin-Bar/Landing.
+- Neuer Schalter `is_redakteur_guide_enabled()`: Standard `false`; Reaktivierung per Konstante `BARMBINI_GUIDE_REDAKTEUR_ENABLED` (define) oder Filter `barmbini_guide_redakteur_enabled` (`true`).
+- Der Redakteur-Inhalt (`redakteur_content()`, `PAGE_REDAKTEUR`, `CAP_REDAKTEUR`) bleibt im Code erhalten (reaktivierbar).
+- Live: Redakteur-Cap von `administrator`/`editor` entfernt, Shop-Manager-Cap von `editor` entfernt (ungenutzte Rolle), publizierte Redakteur-Seite (594) in den Papierkorb verschoben → `/anleitung-redakteur/` liefert **404**. Nur noch `/anleitung-shop-manager/` ist veröffentlicht.
+- Tests: `StaffGuidesTest.php` umgebaut (Standard ausgeblendet + Reaktivierung) — **93 Tests grün**; Plugin-Version **0.9.6**.
 - **Erkenntnis für künftige Deployments (Modus B):** `deploy.ps1` Modus B entpackt per `unzip -o` und **löscht keine Dateien auf dem Server** (kein `rm -rf wp-content/plugins`). Entfernte Plugin-Dateien bleiben als Altlasten auf dem Server liegen (ungeladen, aber vorhanden). Nach diesem Umbau wurde die verwaiste `includes/roles/class-seller-role.php` auf dem Server manuell per `rm` entfernt. Bei künftigen Datei-Entfernungen im Plugin ggf. manuell nachräumen oder Modus A in Erwägung ziehen.
