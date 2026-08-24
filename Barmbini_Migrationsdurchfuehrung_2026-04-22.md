@@ -122,7 +122,7 @@ Vor dem Lauf wurde geprueft, ob ein Vollabgleich fachlich vertretbar ist.
 Festgestellter Live-Stand vor dem Import:
 
 - `wp_users`: `2`
-- vorhandene Benutzerkonten: `barmbini`, `Redaktuer`
+- vorhandene Benutzerkonten: `barmbini`, `Redakteur`
 - `shop_order`: `0`
 - `shop_order_refund`: `0`
 - Tabelle `wp_wc_customer_lookup` war auf dem Live-System nicht vorhanden
@@ -172,7 +172,7 @@ Da vor dem Lauf keine Bestellungen und keine abweichenden Live-Benutzerkonten fe
 - temporaerer Test-Benutzer anschliessend wieder geloescht
 - finale Benutzerliste nach dem Test:
   - `barmbini` als `administrator`
-  - `Redaktuer` als `editor`
+  - `Redakteur` als `editor`
 
 ### Operative Besonderheit des Folge-Updates
 
