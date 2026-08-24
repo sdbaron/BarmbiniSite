@@ -167,6 +167,119 @@ Dort wurden bereits unter anderem umgesetzt:
 
 Das ist der wichtigste technische Hebel für kommende Arbeiten.
 
+## Aktionen (Startseite) – Detaillierte Beschreibung
+
+Dieses Kapitel beschreibt das **Aktions-System** vollständig: Konzept,
+Datenmodell, Verhalten, Shortcode, Frontend-Filter, Benachrichtigungen, Cache
+und Gestaltung. Detaillierte Implementierungs- und Testfälle siehe
+`Tasks/Barmbini_Aufgabe_Startseite_Aktionen.md`; die Redakteurs-Anleitung liegt
+unter `Docs/Barmbini_Anleitung_Aktionen_Admin.md`.
+
+### 1. Konzept
+
+Eine **Aktion** ist ein zeitlich begrenzter Hinweis (z. B. Sonderangebot,
+Flohmarkt, Spendenaufruf), der auf der **Startseite** erscheint. Jede Aktion hat
+ein **Start- und Enddatum**. Es gilt die Regel:
+
+> **Sichtbar auf der Startseite, wenn `Startdatum ≤ heute ≤ Enddatum`.**
+
+- Das Enddatum ist überschritten → die Aktion verschwindet **automatisch**,
+  ohne manuellen Eingriff.
+- Das Startdatum liegt in der Zukunft → die Aktion ist noch **nicht** sichtbar
+  und erscheint automatisch ab dem Startdatum.
+- Üblicherweise ist **eine** Aktion aktiv, gelegentlich zwei bis drei
+  gleichzeitig; alle gültigen Aktionen werden angezeigt.
+- Verwaltung ausschließlich über das Plugin `barmbini-core` (kein Theme-Code).
+
+### 2. Datenmodell
+
+| Bestandteil | Wert / Details |
+|---|---|
+| Custom Post Type | `barmbini_aktion` (Slug) |
+| Menüpunkt | „Aktionen“, `menu_position 25`, Icon `dashicons-megaphone` |
+| `supports` | `title`, `editor`, `thumbnail` |
+| `publicly_queryable` | `true` (Einzelansicht `/aktion/{slug}/`), `has_archive` `true` (Archiv `/aktion/`) |
+| Metabox „Gültigkeitszeitraum“ | `_barmbini_promotion_start_date` und `_barmbini_promotion_end_date` (Format `Y-m-d`) |
+| Metabox „Link“ | `_barmbini_promotion_link_url` (optionaler Ziel-Link) |
+| Metabox „Startseiten-Anzeige“ | Checkbox „Beschreibung auf der Startseite anzeigen“ (**pro Aktion**) |
+| Beitragsbild | Standard „Flyer-Bild“ (Label ersetzt „Beitragsbild“) |
+| Taxonomien | bewusst keine Kategorien/Schlagworte |
+
+### 3. Shortcode `[barmbini_promotion]`
+
+Der Shortcode rendert alle aktuell gültigen Aktionen (siehe Sichtbarkeitsregel
+oben). Er ist im **Gutenberg-Editor** über den Shortcode-Block einfügbar.
+
+| Attribut | Standard | Wirkung |
+|---|---|---|
+| `show_image` | `1` | Flyer-Bild anzeigen |
+| `show_date` | `1` | Gültigkeitszeitraum anzeigen |
+| `show_description` | `1` | Beschreibung anzeigen (falls pro Aktion aktiviert) |
+| `empty_message` | – | Text, wenn gerade keine Aktion gültig ist |
+
+Darstellung pro Aktion: **Flyer-Bild**, **Titel**, **Beschreibung** (optional),
+**Gültigkeitszeitraum** und ein optionaler **Link-Button**. Die Sortierung im
+Frontend erfolgt **absteigend nach Startdatum** (neueste zuerst). Das HTML ist
+semantisch korrekt, barrierearm und responsive.
+
+### 4. Sichtbarkeit und Filter (Frontend)
+
+- **Startseite (Shortcode):** nur Aktionen mit `Startdatum ≤ heute ≤ Enddatum`.
+- **Archiv `/aktion/` und Einzelansicht `/aktion/{slug}/`:** Der
+  Frontend-Archivfilter `filter_archive_for_visitors()` (Hook `pre_get_posts`)
+  blendet für **Besucher ohne Administrator-/Redakteur-Rolle** alle Aktionen mit
+  **zukünftigem Startdatum** aus (Capability-Check `edit_others_posts`).
+  Admins und Redakteure sehen ungefiltert alle Aktionen (auch zukünftige).
+- **Admin-Archiv-Übersicht:** drei Filter — **„Aktiv“** (Standard;
+  `end_date ≥ heute` oder kein Enddatum), **„Archiv“** (`?promotion_view=archived`,
+  `end_date < heute`) und **„Alle“** (`?promotion_view=all`). Abgelaufene
+  Aktionen bleiben `publish` und werden nie automatisch auf `draft` gesetzt.
+
+### 5. Benachrichtigung beim Startdatum (Variante A)
+
+Aktionen-Abonnenten werden **beim Startdatum** benachrichtigt — nicht beim
+Veröffentlichen:
+
+- Cron-Job `barmbini_core_action_start_notifier` (täglich 08:00).
+- `handle_scheduled_action_starts()` lädt veröffentlichte Aktionen ohne das
+  Meta-Flag `_barmbini_action_start_notified` und versendet nur, wenn
+  `Startdatum === heute` (an Abonnenten mit `barmbini_actions_enabled`).
+- Das Meta-Flag verhindert **Duplikate**; es gibt **keinen rückwirkenden**
+  Versand für Aktionen, deren Startdatum bereits in der Vergangenheit liegt.
+- Die Logik liegt in `class-event-collector.php` (Sofort-Trigger bei
+  Veröffentlichung wurde dafür entfernt).
+
+### 6. Cache-Wartung
+
+WP Fastest Cache (Free-Version) kennt keine native Cache-Lebensdauer. Damit
+abgelaufene Aktionen zuverlässig von der Startseite verschwinden, leert der
+WP-Cron-Job `barmbini_core_cache_maintenance` **alle 6 Stunden** den Cache
+(`wpfc_clear_all_cache` + Verzeichnis-Fallback + `wp_cache_flush`).
+
+### 7. Gestaltung
+
+- `assets/css/promotion.css`: Aktions-Karten maximal **500 px** breit,
+  Grid `minmax(300px, 500px)`, zentriert (entspricht dem Startseiten-Layout).
+- Kein Theme-CSS wird unspezifisch überschrieben; die Komponente ist separat
+  gestaltbar.
+
+### 8. Typische Beispiele
+
+| Gewünschte Aktion | Startdatum | Enddatum |
+|---|---|---|
+| Wochenaktion ab morgen | Morgen | Morgen + 7 Tage |
+| Monatsaktion ab heute | Heute | Letzter Tag des Monats |
+| Dauerspendenaufruf | Heute | weit in der Zukunft |
+| Aktion sofort beenden | – | Gestern setzen (verschwindet automatisch) |
+
+### 9. Abgrenzung / bewusst nicht enthalten
+
+- Kein Checkout, keine Zahlung (WooCommerce bleibt reiner Katalog).
+- Keine Taxonomien (Kategorien/Schlagworte) für Aktionen.
+- Keine wiederkehrenden oder automatisch verlängerbaren Aktionen.
+- Keine Mehrsprachigkeit.
+- Keine Kopplung an das Rabatt-System der Abonnements.
+
 ## Aktueller Validierungsstand für das Feature-Abonnementssystem
 
 Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifiziert.
