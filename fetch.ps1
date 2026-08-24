@@ -79,6 +79,64 @@ $serverImport   = '/root/barmbini-import'
 $serverDBFile   = '/root/barmbini-db.txt'
 $localUrl        = 'https://barmbini.local/kontakt/'
 
+# ===================================================================
+# Hilfsfunktionen: lokale DB-Anbindung ohne WP-CLI (Fallback)
+# WP-CLI ist lokal ggf. NICHT installiert; daher hier direkter Zugriff
+# auf die lokale MariaDB (Local by Flywheel / Lightning Services).
+# ===================================================================
+
+function Get-LocalDbConfig {
+    $sites = "$env:APPDATA\Local\sites.json"
+    if (Test-Path $sites) {
+        try {
+            $json = Get-Content -LiteralPath $sites -Raw | ConvertFrom-Json
+            foreach ($prop in $json.PSObject.Properties) {
+                $s = $prop.Value
+                if ($s.path -eq 'D:\Local Sites\barmbini' -or $s.domain -eq 'barmbini.local') {
+                    $port = $s.services.mariadb.ports.MYSQL[0]
+                    return @{
+                        Host = '127.0.0.1'
+                        Port = $port
+                        Db   = $s.mysql.database
+                        User = $s.mysql.user
+                        Pass = $s.mysql.password
+                    }
+                }
+            }
+        } catch { }
+    }
+    # Local-by-Flywheel-Standardwerte
+    return @{ Host = '127.0.0.1'; Port = 10006; Db = 'local'; User = 'root'; Pass = 'root' }
+}
+
+function Get-LocalMariaDbClient {
+    $base = "$env:APPDATA\Local\lightning-services"
+    if (Test-Path $base) {
+        $c = Get-ChildItem -Path $base -Recurse -Filter 'mariadb.exe' -ErrorAction SilentlyContinue |
+             Where-Object { $_.FullName -match '\\bin\\' } | Select-Object -First 1
+        if ($c) { return $c.FullName }
+        $m = Get-ChildItem -Path $base -Recurse -Filter 'mysql.exe' -ErrorAction SilentlyContinue |
+             Where-Object { $_.FullName -match '\\bin\\' } | Select-Object -First 1
+        if ($m) { return $m.FullName }
+    }
+    return $null
+}
+
+function Get-LocalPhp {
+    $base = "$env:APPDATA\Local\lightning-services"
+    if (Test-Path $base) {
+        $p = Get-ChildItem -Path $base -Recurse -Filter 'php.exe' -ErrorAction SilentlyContinue |
+             Where-Object { $_.FullName -match 'win64' } | Select-Object -First 1
+        if ($p) { return $p.FullName }
+    }
+    return $null
+}
+
+function Test-WpCliAvailable {
+    $cmd = Get-Command wp -ErrorAction SilentlyContinue
+    return [bool]$cmd
+}
+
 # Modus-Label
 $modeLabel = if ($Full) { 'A (Vollabgleich + DB + Uploads)' } else { 'B (Nur Code, keine DB/Uploads)' }
 
@@ -281,27 +339,35 @@ if ($Full) {
         Write-Host ''
     }
 
-    # DB-Import via wp-cli (bevorzugt) oder mariadb
+    # DB-Import via wp-cli (bevorzugt) oder direkter MariaDB-Import (Fallback)
     Write-Host "       Importiere $localSQL ..." -ForegroundColor Gray
     Write-Host "       (dies kann je nach Datenbankgroesse einen Moment dauern)" -ForegroundColor Gray
 
-    # Versuche wp-cli zuerst
-    cmd /c "wp --path=`"$localRoot`" db import `"$localSQL`" 2>&1"
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "       wp-cli-Import fehlgeschlagen, versuche direkten mariadb-Import ..."
-        Write-Host "       Hinweis: Stelle sicher, dass mariadb im PATH ist oder Local laeuft." -ForegroundColor DarkYellow
+    $importOk = $false
 
-        # Fallback: Direkter Hinweis fuer Local by Flywheel
-        Write-Host "       Falls Local by Flywheel verwendet wird:" -ForegroundColor Gray
-        Write-Host "       - Oeffne Local" -ForegroundColor Gray
-        Write-Host "       - Gehe zu Sites > barmbini > Database" -ForegroundColor Gray
-        Write-Host "       - Klicke auf 'Import' und waehle:" -ForegroundColor Gray
-        Write-Host "         $localSQL" -ForegroundColor Gray
-        Write-Host ''
-        Write-Host "       ODER fuehre manuell aus:" -ForegroundColor Gray
-        Write-Host "       wp --path=$localRoot db import $localSQL" -ForegroundColor Gray
-    } else {
+    if (Test-WpCliAvailable) {
+        cmd /c "wp --path=`"$localRoot`" db import `"$localSQL`" 2>&1" | Out-Host
+        $importOk = ($LASTEXITCODE -eq 0)
+    }
+
+    if (-not $importOk) {
+        Write-Host "       wp-cli nicht verfuegbar/fehlgeschlagen -> direkter MariaDB-Import." -ForegroundColor DarkYellow
+        $dbcfg = Get-LocalDbConfig
+        $mariadb = Get-LocalMariaDbClient
+        if (-not $mariadb) {
+            Write-Error "       Kein lokaler mariadb.exe-Client gefunden. Import manuell durchfuehren (Local > Database > Import)."
+            exit 1
+        }
+        Write-Host "       Client: $mariadb (Port $($dbcfg.Port), DB $($dbcfg.Db))" -ForegroundColor Gray
+        cmd /c "`"$mariadb`" -h $($dbcfg.Host) -P $($dbcfg.Port) -u $($dbcfg.User) -p$($dbcfg.Pass) $($dbcfg.Db) < `"$localSQL`" 2>&1" | Out-Host
+        $importOk = ($LASTEXITCODE -eq 0)
+    }
+
+    if ($importOk) {
         Write-Host "       DB-Import erfolgreich." -ForegroundColor Gray
+    } else {
+        Write-Error "       DB-Import fehlgeschlagen. Bitte manuell importieren: Local > Sites > barmbini > Database > Import ($localSQL)."
+        exit 1
     }
 
     Write-Host '       OK' -ForegroundColor Green
@@ -378,14 +444,43 @@ Write-Host ''
 Write-Host '[6/6] URL-Umschreibung + Cache leeren ...' -ForegroundColor Yellow
 
 if ($Full) {
-    # search-replace: Server-Domain -> barmbini.local
+    # search-replace: Server-Domain -> barmbini.local (serialize-safe)
     Write-Host "       Ersetze '$SiteDomain' -> 'barmbini.local' ..." -ForegroundColor Gray
-    cmd /c "wp --path=`"$localRoot`" search-replace '$SiteDomain' 'barmbini.local' --all-tables --skip-columns=guid 2>&1"
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "       search-replace fehlgeschlagen. Bitte manuell ausfuehren:"
-        Write-Host "       wp --path=$localRoot search-replace '$SiteDomain' 'barmbini.local' --all-tables --skip-columns=guid" -ForegroundColor DarkYellow
-    } else {
+
+    $replaceOk = $false
+
+    if (Test-WpCliAvailable) {
+        cmd /c "wp --path=`"$localRoot`" search-replace '$SiteDomain' 'barmbini.local' --all-tables --skip-columns=guid 2>&1" | Out-Host
+        $replaceOk = ($LASTEXITCODE -eq 0)
+    }
+
+    if (-not $replaceOk) {
+        Write-Host "       wp-cli nicht verfuegbar/fehlgeschlagen -> serialize-safe PHP-Umschreibung." -ForegroundColor DarkYellow
+        $dbcfg  = Get-LocalDbConfig
+        $php    = Get-LocalPhp
+        $script = Join-Path $workspace 'search-replace-local.php'
+        if (-not $php -or -not (Test-Path $script)) {
+            Write-Warning "       PHP/Client oder search-replace-local.php nicht gefunden. URLs bitte manuell ersetzen."
+        } else {
+            # passende php.ini (Lightning Services) suchen, damit mysqli geladen ist
+            $phpIni = Get-ChildItem -Path "$env:APPDATA\Local\run" -Recurse -Filter 'php.ini' -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            $env:BARMBINI_LOCAL_DB_HOST = $dbcfg.Host
+            $env:BARMBINI_LOCAL_DB_PORT = [string]$dbcfg.Port
+            $env:BARMBINI_LOCAL_DB_USER = $dbcfg.User
+            $env:BARMBINI_LOCAL_DB_PASS = $dbcfg.Pass
+            $env:BARMBINI_LOCAL_DB_NAME = $dbcfg.Db
+            $env:BARMBINI_SITE_DOMAIN   = $SiteDomain
+            $env:BARMBINI_LOCAL_DOMAIN  = 'barmbini.local'
+            if ($phpIni) { & $php -c $phpIni $script 2>&1 | Out-Host }
+            else         { & $php $script 2>&1 | Out-Host }
+            $replaceOk = ($LASTEXITCODE -eq 0)
+        }
+    }
+
+    if ($replaceOk) {
         Write-Host "       URL-Umschreibung erfolgreich." -ForegroundColor Gray
+    } else {
+        Write-Warning "       URL-Umschreibung fehlgeschlagen. Bitte manuell pruefen."
     }
 }
 
