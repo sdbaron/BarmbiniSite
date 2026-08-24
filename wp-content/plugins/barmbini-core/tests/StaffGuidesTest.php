@@ -150,6 +150,22 @@ class StaffGuidesTest extends TestCase {
 		$this->assertStringContainsString( 'Einen neuen Artikel anlegen', Barmbini_Core_Staff_Guides::shop_manager_content() );
 	}
 
+	public function test_shop_manager_guide_content_is_detailed(): void {
+		$content = Barmbini_Core_Staff_Guides::shop_manager_content();
+
+		// Zentrale Abschnitte der erweiterten Shop-Manager-Anleitung.
+		$this->assertStringContainsString( 'So funktioniert das Sortiment', $content );
+		$this->assertStringContainsString( 'Beispiel', $content );
+		$this->assertStringContainsString( 'Einen Preis anpassen', $content );
+		$this->assertStringContainsString( 'Einen Artikel als ausverkauft markieren', $content );
+		$this->assertStringContainsString( 'Kategorien pflegen', $content );
+		$this->assertStringContainsString( 'Bilder hochladen und zuordnen', $content );
+		$this->assertStringContainsString( 'Einen Artikel entfernen', $content );
+		$this->assertStringContainsString( 'Entwurf und Veröffentlichen', $content );
+		$this->assertStringContainsString( 'Tipps für die tägliche Arbeit', $content );
+		$this->assertStringContainsString( 'Häufige Fragen (FAQ)', $content );
+	}
+
 	// =================================================================
 	// can_view_page() – Pro-Seite-Berechtigung
 	// =================================================================

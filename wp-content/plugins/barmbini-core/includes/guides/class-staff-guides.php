@@ -562,6 +562,7 @@ HTML;
 <li>Artikel als <strong>ausverkauft</strong> markieren</li>
 <li>Artikel löschen (Papierkorb oder endgültig aus dem Papierkorb)</li>
 <li><strong>Kategorien</strong> anlegen, umbenennen und löschen</li>
+<li><strong>Medien</strong> (Bilder) hochladen und verwenden</li>
 </ul>
 <h3>Das kannst du nicht tun</h3>
 <ul>
@@ -571,19 +572,33 @@ HTML;
 <li>Beiträge, Seiten und Aktionen pflegen (dafür ist der Redakteur zuständig)</li>
 </ul>
 <hr>
-<h2>2. Einen neuen Artikel anlegen</h2>
+<h2>2. So funktioniert das Sortiment</h2>
+<p>Das Sortiment ist ein <strong>reiner Katalog</strong> – es gibt keinen Warenkorb, keine Bestellungen und keine Bezahlung auf der Website. Die Artikel dienen als Übersicht; Interessierte kommen in den Laden. Deshalb gilt:</p>
+<ul>
+<li>Jeder Artikel hat einen <strong>Namen</strong>, eine <strong>Beschreibung</strong>, einen <strong>Preis</strong>, ein <strong>Bild</strong> und eine <strong>Kategorie</strong>.</li>
+<li>Ein sauber gepflegtes Sortiment schafft Vertrauen: ehrliche Beschreibungen und gute Fotos sind das Wichtigste.</li>
+<li>Artikel, die nur als Beispiel dienen, kennzeichnet die Website automatisch mit einem <strong>„Beispiel“-Badge</strong> – siehe Abschnitt 3.</li>
+</ul>
+<h3>Das „Beispiel“-Badge</h3>
+<p>Produkte mit dem Produkt-Schlagwort <strong>Beispiel</strong> (Schlagwort-Slug <code>beispiel</code>) erhalten automatisch ein grünes Badge <strong>„Beispiel“</strong> auf dem Produktbild. So erkennst du und die Besucher sofort, dass ein Artikel nur ein Beispiel ist.</p>
+<ul>
+<li>Schlagwort zuweisen: Artikel öffnen → rechts <strong>Produkt-Schlagwörter</strong> → <strong>Beispiel</strong> auswählen (oder neu anlegen) → <strong>Aktualisieren</strong>.</li>
+<li>Ohne das Schlagwort erscheint kein Badge – der Artikel wirkt wie ein normales Sortiment-Angebot.</li>
+</ul>
+<hr>
+<h2>3. Einen neuen Artikel anlegen</h2>
 <ol>
 <li>Klicke im Menü auf <strong>Produkte → Neues Produkt hinzufügen</strong>.</li>
-<li>Vergib einen klaren <strong>Namen</strong>, z.&nbsp;B. „Kinderjacke Größe 110“.</li>
-<li>Schreibe eine kurze <strong>Beschreibung</strong> (Zustand, Größe, Besonderheiten).</li>
-<li>Setze den <strong>Preis</strong> unter <strong>Produktdaten → Allgemein</strong>.</li>
-<li>Lade unter <strong>Produktbild</strong> ein aussagekräftiges Foto hoch.</li>
+<li>Vergib einen klaren <strong>Namen</strong>, z.&nbsp;B. „Kinderjacke Größe 110“ – Größe und Zustand direkt in den Namen, das hilft beim Stöbern.</li>
+<li>Schreibe eine kurze <strong>Beschreibung</strong>: Zustand, Größe, Material, Besonderheiten.</li>
+<li>Setze den <strong>Preis</strong> unter <strong>Produktdaten → Allgemein</strong> – in Euro ohne Währungszeichen, mit Komma, z.&nbsp;B. <code>3,50</code>.</li>
+<li>Lade unter <strong>Produktbild</strong> ein aussagekräftiges Foto hoch (siehe Abschnitt 7).</li>
 <li>Ordne rechts die passende <strong>Kategorie</strong> zu (z.&nbsp;B. „Kleidung“).</li>
 <li>Klicke auf <strong>Veröffentlichen</strong>.</li>
 </ol>
 <p><strong>Tipp:</strong> Ein gutes Foto und ein ehrlicher Zustandshinweis verkaufen sich am besten.</p>
 <hr>
-<h2>3. Einen Preis anpassen</h2>
+<h2>4. Einen Preis anpassen</h2>
 <ol>
 <li>Öffne unter <strong>Produkte → Alle Produkte</strong> den Artikel.</li>
 <li>Wechsle zum Bereich <strong>Produktdaten → Allgemein</strong>.</li>
@@ -592,42 +607,66 @@ HTML;
 </ol>
 <p>Der neue Preis ist sofort im Sortiment sichtbar.</p>
 <hr>
-<h2>4. Einen Artikel als ausverkauft markieren</h2>
+<h2>5. Einen Artikel als ausverkauft markieren</h2>
 <ol>
 <li>Öffne den Artikel unter <strong>Produkte → Alle Produkte</strong>.</li>
 <li>Wechsle zum Bereich <strong>Produktdaten → Lagerbestand</strong>.</li>
 <li>Setze das Feld <strong>Lagerstatus</strong> auf <strong>Auf Lager / Ausverkauft</strong> – wähle <strong>Ausverkauft</strong>.</li>
 <li>Klicke auf <strong>Aktualisieren</strong>.</li>
 </ol>
-<p>Der Artikel bleibt im Sortiment sichtbar, wird aber als nicht mehr verfügbar gekennzeichnet.</p>
+<p>Der Artikel bleibt im Sortiment sichtbar, wird aber als nicht mehr verfügbar gekennzeichnet. So kann ein Artikel als „schon weg“ markiert werden, ohne ihn zu löschen.</p>
 <hr>
-<h2>5. Kategorien pflegen</h2>
+<h2>6. Kategorien pflegen</h2>
 <p>Unter <strong>Produkte → Kategorien</strong> kannst du Kategorien anlegen, umbenennen und löschen. Halte die Struktur übersichtlich:</p>
 <ul>
-<li>Verwende klare Namen (z.&nbsp;B. „Kleidung“, „Spielzeug“, „Bücher“).</li>
+<li>Verwende klare Namen (z.&nbsp;B. „Kleidung“, „Spielzeug“, „Bücher“, „Babybedarf“).</li>
+<li>Du kannst <strong>Unterkategorien</strong> anlegen (z.&nbsp;B. „Babybedarf“ mit „Babysachen“) – das hält große Bereiche sortiert.</li>
 <li>Lege nur neue Kategorien an, wenn es wirklich nötig ist – zu viele Kategorien verwirren beim Stöbern.</li>
 <li>Lösche nur Kategorien, die wirklich leer sind (oder deren Artikel vorher umsortiert wurden).</li>
 </ul>
 <hr>
-<h2>6. Einen Artikel entfernen</h2>
+<h2>7. Bilder hochladen und zuordnen</h2>
+<p>Alle Bilder liegen zentral in der <strong>Mediathek</strong> und können für mehrere Artikel wiederverwendet werden.</p>
+<ol>
+<li>Klicke im Menü auf <strong>Medien → Neu hinzufügen</strong>.</li>
+<li>Ziehe die Datei ins Fenster oder wähle „Dateien auswählen“.</li>
+<li>Lade möglichst das <strong>Original</strong> hoch – die Website erstellt automatisch passende Größen.</li>
+<li>Nach dem Hochladen im Artikel unter <strong>Produktbild</strong> auf „Festlegen/Auswählen“ klicken und das Bild wählen.</li>
+</ol>
+<p><strong>Tipp:</strong> Ein gutes Produktfoto ist hell, scharf und zeigt den Artikel zentriert ohne Hintergrund-Chaos. Pflege den <strong>Alternativtext</strong> (Alt-Text) – er beschreibt das Bild für Menschen mit Seheinschränkungen.</p>
+<hr>
+<h2>8. Einen Artikel entfernen</h2>
 <ol>
 <li>Öffne unter <strong>Produkte → Alle Produkte</strong> die Liste.</li>
 <li>Fahre mit der Maus über den Artikel und klicke auf <strong>Papierkorb</strong> (oder öffne ihn und wähle <strong>In den Papierkorb verschieben</strong>).</li>
 </ol>
 <p><strong>Tipp:</strong> Verschiebe Artikel zuerst in den <strong>Papierkorb</strong> – so kannst du versehentlich entfernte Artikel wiederherstellen. Endgültig löschen kannst du erst aus dem Papierkorb („Endgültig löschen“ oder „Papierkorb leeren“).</p>
 <hr>
-<h2>7. Tipps für die tägliche Arbeit</h2>
+<h2>9. Entwurf und Veröffentlichen</h2>
+<p>Du musst nicht alles sofort online stellen:</p>
+<ul>
+<li><strong>Entwurf speichern</strong> sichert den Stand, ohne den Artikel zu veröffentlichen – ideal zum Weitermachen.</li>
+<li><strong>Veröffentlichen</strong> macht den Artikel sofort im Sortiment sichtbar.</li>
+<li>Bei bestehenden Artikeln heißt der Button <strong>Aktualisieren</strong> – die Änderung ist dann sofort live.</li>
+<li>Nutze die <strong>Vorschau</strong>, bevor du veröffentlichst (auch die Handy-Ansicht prüfen – viele Besucher kommen mit dem Handy).</li>
+</ul>
+<hr>
+<h2>10. Tipps für die tägliche Arbeit</h2>
 <ul>
 <li>Speichere <strong>Entwürfe</strong> zwischendurch, bevor du veröffentlichst.</li>
 <li>Prüfe die <strong>Vorschau</strong>, bevor du einen Artikel online stellst.</li>
 <li>Beschreibe den <strong>Zustand</strong> ehrlich (z.&nbsp;B. „leichte Gebrauchsspuren“).</li>
+<li>Ein gutes Foto ist das Wichtigste: hell, scharf, ohne Hintergrund-Chaos.</li>
 <li>Für ein neues Foto: <strong>Medien → Neu hinzufügen</strong> zuerst hochladen, dann im Artikel zuordnen.</li>
+<li>Kennzeichne Beispiel-Artikel mit dem Schlagwort <strong>Beispiel</strong>, damit das Badge erscheint.</li>
 </ul>
 <hr>
-<h2>8. Häufige Fragen (FAQ)</h2>
+<h2>11. Häufige Fragen (FAQ)</h2>
 <p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
 <p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen zunächst im <strong>Papierkorb</strong>. Dort kannst du sie wiederherstellen oder endgültig löschen.</p>
 <p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Ja. Als Shop Manager/in kannst du unter <strong>Produkte → Kategorien</strong> Kategorien anlegen, umbenennen und löschen.</p>
+<p><strong>Warum bekommt mein Artikel kein „Beispiel“-Badge?</strong><br>Das Badge erscheint nur, wenn der Artikel das Produkt-Schlagwort <strong>Beispiel</strong> (Slug <code>beispiel</code>) trägt. Wechsle rechts im Artikel zu „Produkt-Schlagwörter“ und wähle Beispiel aus.</p>
+<p><strong>Kann ich einen Artikel dauerhaft ausverkauft lassen?</strong><br>Ja. Setze den <strong>Lagerstatus</strong> auf <strong>Ausverkauft</strong> – der Artikel bleibt sichtbar, wird aber als nicht verfügbar gekennzeichnet. Du kannst den Status jederzeit wieder auf „Auf Lager“ ändern.</p>
 <p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen, Benutzer, Beiträge und Seiten. Das hält die Website sicher und übersichtlich.</p>
 HTML;
 	}

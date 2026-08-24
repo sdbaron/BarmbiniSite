@@ -280,6 +280,77 @@ WP-Cron-Job `barmbini_core_cache_maintenance` **alle 6 Stunden** den Cache
 - Keine Mehrsprachigkeit.
 - Keine Kopplung an das Rabatt-System der Abonnements.
 
+## Shop-Manager-Anleitung – Detaillierte Beschreibung
+
+Dieses Kapitel beschreibt die **interne Anleitung für den Shop Manager**
+(Seite `/anleitung-shop-manager/`), die das Plugin `barmbini-core` bereitstellt
+(Modul `includes/guides/class-staff-guides.php`).
+
+### 1. Zweck und Zielgruppe
+
+- Die Anleitung richtet sich an die Rolle **Shop Manager** (WooCommerce-Standardrolle
+  `shop_manager`), die das **Sortiment** pflegt: Artikel anlegen, Preise ändern,
+  als ausverkauft markieren, Kategorien pflegen, Artikel entfernen.
+- Sie ist eine **interne Schritt-für-Schritt-Anleitung** und für Besucher/andere
+  Rollen nicht zugänglich.
+
+### 2. Seite, Capability und Zugriff
+
+| Aspekt | Wert |
+|---|---|
+| URL | `/anleitung-shop-manager/` |
+| Capability | `barmbini_view_guide_shop_manager` |
+| Zugriff | **Administrator + Redakteur + Shop Manager** |
+| Redakteur-/Admin-Seite | zusätzlich `/anleitung-redakteur/` (Capability `barmbini_view_guide_redakteur`) |
+
+- Der **Shop Manager** sieht nur seine eigene Anleitung; **Redakteure und Admins**
+  sehen beide Anleitungen.
+- Die Seiten werden vom Plugin **idempotent** angelegt (`ensure_pages()` via
+  `get_page_by_path`/`wp_insert_post`).
+- **Gating** über `template_redirect`: ohne Capability → Login-Umleitung
+  (nicht angemeldet) bzw. Umleitung zu einer zugänglichen Anleitung (angemeldet);
+  die Seite trägt `noindex` gegen Suchmaschinen-Indexierung.
+
+### 3. Einstieg (Admin)
+
+- Admin-Menüpunkt **„Anleitungen“** (Landingpage zeigt nur zugängliche Karten).
+- **Admin-Bar-Links**: „Für Redakteure“ und „Für Shop Manager“ (nur zugängliche).
+
+### 4. Inhalt der Anleitung (seit 0.9.4)
+
+Die Anleitung (`shop_manager_content()` im Plugin) umfasst **11 Abschnitte**:
+
+1. **Deine Rolle** – was der Shop Manager darf/nicht darf
+2. **So funktioniert das Sortiment** – Katalog-Prinzip (kein Checkout) + das
+   **„Beispiel“-Badge** (Produkt-Schlagwort `Beispiel`, Slug `beispiel`)
+3. **Einen neuen Artikel anlegen** – Name, Beschreibung, Preis (Euro, Komma),
+   Produktbild, Kategorie, Veröffentlichen
+4. **Einen Preis anpassen** – `Produktdaten → Allgemein` → `Aktualisieren`
+5. **Einen Artikel als ausverkauft markieren** – `Lagerstatus → Ausverkauft`
+6. **Kategorien pflegen** – anlegen/umbenennen/löschen, Unterkategorien, Struktur
+7. **Bilder hochladen und zuordnen** – Mediathek, Produktbild, Alt-Text
+8. **Einen Artikel entfernen** – Papierkorb zuerst, endgültig nur aus dem Papierkorb
+9. **Entwurf und Veröffentlichen** – Entwurf/Vorschau/Veröffentlichen/Aktualisieren
+10. **Tipps für die tägliche Arbeit** – ehrliche Zustände, gute Fotos, Beispiel-Tag
+11. **Häufige Fragen (FAQ)** – Preis-Fehler, Papierkorb, Kategorien, Beispiel-Badge,
+    ausverkauft, Menüpunkt-Sichtbarkeit
+
+### 5. Pflege und Deployment
+
+- Der Inhalt liegt als statische Methode `shop_manager_content()` im Plugin
+  (`barmbini-core`) – Änderungen erfordern einen **Code-Deploy (Modus B)**.
+- Da die Live-Seite bereits existiert (ID 621), muss der neue Inhalt nach einem
+  Update per **Migration** (eval-file) in den `post_content` der Seite geschrieben
+  werden – `ensure_pages()` legt nur **fehlende** Seiten an.
+- Die zugehörige Redakteurs-Anleitung (`/anleitung-redakteur/`) bleibt davon
+  unberührt (9 Abschnitte, siehe Kapitel „Interne Anleitungen“ im Ist-Stand).
+
+### 6. Bewusste Abgrenzung
+
+- Die Anleitung ersetzt keine Schulung – sie ist ein Nachschlagewerk.
+- Der alte Slug `/anleitung-verkaeufer/` (Verkäufer-/Seller-Ära) wird seit 0.9.3
+  nicht mehr verwendet (Cleanup endgültig, veraltete Cap entfernt).
+
 ## Aktueller Validierungsstand für das Feature-Abonnementssystem
 
 Der neue Stand wurde lokal gegen `D:\Local Sites\barmbini\app\public` verifiziert.
