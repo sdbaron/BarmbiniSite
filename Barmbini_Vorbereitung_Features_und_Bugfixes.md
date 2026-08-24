@@ -335,6 +335,12 @@ Die Anleitung (`shop_manager_content()` im Plugin) umfasst **11 Abschnitte**:
 11. **Häufige Fragen (FAQ)** – Preis-Fehler, Papierkorb, Kategorien, Beispiel-Badge,
     ausverkauft, Menüpunkt-Sichtbarkeit
 
+Zusätzlich (seit 0.9.5) enthält die Anleitung als **Kapitel 12 „Aktionen im
+Überblick (Startseite)“** das detaillierte Aktionen-Segment (Titel, Beschreibung,
+Gültigkeitszeitraum, Flyer-Bild, Veröffentlichen, typische Beispiele) — mit der
+klaren Einordnung, dass **Aktionen von den Redakteuren gepflegt werden** und der
+Shop Manager lediglich einen Einblick erhält (kein Zugriff auf Aktionen).
+
 ### 5. Pflege und Deployment
 
 - Der Inhalt liegt als statische Methode `shop_manager_content()` im Plugin
