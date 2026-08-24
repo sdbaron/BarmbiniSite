@@ -704,25 +704,7 @@ HTML;
 <li>Nutze die <strong>Vorschau</strong>, bevor du veröffentlichst (auch die Handy-Ansicht prüfen – viele Besucher kommen mit dem Handy).</li>
 </ul>
 <hr>
-<h2>10. Tipps für die tägliche Arbeit</h2>
-<ul>
-<li>Speichere <strong>Entwürfe</strong> zwischendurch, bevor du veröffentlichst.</li>
-<li>Prüfe die <strong>Vorschau</strong>, bevor du einen Artikel online stellst.</li>
-<li>Beschreibe den <strong>Zustand</strong> ehrlich (z.&nbsp;B. „leichte Gebrauchsspuren“).</li>
-<li>Ein gutes Foto ist das Wichtigste: hell, scharf, ohne Hintergrund-Chaos.</li>
-<li>Für ein neues Foto: <strong>Medien → Neu hinzufügen</strong> zuerst hochladen, dann im Artikel zuordnen.</li>
-<li>Kennzeichne Beispiel-Artikel mit dem Schlagwort <strong>Beispiel</strong>, damit das Badge erscheint.</li>
-</ul>
-<hr>
-<h2>11. Häufige Fragen (FAQ)</h2>
-<p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
-<p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen zunächst im <strong>Papierkorb</strong>. Dort kannst du sie wiederherstellen oder endgültig löschen.</p>
-<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Ja. Als Shop Manager/in kannst du unter <strong>Produkte → Kategorien</strong> Kategorien anlegen, umbenennen und löschen.</p>
-<p><strong>Warum bekommt mein Artikel kein „Beispiel“-Badge?</strong><br>Das Badge erscheint nur, wenn der Artikel das Produkt-Schlagwort <strong>Beispiel</strong> (Slug <code>beispiel</code>) trägt. Wechsle rechts im Artikel zu „Produkt-Schlagwörter“ und wähle Beispiel aus.</p>
-<p><strong>Kann ich einen Artikel dauerhaft ausverkauft lassen?</strong><br>Ja. Setze den <strong>Lagerstatus</strong> auf <strong>Ausverkauft</strong> – der Artikel bleibt sichtbar, wird aber als nicht verfügbar gekennzeichnet. Du kannst den Status jederzeit wieder auf „Auf Lager“ ändern.</p>
-<p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen, Benutzer, Beiträge und Seiten. Das hält die Website sicher und übersichtlich.</p>
-<hr>
-<h2>12. Aktionen im Überblick (Startseite)</h2>
+<h2>10. Aktionen im Überblick (Startseite)</h2>
 <p><strong>Einordnung:</strong> Aktionen werden von den <strong>Redakteuren</strong> angelegt und gepflegt – als Shop Manager/in hast du dafür bewusst keinen Zugriff. Dieses Kapitel ist ein Überblick, damit du verstehst, wie die Aktionen auf der Startseite funktionieren.</p>
 <p>Aktionen sind zeitlich begrenzte Hinweise (z.&nbsp;B. ein Sonderangebot, ein Flohmarkt oder ein Spendenaufruf), die auf der Startseite erscheinen. Eine Aktion hat immer ein <strong>Start- und Enddatum</strong>.</p>
 <h3>So legt der Redakteur eine Aktion an</h3>
@@ -747,6 +729,24 @@ HTML;
 <li>„Spendenaufruf“ → dauerhaft bis auf Weiteres (Enddatum weit in der Zukunft setzen)</li>
 <li>„Flohmarkt am 12. September“ → Start und Ende am selben Tag bzw. für den Aktionszeitraum</li>
 </ul>
+<hr>
+<h2>11. Tipps für die tägliche Arbeit</h2>
+<ul>
+<li>Speichere <strong>Entwürfe</strong> zwischendurch, bevor du veröffentlichst.</li>
+<li>Prüfe die <strong>Vorschau</strong>, bevor du einen Artikel online stellst.</li>
+<li>Beschreibe den <strong>Zustand</strong> ehrlich (z.&nbsp;B. „leichte Gebrauchsspuren“).</li>
+<li>Ein gutes Foto ist das Wichtigste: hell, scharf, ohne Hintergrund-Chaos.</li>
+<li>Für ein neues Foto: <strong>Medien → Neu hinzufügen</strong> zuerst hochladen, dann im Artikel zuordnen.</li>
+<li>Kennzeichne Beispiel-Artikel mit dem Schlagwort <strong>Beispiel</strong>, damit das Badge erscheint.</li>
+</ul>
+<hr>
+<h2>12. Häufige Fragen (FAQ)</h2>
+<p><strong>Ich habe einen falschen Preis gespeichert. Was tun?</strong><br>Öffne den Artikel und korrigiere den Preis unter <strong>Produktdaten → Allgemein</strong>. Danach auf <strong>Aktualisieren</strong> klicken.</p>
+<p><strong>Ein Artikel ist wieder da, obwohl ich ihn entfernt habe?</strong><br>Entfernte Artikel landen zunächst im <strong>Papierkorb</strong>. Dort kannst du sie wiederherstellen oder endgültig löschen.</p>
+<p><strong>Kann ich eine Kategorie neu anlegen?</strong><br>Ja. Als Shop Manager/in kannst du unter <strong>Produkte → Kategorien</strong> Kategorien anlegen, umbenennen und löschen.</p>
+<p><strong>Warum bekommt mein Artikel kein „Beispiel“-Badge?</strong><br>Das Badge erscheint nur, wenn der Artikel das Produkt-Schlagwort <strong>Beispiel</strong> (Slug <code>beispiel</code>) trägt. Wechsle rechts im Artikel zu „Produkt-Schlagwörter“ und wähle Beispiel aus.</p>
+<p><strong>Kann ich einen Artikel dauerhaft ausverkauft lassen?</strong><br>Ja. Setze den <strong>Lagerstatus</strong> auf <strong>Ausverkauft</strong> – der Artikel bleibt sichtbar, wird aber als nicht verfügbar gekennzeichnet. Du kannst den Status jederzeit wieder auf „Auf Lager“ ändern.</p>
+<p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen, Benutzer, Beiträge und Seiten. Das hält die Website sicher und übersichtlich.</p>
 HTML;
 	}
 }
