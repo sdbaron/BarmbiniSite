@@ -441,10 +441,7 @@ manuelle Migrationen; nach der Installation deaktiviert lassen.
 - **Rollen:** Nutzer der früheren Rolle `barmbini_verkaeufer` werden per
   `admin_init` zur WooCommerce-Standardrolle `shop_manager` migriert; die
   Standardrolle `editor` („Redakteur“) bleibt unangetastet.
-- **Interne Anleitung:** `/anleitung-redakteur/` (Capability
-  `barmbini_view_guide_redakteur`, Admin + Redakteur). Die frühere
-  Shop-Manager-Anleitung `/anleitung-verkaeufer/` wird bei `admin_init`
-  automatisch in den Papierkorb verschoben.
+- **Interne Anleitungen:** `/anleitung-redakteur/` (Capability `barmbini_view_guide_redakteur`, Admin + Redakteur) und `/anleitung-shop-manager/` (Capability `barmbini_view_guide_shop_manager`, Admin + Redakteur + Shop Manager). Der alte Slug `/anleitung-verkaeufer/` wird seit 0.9.3 nicht mehr genutzt (Cleanup).
 - **Sicherheit:** REST-API-Benutzer-Endpoints für Unberechtigte gesperrt;
   Login-Brute-Force-Schutz (5 Fehlversuche → 15 Min. Sperre).
 - **Cache:** WP-Cron leert WP Fastest Cache alle 6 Stunden (damit abgelaufene

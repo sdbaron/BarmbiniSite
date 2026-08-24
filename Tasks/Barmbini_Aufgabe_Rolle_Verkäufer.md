@@ -327,4 +327,13 @@ Mit der Capability-Matrix erwartet der Verkäufer folgende Ansicht:
 - Die **Redakteur-Anleitung wurde deutlich detaillierter** (9 Abschnitte statt 6): Deine Rolle, Aktionen, Neuigkeiten, Seiten bearbeiten (neu), Produkte (Preis/ausverkauft), Medien/Bilder (neu), Veröffentlichen &amp; Planen (neu), Tipps, erweiterte FAQ.
 - Tests: `StaffGuidesTest.php` umgebaut (nur Redakteur, Entfernung der Alt-Seite, Caps-Cleanup), `bootstrap.php` um `wp_trash_post`-Mock + `wp_roles()`-Synchronisierung ergänzt — **81 Tests grün**. Plugin-Version **0.9.1**.
 - Live (Modus B): Seite 596 (`anleitung-verkaeufer`) → `post_status=trash` (Slug `anleitung-verkaeufer__trashed`), Caps bereinigt (`shop_manager` ohne barmbini-Caps, `editor` mit `barmbini_view_guide_redakteur`), Seite 594 mit neuem Inhalt aktualisiert. Browser: `/anleitung-verkaeufer/` → 404, `/anleitung-redakteur/` ohne Login → Login-Redirect.
+
+## Nachtrag (2026-08-24): Shop-Manager-Anleitung wiederhergestellt (0.9.3)
+
+- Auf Nutzerwunsch gibt es **wieder eine eigene Anleitung für den Shop Manager**: `/anleitung-shop-manager/` (Capability `barmbini_view_guide_shop_manager`, Admin + Redakteur + Shop Manager).
+- Neue Konstante `PAGE_SHOP_MANAGER`/`CAP_SHOP_MANAGER` in `class-staff-guides.php`; Admin/Redakteur sehen beide Anleitungen, der Shop Manager nur seine.
+- Der alte Slug `/anleitung-verkaeufer/` wird nicht mehr verwendet: `maybe_cleanup_legacy_verkaeufer_page()` löscht eine veraltete veröffentlichte Seite endgültig; die Alt-Seite 596 (Papierkorb) wurde per Migration per `wp_delete_post` gelöscht.
+- Tests: `StaffGuidesTest.php` umgebaut (2 Anleitungen, Cleanup) — **86 Tests grün**; Plugin-Version **0.9.3**.
+- Live: Seite 621 (`anleitung-shop-manager`, publish) angelegt, Caps gesetzt, Alt-Seite gelöscht. Browser: `/anleitung-shop-manager/` ohne Login → Login-Redirect; `/anleitung-verkaeufer/` → 404.
+- **Erkenntnis:** Das Footer-Menü hatte `nav_menu_options.auto_add` aktiv, wodurch neue Anleitungsseiten automatisch im öffentlichen Footer landeten. Eintrag entfernt + `auto_add` geleert, damit künftige neue Seiten nicht automatisch verlinkt werden.
 - **Erkenntnis für künftige Deployments (Modus B):** `deploy.ps1` Modus B entpackt per `unzip -o` und **löscht keine Dateien auf dem Server** (kein `rm -rf wp-content/plugins`). Entfernte Plugin-Dateien bleiben als Altlasten auf dem Server liegen (ungeladen, aber vorhanden). Nach diesem Umbau wurde die verwaiste `includes/roles/class-seller-role.php` auf dem Server manuell per `rm` entfernt. Bei künftigen Datei-Entfernungen im Plugin ggf. manuell nachräumen oder Modus A in Erwägung ziehen.

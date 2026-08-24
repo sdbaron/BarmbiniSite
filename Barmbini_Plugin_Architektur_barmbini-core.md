@@ -268,19 +268,25 @@ Verantwortung:
 
 Zweck:
 
-- interne, ausführliche Schritt-für-Schritt-Anleitung für die Rolle **„Redakteur“**
-- nur die Seite `/anleitung-redakteur/` (Capability `barmbini_view_guide_redakteur` für Administrator + Redakteur)
+- interne, ausführliche Schritt-für-Schritt-Anleitungen für die Rollen **„Redakteur“** und **„Shop Manager“**
+- Seiten: `/anleitung-redakteur/` und `/anleitung-shop-manager/`
+- **pro Seite** berechtigt: Redakteur/Administrator sehen beide, der Shop Manager nur seine eigene
 - Einstieg über Admin-Menüpunkt „Anleitungen“ und Links in der Admin-Bar
 
 Verantwortung:
 
 - `class-staff-guides.php` (Barmbini_Core_Staff_Guides):
-  - legt die Frontend-Seite `/anleitung-redakteur/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
-  - eine Capability: `barmbini_view_guide_redakteur` (Administrator + Redakteur); die veralteten Capabilities `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus allen Rollen entfernt
-  - seit 0.9.1 gibt es **keine Shop-Manager-Anleitung** mehr: Die frühere Seite `/anleitung-verkaeufer/` wird bei `admin_init` automatisch in den Papierkorb verschoben (`maybe_remove_obsolete_verkaeufer_page()` via `wp_trash_post`)
-  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zur Startseite (angemeldet); Seite mit `noindex` gegen Suchmaschinen-Indexierung
-  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt die Karte) + Admin-Bar-Link (nur zugänglich)
+  - legt die Frontend-Seiten `/anleitung-redakteur/` und `/anleitung-shop-manager/` idempotent an (`ensure_pages()` via `get_page_by_path`/`wp_insert_post`)
+  - zwei Capabilities: `barmbini_view_guide_redakteur` (Administrator + Redakteur) und `barmbini_view_guide_shop_manager` (Administrator + Redakteur + Shop Manager); die veralteten Capabilities `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus allen Rollen entfernt
+  - seit 0.9.3 wird der alte Slug `/anleitung-verkaeufer/` nicht mehr verwendet: eine veraltete Seite dieses Slugs wird bei `admin_init` endgültig gelöscht (`maybe_cleanup_legacy_verkaeufer_page()` via `wp_delete_post`); die im Papierkorb liegende Alt-Seite (ID 596) wurde bei der Migration gelöscht
+  - Gating über `template_redirect`: ohne Capability → Login-Umleitung (nicht angemeldet) bzw. Umleitung zu einer zugänglichen Anleitung (angemeldet); Seiten mit `noindex` gegen Suchmaschinen-Indexierung
+  - Admin-Menüpunkt „Anleitungen“ (Landingpage zeigt nur zugängliche Karten) + Admin-Bar-Links (nur zugängliche Anleitungen)
   - Registriert in `class-plugin.php`/`register_staff_guides_module()`
+
+> **Hinweis (Menü):** Das Footer-Menü war auf „neue Seiten automatisch hinzufügen“
+> (`nav_menu_options.auto_add`) gesetzt, wodurch neue Anleitungsseiten automatisch
+> im öffentlichen Footer landeten. Wurde am 2026-08-24 entfernt; künftig neue Seiten
+> manuell ins Menü aufnehmen, falls gewünscht.
 
 ## Datenmodell
 
