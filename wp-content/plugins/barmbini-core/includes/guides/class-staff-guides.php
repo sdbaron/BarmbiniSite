@@ -668,6 +668,32 @@ HTML;
 <p><strong>Warum bekommt mein Artikel kein „Beispiel“-Badge?</strong><br>Das Badge erscheint nur, wenn der Artikel das Produkt-Schlagwort <strong>Beispiel</strong> (Slug <code>beispiel</code>) trägt. Wechsle rechts im Artikel zu „Produkt-Schlagwörter“ und wähle Beispiel aus.</p>
 <p><strong>Kann ich einen Artikel dauerhaft ausverkauft lassen?</strong><br>Ja. Setze den <strong>Lagerstatus</strong> auf <strong>Ausverkauft</strong> – der Artikel bleibt sichtbar, wird aber als nicht verfügbar gekennzeichnet. Du kannst den Status jederzeit wieder auf „Auf Lager“ ändern.</p>
 <p><strong>Warum sehe ich nicht alle Menüpunkte?</strong><br>Als Shop Manager/in hast du Zugriff auf Produkte und WooCommerce, aber bewusst nicht auf Plugins, Theme, allgemeine Einstellungen, Benutzer, Beiträge und Seiten. Das hält die Website sicher und übersichtlich.</p>
+<hr>
+<h2>12. Aktionen im Überblick (Startseite)</h2>
+<p><strong>Einordnung:</strong> Aktionen werden von den <strong>Redakteuren</strong> angelegt und gepflegt – als Shop Manager/in hast du dafür bewusst keinen Zugriff. Dieses Kapitel ist ein Überblick, damit du verstehst, wie die Aktionen auf der Startseite funktionieren.</p>
+<p>Aktionen sind zeitlich begrenzte Hinweise (z.&nbsp;B. ein Sonderangebot, ein Flohmarkt oder ein Spendenaufruf), die auf der Startseite erscheinen. Eine Aktion hat immer ein <strong>Start- und Enddatum</strong>.</p>
+<h3>So legt der Redakteur eine Aktion an</h3>
+<ol>
+<li>Im linken Menü auf <strong>Aktionen → Neu hinzufügen</strong>.</li>
+<li><strong>Titel</strong> vergeben (z.&nbsp;B. „Sommer-Schlussverkauf“).</li>
+<li>Kurze <strong>Beschreibung</strong> schreiben (2–4 Sätze: Was gibt es? Für wen? Wie lange?).</li>
+<li>Unter <strong>Gültigkeitszeitraum</strong> das <strong>Start- und Enddatum</strong> setzen.</li>
+<li>Unter <strong>Flyer-Bild</strong> das passende Bild hochladen (einmalig auf der Startseite).</li>
+<li>Rechts auf <strong>Veröffentlichen</strong> klicken.</li>
+</ol>
+<h3>Wichtigste Regeln</h3>
+<ul>
+<li>Aktionen mit <strong>zukünftigem Startdatum</strong> sind für Besucher noch nicht sichtbar – sie erscheinen automatisch ab dem Startdatum.</li>
+<li>Nach dem <strong>Enddatum</strong> verschwindet die Aktion automatisch von der Startseite.</li>
+<li>Ein gutes <strong>Flyer-Bild</strong> ist quer (z.&nbsp;B. 1600×900 px) und zeigt das Angebot auf einen Blick.</li>
+<li>Eine Aktion kann jederzeit beendet werden: Enddatum in die Vergangenheit setzen und <strong>Aktualisieren</strong>.</li>
+</ul>
+<h3>Typische Beispiele</h3>
+<ul>
+<li>„Kreativ-Aktion bis zu 70&nbsp;%“ → Start heute, Ende in zwei Wochen</li>
+<li>„Spendenaufruf“ → dauerhaft bis auf Weiteres (Enddatum weit in der Zukunft setzen)</li>
+<li>„Flohmarkt am 12. September“ → Start und Ende am selben Tag bzw. für den Aktionszeitraum</li>
+</ul>
 HTML;
 	}
 }

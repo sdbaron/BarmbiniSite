@@ -164,6 +164,9 @@ class StaffGuidesTest extends TestCase {
 		$this->assertStringContainsString( 'Entwurf und Veröffentlichen', $content );
 		$this->assertStringContainsString( 'Tipps für die tägliche Arbeit', $content );
 		$this->assertStringContainsString( 'Häufige Fragen (FAQ)', $content );
+		// Aktionen-Überblick (seit 0.9.5) auch in der Shop-Manager-Anleitung.
+		$this->assertStringContainsString( 'Aktionen im Überblick', $content );
+		$this->assertStringContainsString( 'Flyer-Bild', $content );
 	}
 
 	// =================================================================
