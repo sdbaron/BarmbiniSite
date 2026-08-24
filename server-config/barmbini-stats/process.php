@@ -31,7 +31,12 @@ $retention_days = (int) ( getenv( 'BARMBINI_RETENTION_DAYS' ) ?: 90 );
 $top_n          = (int) ( getenv( 'BARMBINI_TOP_N' ) ?: 10 );
 $bot_filter     = ( getenv( 'BARMBINI_BOT_FILTER' ) ?: '1' ) === '1';
 
-$internal_hosts = array( 'barmbini.de', 'www.barmbini.de', 'barmbini.local', 'localhost' );
+$internal_hosts = array(
+	'barmbini.de', 'www.barmbini.de', 'barmbini.local', 'localhost',
+	// Eigene Server-IP und deren PTR-Name (IONOS): Zugriffe/Scanner ueber die IP
+	// sollen nicht als externe Referrer erscheinen.
+	'217.160.74.128', 'ip217-160-74-128.pbiaas.com',
+);
 
 function barmbini_log( $run_log, $msg ) {
 	file_put_contents( $run_log, '[' . date( 'Y-m-d H:i:s' ) . '] ' . $msg . PHP_EOL, FILE_APPEND );
@@ -94,10 +99,34 @@ function barmbini_referrer_domain( $referer, $internal_hosts ) {
 		return '';
 	}
 	$host = preg_replace( '/^www\./i', '', $host );
-	if ( in_array( strtolower( $host ), $internal_hosts, true ) ) {
+	$host_lower = strtolower( $host );
+	// Eigene Hosts (Domain, IP, PTR-Name) und die IONOS-Infrastruktur (pbiaas.com) ausfiltern.
+	if ( in_array( $host_lower, $internal_hosts, true ) || false !== strpos( $host_lower, '.pbiaas.com' ) ) {
 		return '';
 	}
-	return strtolower( $host );
+	return $host_lower;
+}
+
+/**
+ * Erkennt Zugriffe, die ueber die eigene Server-IP bzw. deren PTR-Name kommen.
+ * Solche Zugriffe stammen praktisch immer von Scannern/Internetmessungen
+ * (kein Besucher surft eine Website ueber die IP-Adresse).
+ *
+ * @param string $referer Referrer-Header.
+ * @return bool
+ */
+function barmbini_is_ip_referrer( $referer ) {
+	if ( '' === $referer || '-' === $referer ) {
+		return false;
+	}
+	$host = parse_url( $referer, PHP_URL_HOST );
+	if ( null === $host || '' === $host ) {
+		return false;
+	}
+	$host_lower = strtolower( $host );
+
+	return in_array( $host_lower, array( '217.160.74.128', 'ip217-160-74-128.pbiaas.com' ), true )
+		|| false !== strpos( $host_lower, '.pbiaas.com' );
 }
 
 function barmbini_cleanup_old( $stats_dir, $days ) {
@@ -123,7 +152,7 @@ if ( ! $fh ) {
 }
 
 $pattern   = '/^(\S+) \S+ \S+ \[([^\]]+)\] "(\S+) ([^"]*)" (\d+) \S+ "([^"]*)" "([^"]*)"$/';
-$bot_regex = '/(bot|spider|crawler|slurp|bingpreview|googlebot|bingbot|yandex|baiduspider|duckduckbot|facebookexternalhit|whatsapp|telegrambot|semrush|ahrefs|petalbot|dotbot|uptimerobot|pingdom|gptbot|chatgpt|ccbot|claudebot|amazonbot)/i';
+$bot_regex = '/(bot|spider|crawler|slurp|bingpreview|googlebot|bingbot|yandex|baiduspider|duckduckbot|facebookexternalhit|whatsapp|telegrambot|semrush|ahrefs|petalbot|dotbot|uptimerobot|pingdom|gptbot|chatgpt|ccbot|claudebot|amazonbot|cyberconvoy|scout\/|modat|internetmeasurement|censys|zgrab)/i';
 
 $views        = 0;
 $bots         = 0;
@@ -152,6 +181,11 @@ while ( ( $line = fgets( $fh ) ) !== false ) {
 		continue;
 	}
 	if ( $bot_filter && preg_match( $bot_regex, $ua ) ) {
+		$bots++;
+		continue;
+	}
+	// Zugriffe ueber die eigene Server-IP / deren PTR sind Scanner → ausschliessen.
+	if ( barmbini_is_ip_referrer( $referer ) ) {
 		$bots++;
 		continue;
 	}

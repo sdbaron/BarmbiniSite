@@ -55,6 +55,17 @@ cd /root/barmbini-stats        # nach dem Kopieren der Dateien
 - `top_referrers` – Referrer-Domains (ohne Schema/Query; interne ausgeschlossen)
 - `bots` – gefilterte Bot-Anfragen (nur wenn Bot-Filter aktiv, Standard: ja)
 
+## Filterung von Scannern / IP-Zugriffen (2026-08-24)
+
+- Die Bot-Liste erkennt bekannte Bots/Spider **und** gängige Scanner
+  (`cyberconvoy`, `scout/`, `modat`, `internetmeasurement`, `censys`, `zgrab`, …).
+- Zugriffe, die über die **eigene Server-IP** oder deren PTR-Name
+  (`217.160.74.128`, `ip217-160-74-128.pbiaas.com`, generell `*.pbiaas.com`)
+  kommen, gelten als Scanner/Internetmessung und werden **weder zu `views`/`unique_visitors`
+  noch zu `top_referrers`** gezählt – niemand besucht eine Website sinnvollerweise über die IP.
+- Folge: `top_referrers` zeigt nur noch echte externe Verweise (z. B. `google.com`).
+  Bei der Berechnung eines Tages werden diese Zugriffe mit `continue` übersprungen.
+
 ## Aufbewahrung (DSGVO)
 
 - Roh-Log (`barmbini_access.log*`): **7 Tage** (logrotate `rotate 7`)
