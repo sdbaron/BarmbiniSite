@@ -85,6 +85,28 @@ class VisitorStatsTest extends TestCase {
 	}
 
 	// =================================================================
+	// get_stats_dir_status() – Diagnose
+	// =================================================================
+
+	public function test_stats_dir_status_missing_when_dir_absent(): void {
+		$this->set_stats_dir( sys_get_temp_dir() . '/barmbini-does-not-exist-' . uniqid() );
+		$this->assertSame( 'missing', $this->stats->get_stats_dir_status() );
+	}
+
+	public function test_stats_dir_status_ok_when_dir_exists(): void {
+		$dir = $this->make_fixture_dir();
+		$this->set_stats_dir( $dir );
+		$this->assertSame( 'ok', $this->stats->get_stats_dir_status() );
+	}
+
+	public function test_render_block_empty_mentions_missing_dir(): void {
+		$this->set_stats_dir( sys_get_temp_dir() . '/barmbini-does-not-exist-' . uniqid() );
+		$html = $this->stats->render_block( null, 30 );
+		$this->assertStringContainsString( 'Für diesen Zeitraum liegen noch keine Daten vor.', $html );
+		$this->assertStringContainsString( 'Verzeichnis fehlt', $html );
+	}
+
+	// =================================================================
 	// read_aggregates()
 	// =================================================================
 

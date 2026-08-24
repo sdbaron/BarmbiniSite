@@ -32,7 +32,10 @@ echo "== Barmbini Besucherstatistik – Installation =="
 # 1. Verzeichnisse + Lauf-Log
 mkdir -p "$DEST" "$STATS_DIR" "$BACKUP_DIR"
 touch "$RUN_LOG"
-chmod 750 "$STATS_DIR"
+# 755 + 644: WordPress laeuft als www-data und muss die Aggregate lesen koennen
+# (vorher 750/root verhinderte die Anzeige im Plugin).
+chmod 755 "$STATS_DIR"
+chmod 644 "$STATS_DIR"/stats-*.json 2>/dev/null || true
 echo "[1/4] Verzeichnisse ok ($DEST, $STATS_DIR)"
 
 # 2. Skripte installieren (überspringen, wenn bereits im Zielverzeichnis)

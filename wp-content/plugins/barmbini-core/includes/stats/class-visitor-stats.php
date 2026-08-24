@@ -69,6 +69,23 @@ class Barmbini_Core_Visitor_Stats {
 	}
 
 	/**
+	 * Prüft den Zustand des Statistik-Verzeichnisses für die Diagnose.
+	 *
+	 * @return string 'missing' | 'unreadable' | 'ok'
+	 */
+	public function get_stats_dir_status() {
+		$dir = trailingslashit( $this->get_stats_dir() );
+		if ( ! is_dir( $dir ) ) {
+			return 'missing';
+		}
+		if ( ! is_readable( $dir ) ) {
+			return 'unreadable';
+		}
+
+		return 'ok';
+	}
+
+	/**
 	 * Liefert den aus der Admin-URL gewählten Zeitraum.
 	 *
 	 * @return int
@@ -173,7 +190,15 @@ class Barmbini_Core_Visitor_Stats {
 	 */
 	public function render_block( $totals, $days = 30 ) {
 		if ( null === $totals ) {
-			return '<p class="barmbini-stats-empty">' . esc_html( 'Für diesen Zeitraum liegen noch keine Daten vor.' ) . '</p>';
+			$notice = '';
+			$status = $this->get_stats_dir_status();
+			if ( 'missing' === $status ) {
+				$notice = ' · Statistik-Verzeichnis fehlt: ' . $this->get_stats_dir();
+			} elseif ( 'unreadable' === $status ) {
+				$notice = ' · Statistik-Verzeichnis ist für den Webserver nicht lesbar (Berechtigung)';
+			}
+
+			return '<p class="barmbini-stats-empty">' . esc_html( 'Für diesen Zeitraum liegen noch keine Daten vor.' . $notice ) . '</p>';
 		}
 
 		ob_start();

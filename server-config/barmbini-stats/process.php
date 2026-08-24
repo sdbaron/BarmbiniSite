@@ -197,7 +197,8 @@ if ( $bot_filter ) {
 }
 
 if ( ! is_dir( $stats_dir ) ) {
-	@mkdir( $stats_dir, 0750, true );
+	// 0755: WordPress (www-data) muss die Aggregate fuer die Anzeige lesen koennen.
+	@mkdir( $stats_dir, 0755, true );
 }
 $out  = rtrim( $stats_dir, '/' ) . '/stats-' . $log_date . '.json';
 $json = json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
@@ -206,6 +207,8 @@ if ( false === file_put_contents( $out, $json . PHP_EOL ) ) {
 	barmbini_log( $run_log, "Kann {$out} nicht schreiben" );
 	exit( 1 );
 }
+// 0644: Dateien fuer www-data (WordPress-Anzeige) lesbar halten.
+@chmod( $out, 0644 );
 
 barmbini_cleanup_old( $stats_dir, $retention_days );
 barmbini_log( $run_log, "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . " -> {$out}" );
