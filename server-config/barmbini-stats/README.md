@@ -96,6 +96,7 @@ cat /etc/cron.d/barmbini-stats
 | Keine Views | Log enthält nur Assets/Bots, oder Filter zu streng → Filter in `process.php` prüfen |
 | Doppelrotation des Logs | `/etc/logrotate.d/nginx` und eigene logrotate-Regel gleichzeitig → nur eine Regel aktiv lassen |
 | Keine Daten im Plugin | Plugin-Lese-Pfad ≠ `BARMBINI_STATS_DIR` → Filter `barmbini_stats_dir` im Plugin anpassen |
+| „Für diesen Zeitraum liegen noch keine Daten vor“ + Hinweis „nicht lesbar“ | `/var/lib/barmbini-stats/stats` ist für **www-data** (WordPress) nicht lesbar → Rechte prüfen: Verzeichnis `755`, Dateien `644` (`install.sh` setzt das automatisch) |
 
 ## Rechtlicher Hinweis
 

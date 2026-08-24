@@ -520,6 +520,11 @@ ssh root@<IP> 'cd /root/barmbini-stats && ./install.sh --test'
 3. logrotate für `barmbini_access.log` (daily, `rotate 7`, `delaycompress`)
 4. Cron `/etc/cron.d/barmbini-stats`: `15 7 * * * root /root/barmbini-stats/process.sh`
 
+> **Berechtigung (wichtig):** Das Verzeichnis `/var/lib/barmbini-stats/stats`
+> wird mit `755`, die Aggregat-Dateien mit `644` angelegt, damit **www-data**
+> (WordPress) die Aggregate für die Admin-Anzeige lesen kann. War die
+> Anzeige leer, obwohl Aggregate existieren, war meist die Leserechte-Ursache.
+
 **Datenfluss:**
 
 ```text
