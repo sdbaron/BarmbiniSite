@@ -24,6 +24,13 @@
  * Slugs wird bei `admin_init` endgültig gelöscht und die veraltete Capability
  * `barmbini_view_guide_verkaeufer` wird aus allen Rollen entfernt.
  *
+ * Seit 0.9.6 ist die **Redakteur-Anleitung ausgeblendet**, da die Standardrolle
+ * `editor`/„Redakteur“ derzeit nicht genutzt wird: Die Redakteur-Capability wird
+ * nicht mehr automatisch vergeben, die Seite wird nicht mehr geführt und taucht
+ * in Menü/Admin-Bar/Landing nicht mehr auf. Der Redakteur-Inhalt
+ * (`redakteur_content()`) bleibt als Methode erhalten und kann bei Bedarf wieder
+ * aktiviert werden.
+ *
  * @package Barmbini_Core
  * @since 0.7.1
  */
@@ -62,12 +69,33 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Liefert die Slugs der beiden Anleitungsseiten.
+	 * Liefert die aktiven Slugs der Anleitungsseiten.
+	 *
+	 * Seit 0.9.6 ist nur die Shop-Manager-Anleitung aktiv (die Redakteur-Rolle
+	 * wird nicht genutzt); die Redakteur-Seite bleibt für eine spätere
+	 * Reaktivierung im Code, wird aber nicht mehr geführt.
 	 *
 	 * @return array<int,string>
 	 */
 	public static function get_guide_slugs() {
-		return array( self::PAGE_REDAKTEUR, self::PAGE_SHOP_MANAGER );
+		return self::is_redakteur_guide_enabled()
+			? array( self::PAGE_REDAKTEUR, self::PAGE_SHOP_MANAGER )
+			: array( self::PAGE_SHOP_MANAGER );
+	}
+
+	/**
+	 * Schalter: Ist die Redakteur-Anleitung aktiv?
+	 *
+	 * Standard `false` (ausgeblendet). Per Filter `barmbini_guide_redakteur_enabled`
+	 * und über die Konstante `BARMBINI_GUIDE_REDAKTEUR_ENABLED` reaktivierbar.
+	 *
+	 * @return bool
+	 */
+	public static function is_redakteur_guide_enabled() {
+		if ( defined( 'BARMBINI_GUIDE_REDAKTEUR_ENABLED' ) && BARMBINI_GUIDE_REDAKTEUR_ENABLED ) {
+			return true;
+		}
+		return (bool) apply_filters( 'barmbini_guide_redakteur_enabled', false );
 	}
 
 	/**
@@ -76,30 +104,43 @@ class Barmbini_Core_Staff_Guides {
 	 * @return array<int,string>
 	 */
 	public static function role_slugs() {
-		return array( 'administrator', 'editor', 'shop_manager' );
+		return self::is_redakteur_guide_enabled()
+			? array( 'administrator', 'editor', 'shop_manager' )
+			: array( 'administrator', 'shop_manager' );
 	}
 
 	/**
 	 * Vergibt die Anleitungs-Capabilities idempotent an die erlaubten Rollen.
 	 *
-	 * Administrator und Redakteur sehen beide Anleitungen, der Shop Manager nur
-	 * die Shop-Manager-Anleitung. Die veralteten Capabilities
-	 * `barmbini_view_guide_verkaeufer` und `barmbini_view_guides` werden aus
-	 * allen Rollen entfernt.
+	 * Seit 0.9.6: Die Redakteur-Anleitung ist ausgeblendet, daher wird die
+	 * Redakteur-Capability nicht mehr automatisch vergeben (sofern nicht über
+	 * `BARMBINI_GUIDE_REDAKTEUR_ENABLED`/Filter reaktiviert). Die
+	 * Shop-Manager-Capability erhält `shop_manager`; Admins erhalten beide Caps.
+	 * Veraltete Caps (`barmbini_view_guide_verkaeufer`, `barmbini_view_guides`)
+	 * werden entfernt.
 	 *
 	 * @return void
 	 */
 	public function ensure_capabilities() {
-		foreach ( array( 'administrator', 'editor' ) as $slug ) {
+		$redakteur_enabled = self::is_redakteur_guide_enabled();
+
+		foreach ( array( 'administrator' ) as $slug ) {
 			$role = get_role( $slug );
 			if ( ! $role ) {
 				continue;
 			}
-			if ( ! $role->has_cap( self::CAP_REDAKTEUR ) ) {
+			if ( $redakteur_enabled && ! $role->has_cap( self::CAP_REDAKTEUR ) ) {
 				$role->add_cap( self::CAP_REDAKTEUR );
 			}
 			if ( ! $role->has_cap( self::CAP_SHOP_MANAGER ) ) {
 				$role->add_cap( self::CAP_SHOP_MANAGER );
+			}
+		}
+
+		if ( $redakteur_enabled ) {
+			$editor = get_role( 'editor' );
+			if ( $editor && ! $editor->has_cap( self::CAP_REDAKTEUR ) ) {
+				$editor->add_cap( self::CAP_REDAKTEUR );
 			}
 		}
 
@@ -124,20 +165,25 @@ class Barmbini_Core_Staff_Guides {
 	}
 
 	/**
-	 * Legt die beiden Anleitungsseiten an, falls sie noch nicht existieren.
+	 * Legt die aktiven Anleitungsseiten an, falls sie noch nicht existieren.
+	 *
+	 * Seit 0.9.6 wird nur die Shop-Manager-Anleitung geführt.
 	 *
 	 * @return void
 	 */
 	public function ensure_pages() {
-		$pages = array(
-			self::PAGE_REDAKTEUR => array(
+		$pages = array();
+
+		if ( self::is_redakteur_guide_enabled() ) {
+			$pages[ self::PAGE_REDAKTEUR ] = array(
 				'title'   => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'content' => self::redakteur_content(),
-			),
-			self::PAGE_SHOP_MANAGER => array(
-				'title'   => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
-				'content' => self::shop_manager_content(),
-			),
+			);
+		}
+
+		$pages[ self::PAGE_SHOP_MANAGER ] = array(
+			'title'   => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
+			'content' => self::shop_manager_content(),
 		);
 
 		foreach ( $pages as $slug => $data ) {
@@ -191,7 +237,7 @@ class Barmbini_Core_Staff_Guides {
 	 */
 	public function can_view_page( $slug ) {
 		if ( self::PAGE_REDAKTEUR === $slug ) {
-			return current_user_can( self::CAP_REDAKTEUR );
+			return self::is_redakteur_guide_enabled() && current_user_can( self::CAP_REDAKTEUR );
 		}
 		if ( self::PAGE_SHOP_MANAGER === $slug ) {
 			return current_user_can( self::CAP_SHOP_MANAGER );
@@ -206,7 +252,11 @@ class Barmbini_Core_Staff_Guides {
 	 * @return bool
 	 */
 	public function can_view_any() {
-		return current_user_can( self::CAP_REDAKTEUR ) || current_user_can( self::CAP_SHOP_MANAGER );
+		if ( self::is_redakteur_guide_enabled() && current_user_can( self::CAP_REDAKTEUR ) ) {
+			return true;
+		}
+
+		return current_user_can( self::CAP_SHOP_MANAGER );
 	}
 
 	/**
@@ -231,7 +281,7 @@ class Barmbini_Core_Staff_Guides {
 	 * @return string Leer, wenn keine Anleitung zugänglich ist.
 	 */
 	public function first_accessible_guide_url() {
-		if ( current_user_can( self::CAP_REDAKTEUR ) ) {
+		if ( self::is_redakteur_guide_enabled() && current_user_can( self::CAP_REDAKTEUR ) ) {
 			return home_url( '/' . self::PAGE_REDAKTEUR . '/' );
 		}
 		if ( current_user_can( self::CAP_SHOP_MANAGER ) ) {
@@ -312,21 +362,21 @@ class Barmbini_Core_Staff_Guides {
 			'href'  => admin_url( 'admin.php?page=' . self::MENU_SLUG ),
 		) );
 
-		if ( current_user_can( self::CAP_REDAKTEUR ) ) {
-			$wp_admin_bar->add_node( array(
-				'id'     => 'barmbini-guide-redakteur',
-				'parent' => 'barmbini-guides',
-				'title'  => __( 'Für Redakteure', 'barmbini-core' ),
-				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
-			) );
-		}
-
 		if ( current_user_can( self::CAP_SHOP_MANAGER ) ) {
 			$wp_admin_bar->add_node( array(
 				'id'     => 'barmbini-guide-shop-manager',
 				'parent' => 'barmbini-guides',
 				'title'  => __( 'Für Shop Manager', 'barmbini-core' ),
 				'href'   => home_url( '/' . self::PAGE_SHOP_MANAGER . '/' ),
+			) );
+		}
+
+		if ( self::is_redakteur_guide_enabled() && current_user_can( self::CAP_REDAKTEUR ) ) {
+			$wp_admin_bar->add_node( array(
+				'id'     => 'barmbini-guide-redakteur',
+				'parent' => 'barmbini-guides',
+				'title'  => __( 'Für Redakteure', 'barmbini-core' ),
+				'href'   => home_url( '/' . self::PAGE_REDAKTEUR . '/' ),
 			) );
 		}
 	}
@@ -342,17 +392,20 @@ class Barmbini_Core_Staff_Guides {
 		echo '<p>' . esc_html__( 'Hier findest du die Schritt-für-Schritt-Anleitungen für deine Aufgabe.', 'barmbini-core' ) . '</p>';
 		echo '<div style="display:flex;gap:20px;margin-top:20px;flex-wrap:wrap;">';
 
-		$cards = array(
-			array(
+		$cards = array();
+
+		if ( self::is_redakteur_guide_enabled() ) {
+			$cards[] = array(
 				'slug'  => self::PAGE_REDAKTEUR,
 				'title' => __( 'Anleitung für Redakteure', 'barmbini-core' ),
 				'desc'  => __( 'Aktionen anlegen, Beiträge pflegen, Seiten bearbeiten, Produkte erstellen.', 'barmbini-core' ),
-			),
-			array(
-				'slug'  => self::PAGE_SHOP_MANAGER,
-				'title' => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
-				'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren, Kategorien pflegen.', 'barmbini-core' ),
-			),
+			);
+		}
+
+		$cards[] = array(
+			'slug'  => self::PAGE_SHOP_MANAGER,
+			'title' => __( 'Anleitung für Shop Manager', 'barmbini-core' ),
+			'desc'  => __( 'Artikel anlegen, Preise ändern, ausverkauft markieren, Kategorien pflegen.', 'barmbini-core' ),
 		);
 
 		foreach ( $cards as $card ) {

@@ -28,12 +28,25 @@ class StaffGuidesTest extends TestCase {
 	// get_guide_slugs()
 	// =================================================================
 
-	public function test_get_guide_slugs_returns_both_pages(): void {
+	public function test_get_guide_slugs_defaults_to_shop_manager_only(): void {
+		// Standard: Redakteur-Anleitung ausgeblendet.
+		$slugs = Barmbini_Core_Staff_Guides::get_guide_slugs();
+
+		$this->assertContains( 'anleitung-shop-manager', $slugs );
+		$this->assertNotContains( 'anleitung-redakteur', $slugs );
+		$this->assertNotContains( 'anleitung-verkaeufer', $slugs );
+		$this->assertCount( 1, $slugs );
+	}
+
+	public function test_get_guide_slugs_includes_redakteur_when_enabled(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
+
 		$slugs = Barmbini_Core_Staff_Guides::get_guide_slugs();
 
 		$this->assertContains( 'anleitung-redakteur', $slugs );
 		$this->assertContains( 'anleitung-shop-manager', $slugs );
-		$this->assertNotContains( 'anleitung-verkaeufer', $slugs );
 		$this->assertCount( 2, $slugs );
 	}
 
@@ -41,12 +54,22 @@ class StaffGuidesTest extends TestCase {
 	// role_slugs()
 	// =================================================================
 
-	public function test_role_slugs_include_admin_editor_shop_manager(): void {
+	public function test_role_slugs_defaults_without_editor_role(): void {
 		$slugs = Barmbini_Core_Staff_Guides::role_slugs();
 
 		$this->assertContains( 'administrator', $slugs );
-		$this->assertContains( 'editor', $slugs );
 		$this->assertContains( 'shop_manager', $slugs );
+		$this->assertNotContains( 'editor', $slugs );
+	}
+
+	public function test_role_slugs_include_editor_when_enabled(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
+
+		$slugs = Barmbini_Core_Staff_Guides::role_slugs();
+
+		$this->assertContains( 'editor', $slugs );
 	}
 
 	// =================================================================
@@ -62,17 +85,32 @@ class StaffGuidesTest extends TestCase {
 
 		$this->guides->ensure_capabilities();
 
-		// Administrator + Redakteur: beide Anleitungen.
-		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		// Standard (Redakteur ausgeblendet): Admin behaelt Redakteur-Cap nicht automatisch,
+		// Editor erhaelt keine Anleitungs-Caps, Shop Manager nur die Shop-Manager-Cap.
 		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
-		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_redakteur' ) );
-		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
+		$this->assertFalse( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertFalse( get_role( 'editor' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertFalse( get_role( 'editor' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
 		// Shop Manager: nur Shop-Manager-Anleitung.
 		$this->assertFalse( get_role( 'shop_manager' )->has_cap( 'barmbini_view_guide_redakteur' ) );
 		$this->assertTrue( get_role( 'shop_manager' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
 		// Subscriber: keine.
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_redakteur' ) );
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
+	}
+
+	public function test_ensure_capabilities_grants_admin_both_when_redakteur_enabled(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
+		add_role( 'administrator', 'Administrator', array( 'manage_options' => true ) );
+		add_role( 'editor', 'Editor', array( 'edit_posts' => true ) );
+
+		$this->guides->ensure_capabilities();
+
+		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_redakteur' ) );
+		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_guide_shop_manager' ) );
+		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_guide_redakteur' ) );
 	}
 
 	public function test_ensure_capabilities_removes_obsolete_capabilities(): void {
@@ -96,7 +134,24 @@ class StaffGuidesTest extends TestCase {
 	// ensure_pages() – idempotente Anlage der Seiten
 	// =================================================================
 
-	public function test_ensure_pages_creates_both_pages(): void {
+	public function test_ensure_pages_creates_only_shop_manager_by_default(): void {
+		$this->guides->ensure_pages();
+
+		$slugs = array();
+		foreach ( $GLOBALS['__wp_inserted_posts'] as $post ) {
+			$slugs[] = $post['post_name'];
+		}
+
+		$this->assertContains( 'anleitung-shop-manager', $slugs );
+		$this->assertNotContains( 'anleitung-redakteur', $slugs );
+		$this->assertCount( 1, $slugs );
+	}
+
+	public function test_ensure_pages_creates_both_when_redakteur_enabled(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
+
 		$this->guides->ensure_pages();
 
 		$slugs = array();
@@ -173,7 +228,19 @@ class StaffGuidesTest extends TestCase {
 	// can_view_page() – Pro-Seite-Berechtigung
 	// =================================================================
 
-	public function test_can_view_page_redakteur_only_with_redakteur_cap(): void {
+	public function test_can_view_page_redakteur_false_by_default_even_with_cap(): void {
+		// Standard: Redakteur-Anleitung ausgeblendet → Seite nie sichtbar.
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur', 'barmbini_view_guide_shop_manager' );
+
+		$this->assertFalse( $this->guides->can_view_page( 'anleitung-redakteur' ) );
+		$this->assertTrue( $this->guides->can_view_page( 'anleitung-shop-manager' ) );
+	}
+
+	public function test_can_view_page_redakteur_when_enabled_with_redakteur_cap(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
 		$GLOBALS['__wp_current_user'] = 2;
 		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur' );
 
@@ -216,8 +283,12 @@ class StaffGuidesTest extends TestCase {
 		$this->assertFalse( $this->guides->should_redirect() );
 	}
 
-	public function test_should_redirect_redakteur_page_for_shop_manager(): void {
-		// Shop Manager hat nur die Shop-Manager-Cap → Redakteur-Seite wird umgeleitet.
+	public function test_should_redirect_redakteur_page_for_shop_manager_when_enabled(): void {
+		// Nur relevant, wenn die Redakteur-Anleitung reaktiviert ist:
+		// Shop Manager ohne Redakteur-Cap → Umleitung.
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
 		$GLOBALS['__wp_current_page'] = 'anleitung-redakteur';
 		$GLOBALS['__wp_current_user'] = 2;
 		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_shop_manager' );
@@ -225,7 +296,20 @@ class StaffGuidesTest extends TestCase {
 		$this->assertTrue( $this->guides->should_redirect() );
 	}
 
-	public function test_should_redirect_false_for_redakteur_page_with_redakteur_cap(): void {
+	public function test_should_redirect_false_for_redakteur_page_when_disabled(): void {
+		// Standard: anleitung-redakteur ist keine geführte Anleitungsseite mehr →
+		// keine Umleitung (Seite gilt als normale/unbekannte Seite).
+		$GLOBALS['__wp_current_page'] = 'anleitung-redakteur';
+		$GLOBALS['__wp_current_user'] = 2;
+		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur' );
+
+		$this->assertFalse( $this->guides->should_redirect() );
+	}
+
+	public function test_should_redirect_false_for_redakteur_page_when_enabled_with_redakteur_cap(): void {
+		add_filter( 'barmbini_guide_redakteur_enabled', function () {
+			return true;
+		} );
 		$GLOBALS['__wp_current_page'] = 'anleitung-redakteur';
 		$GLOBALS['__wp_current_user'] = 2;
 		$GLOBALS['__wp_user_caps'][2] = array( 'barmbini_view_guide_redakteur' );
