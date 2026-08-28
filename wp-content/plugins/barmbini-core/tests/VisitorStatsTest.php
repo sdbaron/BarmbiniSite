@@ -37,7 +37,11 @@ class VisitorStatsTest extends TestCase {
 	}
 
 	private function make_fixture_dir() {
-		$dir = sys_get_temp_dir() . '/barmbini-stats-test-' . uniqid();
+		// Local setzt sys_temp_dir teils auf C:\Windows\TEMP (VirtualStore,
+		// dort sieht glob() die Dateien nicht). Den echten Benutzer-Temp
+		// bevorzugen, damit die Fixtures auch unter Windows lesbar sind.
+		$base = getenv( 'TEMP' ) ? getenv( 'TEMP' ) : sys_get_temp_dir();
+		$dir  = rtrim( $base, '/\\' ) . DIRECTORY_SEPARATOR . 'barmbini-stats-test-' . uniqid();
 		mkdir( $dir, 0700, true );
 		$this->tmp_dirs[] = $dir;
 		return $dir;
@@ -57,7 +61,7 @@ class VisitorStatsTest extends TestCase {
 	// ensure_capabilities()
 	// =================================================================
 
-	public function test_capability_granted_to_admin_and_editor_only(): void {
+	public function test_capability_granted_to_admin_and_shop_manager_only(): void {
 		add_role( 'shop_manager', 'Shop Manager', array() );
 		add_role( 'administrator', 'Administrator', array( 'manage_options' => true ) );
 		add_role( 'editor', 'Editor', array( 'edit_posts' => true ) );
@@ -66,8 +70,8 @@ class VisitorStatsTest extends TestCase {
 		$this->stats->ensure_capabilities();
 
 		$this->assertTrue( get_role( 'administrator' )->has_cap( 'barmbini_view_stats' ) );
-		$this->assertTrue( get_role( 'editor' )->has_cap( 'barmbini_view_stats' ) );
-		$this->assertFalse( get_role( 'shop_manager' )->has_cap( 'barmbini_view_stats' ) );
+		$this->assertTrue( get_role( 'shop_manager' )->has_cap( 'barmbini_view_stats' ) );
+		$this->assertFalse( get_role( 'editor' )->has_cap( 'barmbini_view_stats' ) );
 		$this->assertFalse( get_role( 'subscriber' )->has_cap( 'barmbini_view_stats' ) );
 	}
 
@@ -124,6 +128,7 @@ class VisitorStatsTest extends TestCase {
 			'date'            => $d1,
 			'views'           => 10,
 			'unique_visitors' => 4,
+			'bots'            => 2,
 			'devices'         => array( 'mobile' => 6, 'tablet' => 1, 'desktop' => 3 ),
 			'top_pages'       => array( array( 'path' => '/sortiment/', 'views' => 5 ), array( 'path' => '/', 'views' => 5 ) ),
 			'top_referrers'   => array( array( 'domain' => 'google.de', 'views' => 3 ) ),
@@ -132,6 +137,7 @@ class VisitorStatsTest extends TestCase {
 			'date'            => $d2,
 			'views'           => 20,
 			'unique_visitors' => 7,
+			'bots'            => 3,
 			'devices'         => array( 'mobile' => 10, 'tablet' => 2, 'desktop' => 8 ),
 			'top_pages'       => array( array( 'path' => '/sortiment/', 'views' => 12 ), array( 'path' => '/kontakt/', 'views' => 8 ) ),
 			'top_referrers'   => array( array( 'domain' => 'google.de', 'views' => 4 ), array( 'domain' => 'facebook.com', 'views' => 2 ) ),
@@ -146,14 +152,15 @@ class VisitorStatsTest extends TestCase {
 		$this->assertSame( 16, $totals['devices']['mobile'] );
 		$this->assertSame( 3, $totals['devices']['tablet'] );
 		$this->assertSame( 11, $totals['devices']['desktop'] );
+		$this->assertSame( 5, $totals['bots'] );
 		// Beliebteste Seite: /sortiment/ mit 5 + 12 = 17.
 		$this->assertSame( 17, $totals['top_pages']['/sortiment/'] );
 		$this->assertSame( 8, $totals['top_pages']['/kontakt/'] );
 		// Referrer summiert.
 		$this->assertSame( 7, $totals['top_referrers']['google.de'] );
 		$this->assertSame( 2, $totals['top_referrers']['facebook.com'] );
-		// Tagesliste sortiert.
-		$this->assertSame( array( $d2, $d1 ), array_keys( $totals['days'] ) );
+		// Tagesliste absteigend (neueste zuerst) sortiert.
+		$this->assertSame( array( $d1, $d2 ), array_keys( $totals['days'] ) );
 	}
 
 	public function test_read_aggregates_ignores_days_outside_period(): void {
@@ -193,11 +200,94 @@ class VisitorStatsTest extends TestCase {
 		$this->assertSame( 0, $totals['views'] );
 	}
 
+	public function test_read_aggregates_uses_full_daily_counts_when_present(): void {
+		$dir = $this->make_fixture_dir();
+		$d1  = date( 'Y-m-d', time() - 2 * 86400 );
+		$d2  = date( 'Y-m-d', time() - 3 * 86400 );
+
+		$this->write_fixture( $dir, $d1, json_encode( array(
+			'date'            => $d1,
+			'views'           => 10,
+			'unique_visitors' => 4,
+			'devices'         => array( 'mobile' => 6, 'tablet' => 1, 'desktop' => 3 ),
+			'top_pages'       => array( array( 'path' => '/sortiment/', 'views' => 5 ) ),
+			'pages'           => array( '/sortiment/' => 5, '/kontakt/' => 5 ),
+			'top_referrers'   => array( array( 'domain' => 'google.de', 'views' => 3 ) ),
+			'referrers'       => array( 'google.de' => 3, 'facebook.com' => 2 ),
+		) ) );
+		$this->write_fixture( $dir, $d2, json_encode( array(
+			'date'            => $d2,
+			'views'           => 20,
+			'unique_visitors' => 7,
+			'devices'         => array( 'mobile' => 10, 'tablet' => 2, 'desktop' => 8 ),
+			'top_pages'       => array( array( 'path' => '/sortiment/', 'views' => 12 ) ),
+			'pages'           => array( '/sortiment/' => 12, '/kontakt/' => 8 ),
+			'top_referrers'   => array( array( 'domain' => 'google.de', 'views' => 4 ) ),
+			'referrers'       => array( 'google.de' => 4 ),
+		) ) );
+		$this->set_stats_dir( $dir );
+
+		$totals = $this->stats->read_aggregates( 30 );
+
+		$this->assertSame( 17, $totals['top_pages']['/sortiment/'] );
+		$this->assertSame( 13, $totals['top_pages']['/kontakt/'] );
+		$this->assertSame( 7, $totals['top_referrers']['google.de'] );
+		$this->assertSame( 2, $totals['top_referrers']['facebook.com'] );
+	}
+
+	public function test_average_daily_visitors(): void {
+		$totals = array(
+			'views'           => 30,
+			'unique_visitors' => 11,
+			'days'            => array(
+				'2026-08-20' => array( 'views' => 10, 'unique_visitors' => 4 ),
+				'2026-08-21' => array( 'views' => 20, 'unique_visitors' => 7 ),
+			),
+		);
+
+		$this->assertSame( 6, $this->stats->get_average_daily_visitors( $totals ) );
+		$this->assertSame( 0, $this->stats->get_average_daily_visitors( array( 'unique_visitors' => 0, 'days' => array() ) ) );
+	}
+
+	public function test_is_valid_ip_or_cidr(): void {
+		$this->assertTrue( $this->stats->is_valid_ip_or_cidr( '203.0.113.10' ) );
+		$this->assertTrue( $this->stats->is_valid_ip_or_cidr( '2001:db8::1' ) );
+		$this->assertTrue( $this->stats->is_valid_ip_or_cidr( '192.168.0.0/16' ) );
+		$this->assertTrue( $this->stats->is_valid_ip_or_cidr( '2001:db8::/32' ) );
+
+		$this->assertFalse( $this->stats->is_valid_ip_or_cidr( 'nicht-eine-ip' ) );
+		$this->assertFalse( $this->stats->is_valid_ip_or_cidr( '192.168.0.0/33' ) );
+		$this->assertFalse( $this->stats->is_valid_ip_or_cidr( '2001:db8::/129' ) );
+		$this->assertFalse( $this->stats->is_valid_ip_or_cidr( '' ) );
+	}
+
+	public function test_sanitize_excluded_ips(): void {
+		$raw = "203.0.113.10\n# Kommentar\n\n198.51.100.25  # inline\n192.168.0.0/16\nungueltig\n203.0.113.10\n";
+		$out = $this->stats->sanitize_excluded_ips( $raw );
+
+		$this->assertSame( array( '203.0.113.10', '198.51.100.25', '192.168.0.0/16' ), $out );
+	}
+
+	public function test_get_and_save_excluded_ips(): void {
+		$base = getenv( 'TEMP' ) ? getenv( 'TEMP' ) : sys_get_temp_dir();
+		$file = rtrim( $base, '/\\' ) . DIRECTORY_SEPARATOR . 'barmbini-ips-' . uniqid() . '.conf';
+		add_filter( 'barmbini_stats_excluded_ips_file', function () use ( $file ) {
+			return $file;
+		} );
+
+		$this->assertSame( array(), $this->stats->get_excluded_ips() );
+
+		$this->assertTrue( $this->stats->save_excluded_ips( "203.0.113.10\n192.168.0.0/16\n" ) );
+		$this->assertSame( array( '203.0.113.10', '192.168.0.0/16' ), $this->stats->get_excluded_ips() );
+
+		@unlink( $file );
+	}
+
 	// =================================================================
 	// render_shortcode() – Gating
 	// =================================================================
 
-	public function test_shortcode_renders_for_admin_or_editor(): void {
+	public function test_shortcode_renders_for_user_with_cap(): void {
 		$dir = $this->make_fixture_dir();
 		$d1  = date( 'Y-m-d', time() - 1 * 86400 );
 		$this->write_fixture( $dir, $d1, json_encode( array(

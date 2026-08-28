@@ -53,6 +53,9 @@ cd /root/barmbini-stats        # nach dem Kopieren der Dateien
 - `devices` – mobile / tablet / desktop (aus dem User-Agent)
 - `top_pages` – beliebteste Seiten (Pfad + Views)
 - `top_referrers` – Referrer-Domains (ohne Schema/Query; interne ausgeschlossen)
+- `pages` / `referrers` – vollständige Tages-Zähler (assoziativ) für die
+  exakte Aggregation über mehrere Tage; `top_pages`/`top_referrers` bleiben
+  die Top-N-Listen. Seitenpfade werden **ohne Query-String** normalisiert.
 - `bots` – gefilterte Bot-Anfragen (nur wenn Bot-Filter aktiv, Standard: ja)
 
 ## Filterung von Scannern / IP-Zugriffen (2026-08-24)
@@ -65,6 +68,27 @@ cd /root/barmbini-stats        # nach dem Kopieren der Dateien
   noch zu `top_referrers`** gezählt – niemand besucht eine Website sinnvollerweise über die IP.
 - Folge: `top_referrers` zeigt nur noch echte externe Verweise (z. B. `google.com`).
   Bei der Berechnung eines Tages werden diese Zugriffe mit `continue` übersprungen.
+
+## Ausgeschlossene IP-Adressen
+
+Optional können einzelne IP-Adressen (oder CIDR-Bereiche) von der Statistik
+ausgeschlossen werden (z. B. die eigene Büro- oder Test-IP). Die Liste liegt in
+`/var/lib/barmbini-stats/excluded-ips.conf` – eine Adresse pro Zeile,
+`#` für Kommentare:
+
+```text
+203.0.113.10
+198.51.100.0/24
+```
+
+- `process.php` überspringt passende Client-IPs komplett (nicht in Views,
+  Uniques, Geräte, Seiten oder Referrern) und zählt sie als
+  `excluded_ip_hits`.
+- IPv4-mapped IPv6 (`::ffff:1.2.3.4`) wird als `1.2.3.4` erkannt.
+- Die Datei ist für **www-data** schreibbar – sie wird auf der Admin-Seite
+  „Statistiken“ (nur Administrator) bearbeitet. `install.sh` legt sie mit den
+  passenden Rechten an.
+- Alternativer Pfad über `BARMBINI_EXCLUDED_IPS_FILE`.
 
 ## Aufbewahrung (DSGVO)
 
@@ -81,6 +105,7 @@ cd /root/barmbini-stats        # nach dem Kopieren der Dateien
 | `BARMBINI_RETENTION_DAYS` | `90` | Aufbewahrung Aggregate |
 | `BARMBINI_TOP_N` | `10` | Länge der Top-Listen |
 | `BARMBINI_BOT_FILTER` | `1` | Bot-Filter an/aus |
+| `BARMBINI_EXCLUDED_IPS_FILE` | `/var/lib/barmbini-stats/excluded-ips.conf` | Ausschlussliste (eine IP/CIDR pro Zeile) |
 
 ## Validierung
 

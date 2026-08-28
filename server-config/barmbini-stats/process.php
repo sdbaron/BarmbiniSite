@@ -20,6 +20,7 @@
  *   BARMBINI_RETENTION_DAYS   Aufbewahrung der Aggregate (Standard: 90)
  *   BARMBINI_TOP_N            Länge der Top-Listen (Standard: 10)
  *   BARMBINI_BOT_FILTER       1 = Bot-Filter aktiv (Standard: 1)
+ *   BARMBINI_EXCLUDED_IPS_FILE  Ausschlussliste (Standard: /var/lib/barmbini-stats/excluded-ips.conf)
  *
  * @package Barmbini_Server
  */
@@ -30,6 +31,7 @@ $run_log        = getenv( 'BARMBINI_RUN_LOG' ) ?: '/var/log/barmbini-stats.log';
 $retention_days = (int) ( getenv( 'BARMBINI_RETENTION_DAYS' ) ?: 90 );
 $top_n          = (int) ( getenv( 'BARMBINI_TOP_N' ) ?: 10 );
 $bot_filter     = ( getenv( 'BARMBINI_BOT_FILTER' ) ?: '1' ) === '1';
+$excluded_ips_file = getenv( 'BARMBINI_EXCLUDED_IPS_FILE' ) ?: '/var/lib/barmbini-stats/excluded-ips.conf';
 
 $internal_hosts = array(
 	'barmbini.de', 'www.barmbini.de', 'barmbini.local', 'localhost',
@@ -139,6 +141,116 @@ function barmbini_cleanup_old( $stats_dir, $days ) {
 	}
 }
 
+/**
+ * Lädt die Ausschlussliste (eine IP oder ein CIDR pro Zeile, # = Kommentar).
+ *
+ * @param string $file Pfad zur Konfigurationsdatei.
+ * @return string[] Bereinigte Einträge.
+ */
+function barmbini_load_excluded_ips( $file ) {
+	if ( ! is_file( $file ) ) {
+		return array();
+	}
+	$lines = @file( $file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+	if ( ! is_array( $lines ) ) {
+		return array();
+	}
+	$entries = array();
+	foreach ( $lines as $line ) {
+		$line = trim( $line );
+		if ( '' === $line || 0 === strpos( $line, '#' ) ) {
+			continue;
+		}
+		$line = trim( preg_replace( '/#.*$/', '', $line ) );
+		if ( '' !== $line ) {
+			$entries[] = $line;
+		}
+	}
+	return array_values( array_unique( $entries ) );
+}
+
+/**
+ * Normalisiert eine IP (z. B. ::ffff:1.2.3.4 → 1.2.3.4).
+ *
+ * @param string $ip IP-Adresse.
+ * @return string
+ */
+function barmbini_normalize_ip( $ip ) {
+	$ip = trim( $ip );
+	if ( 0 === stripos( $ip, '::ffff:' ) ) {
+		$ip = substr( $ip, 7 );
+	}
+	return $ip;
+}
+
+/**
+ * Prüft, ob eine IP in der Liste enthalten ist (exakt oder per CIDR).
+ *
+ * @param string   $ip      Zu prüfende IP.
+ * @param string[] $entries Ausschlussliste.
+ * @return bool
+ */
+function barmbini_ip_matches( $ip, $entries ) {
+	$ip = barmbini_normalize_ip( $ip );
+	if ( '' === $ip ) {
+		return false;
+	}
+	foreach ( $entries as $entry ) {
+		if ( false === strpos( $entry, '/' ) ) {
+			if ( 0 === strcasecmp( $ip, barmbini_normalize_ip( $entry ) ) ) {
+				return true;
+			}
+			continue;
+		}
+		if ( barmbini_cidr_match( $ip, $entry ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * CIDR-Abgleich (IPv4 und IPv6) über inet_pton + Bitmaske.
+ *
+ * @param string $ip   Zu prüfende IP.
+ * @param string $cidr Netzwerk in CIDR-Notation (z. B. 192.168.0.0/16).
+ * @return bool
+ */
+function barmbini_cidr_match( $ip, $cidr ) {
+	$parts = explode( '/', $cidr, 2 );
+	if ( 2 !== count( $parts ) || '' === trim( $parts[0] ) || ! ctype_digit( trim( $parts[1] ) ) ) {
+		return false;
+	}
+	$net  = barmbini_normalize_ip( trim( $parts[0] ) );
+	$bits = (int) trim( $parts[1] );
+
+	$ip_bin  = @inet_pton( $ip );
+	$net_bin = @inet_pton( $net );
+	if ( false === $ip_bin || false === $net_bin || strlen( $ip_bin ) !== strlen( $net_bin ) ) {
+		return false;
+	}
+	$max_bits = strlen( $net_bin ) * 8;
+	if ( $bits < 0 || $bits > $max_bits ) {
+		return false;
+	}
+	if ( 0 === $bits ) {
+		return true;
+	}
+
+	$mask_len = (int) floor( $bits / 8 );
+	$mask_rem = $bits % 8;
+	if ( $mask_len > 0 && substr( $ip_bin, 0, $mask_len ) !== substr( $net_bin, 0, $mask_len ) ) {
+		return false;
+	}
+	if ( $mask_rem > 0 ) {
+		$mask = ( 0xFF << ( 8 - $mask_rem ) ) & 0xFF;
+		if ( ( ord( $ip_bin[ $mask_len ] ) & $mask ) !== ( ord( $net_bin[ $mask_len ] ) & $mask ) ) {
+			return false;
+		}
+	}
+	return true;
+}
+
 // ---------------------------------------------------------------------
 if ( ! is_file( $input ) ) {
 	barmbini_log( $run_log, "Input nicht gefunden: {$input} (übersprungen)" );
@@ -156,11 +268,14 @@ $bot_regex = '/(bot|spider|crawler|slurp|bingpreview|googlebot|bingbot|yandex|ba
 
 $views        = 0;
 $bots         = 0;
+$excluded_ip_hits = 0;
 $unique_ips   = array();
 $devices      = array( 'mobile' => 0, 'tablet' => 0, 'desktop' => 0 );
 $pages        = array();
 $referrers    = array();
 $log_date     = '';
+
+$excluded_ips = barmbini_load_excluded_ips( $excluded_ips_file );
 
 while ( ( $line = fgets( $fh ) ) !== false ) {
 	if ( ! preg_match( $pattern, trim( $line ), $m ) ) {
@@ -180,6 +295,11 @@ while ( ( $line = fgets( $fh ) ) !== false ) {
 	if ( 'GET' !== $method || 200 !== $status || barmbini_is_excluded( $uri ) ) {
 		continue;
 	}
+	// Konfigurierter IP-Ausschluss (z. B. eigene Büro-/Test-IPs).
+	if ( ! empty( $excluded_ips ) && barmbini_ip_matches( $ip, $excluded_ips ) ) {
+		$excluded_ip_hits++;
+		continue;
+	}
 	if ( $bot_filter && preg_match( $bot_regex, $ua ) ) {
 		$bots++;
 		continue;
@@ -193,7 +313,14 @@ while ( ( $line = fgets( $fh ) ) !== false ) {
 	$views++;
 	$unique_ips[ $ip ] = true;
 	$devices[ barmbini_classify_device( $ua ) ]++;
-	$pages[ $uri ]     = isset( $pages[ $uri ] ) ? $pages[ $uri ] + 1 : 1;
+
+	// Pfad normalisieren (ohne Query-String), damit /sortiment/?page=2
+	// und /sortiment/ als dieselbe Seite zählen.
+	$page = parse_url( $uri, PHP_URL_PATH );
+	if ( null === $page || '' === $page ) {
+		$page = '/';
+	}
+	$pages[ $page ] = isset( $pages[ $page ] ) ? $pages[ $page ] + 1 : 1;
 
 	$dom = barmbini_referrer_domain( $referer, $internal_hosts );
 	if ( '' !== $dom ) {
@@ -225,6 +352,11 @@ $data = array(
 	'devices'         => $devices,
 	'top_pages'       => $top_pages,
 	'top_referrers'   => $top_referrers,
+	// Vollständige Tages-Zähler (assoziativ), damit die Plugin-Aggregation
+	// über mehrere Tage exakt ist (Top-N allein wäre verlustbehaftet).
+	'pages'           => $pages,
+	'referrers'       => $referrers,
+	'excluded_ip_hits' => $excluded_ip_hits,
 );
 if ( $bot_filter ) {
 	$data['bots'] = $bots;
@@ -245,5 +377,5 @@ if ( false === file_put_contents( $out, $json . PHP_EOL ) ) {
 @chmod( $out, 0644 );
 
 barmbini_cleanup_old( $stats_dir, $retention_days );
-barmbini_log( $run_log, "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . " -> {$out}" );
-echo "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . PHP_EOL;
+barmbini_log( $run_log, "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . " excluded={$excluded_ip_hits} -> {$out}" );
+echo "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . " excluded={$excluded_ip_hits}" . PHP_EOL;

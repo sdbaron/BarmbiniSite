@@ -1,0 +1,94 @@
+/* Barmbini Besucherstatistik – Styles (Admin-Seite + Frontend-Shortcode). */
+.barmbini-stats {
+	max-width: 960px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	color: #1d2327;
+}
+
+.barmbini-stats h2 {
+	margin: 0 0 0.4em;
+}
+
+.barmbini-stats h3 {
+	margin: 1.6em 0 0.5em;
+}
+
+.barmbini-stats .barmbini-stats-muted {
+	color: #646970;
+	font-size: 0.9em;
+	margin: 0.2em 0 1em;
+}
+
+.barmbini-stats .barmbini-stats-empty {
+	color: #646970;
+}
+
+.barmbini-stats .barmbini-stats-kpis {
+	display: flex;
+	gap: 16px;
+	flex-wrap: wrap;
+}
+
+.barmbini-stats .barmbini-stats-kpi {
+	flex: 1;
+	min-width: 150px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 14px;
+}
+
+.barmbini-stats .barmbini-stats-kpi .barmbini-stats-label {
+	font-size: 0.85em;
+	color: #646970;
+}
+
+.barmbini-stats .barmbini-stats-kpi .barmbini-stats-value {
+	font-size: 1.6em;
+	font-weight: 700;
+	margin-top: 2px;
+}
+
+.barmbini-stats table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.barmbini-stats th,
+.barmbini-stats td {
+	text-align: left;
+	padding: 6px 10px;
+	border-bottom: 1px solid #eee;
+	font-size: 0.95em;
+}
+
+.barmbini-stats th {
+	color: #646970;
+	font-weight: 600;
+}
+
+.barmbini-stats .barmbini-stats-bar {
+	display: inline-block;
+	width: 90px;
+	height: 8px;
+	background: #e2e4e7;
+	border-radius: 4px;
+	vertical-align: middle;
+	margin-right: 8px;
+	overflow: hidden;
+}
+
+.barmbini-stats .barmbini-stats-bar > span {
+	display: block;
+	height: 100%;
+	background: #2271b1;
+	border-radius: 4px;
+}
+
+.barmbini-stats-ips-status {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	padding: 8px 12px;
+	margin: 0 0 1em;
+}

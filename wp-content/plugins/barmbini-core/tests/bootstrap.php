@@ -18,6 +18,10 @@ define( 'BARMBINI_CORE_FILE', dirname( __DIR__ ) . '/barmbini-core.php' );
 define( 'BARMBINI_CORE_PATH', dirname( __DIR__ ) . '/' );
 define( 'BARMBINI_CORE_URL', 'http://barmbini.local/wp-content/plugins/barmbini-core/' );
 
+if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
+	define( 'HOUR_IN_SECONDS', 3600 );
+}
+
 // =====================================================================
 // WordPress-Funktions-Mocks
 // =====================================================================
@@ -56,6 +60,28 @@ if ( ! function_exists( 'get_option' ) ) {
 if ( ! function_exists( 'update_option' ) ) {
 	function update_option( $key, $value ) {
 		$GLOBALS['__wp_options'][ $key ] = $value;
+		return true;
+	}
+}
+
+$GLOBALS['__wp_transients'] = array();
+
+if ( ! function_exists( 'get_transient' ) ) {
+	function get_transient( $key ) {
+		return isset( $GLOBALS['__wp_transients'][ $key ] ) ? $GLOBALS['__wp_transients'][ $key ] : false;
+	}
+}
+
+if ( ! function_exists( 'set_transient' ) ) {
+	function set_transient( $key, $value, $expiration = 0 ) {
+		$GLOBALS['__wp_transients'][ $key ] = $value;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'delete_transient' ) ) {
+	function delete_transient( $key ) {
+		unset( $GLOBALS['__wp_transients'][ $key ] );
 		return true;
 	}
 }
@@ -224,6 +250,24 @@ if ( ! function_exists( 'apply_filters' ) ) {
 if ( ! function_exists( 'add_filter' ) ) {
 	function add_filter( $hook, $callback, $priority = 10, $args = 1 ) {
 		$GLOBALS['__wp_filters'][ $hook ][] = compact( 'callback', 'priority', 'args' );
+	}
+}
+
+// -------------------------------------------------------------------
+// Styles / Enqueue (minimal)
+// -------------------------------------------------------------------
+
+$GLOBALS['__wp_enqueued_styles'] = array();
+
+if ( ! function_exists( 'wp_enqueue_style' ) ) {
+	function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+		$GLOBALS['__wp_enqueued_styles'][ $handle ] = compact( 'src', 'deps', 'ver', 'media' );
+	}
+}
+
+if ( ! function_exists( 'wp_register_style' ) ) {
+	function wp_register_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
+		$GLOBALS['__wp_enqueued_styles'][ $handle ] = compact( 'src', 'deps', 'ver', 'media' );
 	}
 }
 
@@ -524,6 +568,8 @@ function _test_reset_shortcodes() {
 function _test_reset_all() {
 	_test_reset_options();
 	_test_reset_shortcodes();
+	$GLOBALS['__wp_transients'] = array();
+	$GLOBALS['__wp_enqueued_styles'] = array();
 	$GLOBALS['__wp_actions']  = array();
 	$GLOBALS['__wp_filters']  = array();
 	$GLOBALS['__wp_widgets']  = array();

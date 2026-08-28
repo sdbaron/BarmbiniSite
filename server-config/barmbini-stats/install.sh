@@ -22,6 +22,7 @@ fi
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST=/root/barmbini-stats
 STATS_DIR=/var/lib/barmbini-stats/stats
+EXCLUDED_IPS_FILE=/var/lib/barmbini-stats/excluded-ips.conf
 RUN_LOG=/var/log/barmbini-stats.log
 BACKUP_DIR="$DEST/backups"
 CRON_FILE=/etc/cron.d/barmbini-stats
@@ -36,6 +37,10 @@ touch "$RUN_LOG"
 # (vorher 750/root verhinderte die Anzeige im Plugin).
 chmod 755 "$STATS_DIR"
 chmod 644 "$STATS_DIR"/stats-*.json 2>/dev/null || true
+# Ausschlussliste: www-data muss sie lesen UND schreiben koennen (Admin-Seite).
+touch "$EXCLUDED_IPS_FILE"
+chown www-data:www-data "$EXCLUDED_IPS_FILE"
+chmod 664 "$EXCLUDED_IPS_FILE"
 echo "[1/4] Verzeichnisse ok ($DEST, $STATS_DIR)"
 
 # 2. Skripte installieren (überspringen, wenn bereits im Zielverzeichnis)
