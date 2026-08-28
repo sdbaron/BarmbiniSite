@@ -257,7 +257,12 @@ if ( ! is_file( $input ) ) {
 	exit( 0 );
 }
 
-$fh = @fopen( $input, 'r' );
+$is_gz = ( '.gz' === substr( $input, -3 ) );
+if ( $is_gz && ! function_exists( 'gzopen' ) ) {
+	barmbini_log( $run_log, "zlib-Erweiterung fehlt für {$input}" );
+	exit( 1 );
+}
+$fh = $is_gz ? @gzopen( $input, 'r' ) : @fopen( $input, 'r' );
 if ( ! $fh ) {
 	barmbini_log( $run_log, "Kann Input nicht öffnen: {$input}" );
 	exit( 1 );
@@ -277,7 +282,9 @@ $log_date     = '';
 
 $excluded_ips = barmbini_load_excluded_ips( $excluded_ips_file );
 
-while ( ( $line = fgets( $fh ) ) !== false ) {
+$readline = $is_gz ? 'gzgets' : 'fgets';
+
+while ( ( $line = $readline( $fh ) ) !== false ) {
 	if ( ! preg_match( $pattern, trim( $line ), $m ) ) {
 		continue;
 	}
@@ -327,7 +334,11 @@ while ( ( $line = fgets( $fh ) ) !== false ) {
 		$referrers[ $dom ] = isset( $referrers[ $dom ] ) ? $referrers[ $dom ] + 1 : 1;
 	}
 }
-fclose( $fh );
+if ( $is_gz ) {
+	gzclose( $fh );
+} else {
+	fclose( $fh );
+}
 
 if ( '' === $log_date ) {
 	$log_date = date( 'Y-m-d' );
@@ -369,12 +380,20 @@ if ( ! is_dir( $stats_dir ) ) {
 $out  = rtrim( $stats_dir, '/' ) . '/stats-' . $log_date . '.json';
 $json = json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 
-if ( false === file_put_contents( $out, $json . PHP_EOL ) ) {
+// Atomar schreiben (temp + rename), damit parallele Läufe (Cron + Recalc)
+// niemals eine halb geschriebene JSON-Datei hinterlassen.
+$tmp = $out . '.tmp.' . getmypid();
+if ( false === file_put_contents( $tmp, $json . PHP_EOL ) ) {
 	barmbini_log( $run_log, "Kann {$out} nicht schreiben" );
 	exit( 1 );
 }
 // 0644: Dateien fuer www-data (WordPress-Anzeige) lesbar halten.
-@chmod( $out, 0644 );
+@chmod( $tmp, 0644 );
+if ( ! @rename( $tmp, $out ) ) {
+	@unlink( $tmp );
+	barmbini_log( $run_log, "Kann {$out} nicht ersetzen" );
+	exit( 1 );
+}
 
 barmbini_cleanup_old( $stats_dir, $retention_days );
 barmbini_log( $run_log, "OK: {$log_date} views={$views} uniques=" . count( $unique_ips ) . " excluded={$excluded_ip_hits} -> {$out}" );

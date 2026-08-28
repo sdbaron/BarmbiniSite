@@ -3,10 +3,10 @@
 # Barmbini Besucherstatistik – Installation (idempotent).
 #
 # - legt Verzeichnisse an (/root/barmbini-stats, /var/lib/barmbini-stats/stats)
-# - kopiert process.php / process.sh nach /root/barmbini-stats
+# - kopiert process.php / process.sh / recalc.sh / recalc-queue.sh nach /root/barmbini-stats
 # - richtet logrotate für das nginx-Zugriffslog ein (rotate 7, delaycompress)
 #   und passt ggf. /etc/logrotate.d/nginx an (mit Backup)
-# - installiert den Cron-Eintrag in /etc/cron.d/barmbini-stats (täglich 07:15)
+# - installiert die Cron-Einträge in /etc/cron.d/barmbini-stats (täglich 07:15 + Queue minütlich)
 # - optional: --test führt einen einmaligen Testlauf aus
 #
 # Aufruf:  ./install.sh          # als root
@@ -23,6 +23,7 @@ SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST=/root/barmbini-stats
 STATS_DIR=/var/lib/barmbini-stats/stats
 EXCLUDED_IPS_FILE=/var/lib/barmbini-stats/excluded-ips.conf
+RUN_DIR=/var/lib/barmbini-stats/run
 RUN_LOG=/var/log/barmbini-stats.log
 BACKUP_DIR="$DEST/backups"
 CRON_FILE=/etc/cron.d/barmbini-stats
@@ -41,15 +42,19 @@ chmod 644 "$STATS_DIR"/stats-*.json 2>/dev/null || true
 touch "$EXCLUDED_IPS_FILE"
 chown www-data:www-data "$EXCLUDED_IPS_FILE"
 chmod 664 "$EXCLUDED_IPS_FILE"
+# Marker-Verzeichnis für den „Neu berechnen“-Button (www-data darf nur hier schreiben).
+mkdir -p "$RUN_DIR"
+chown www-data:www-data "$RUN_DIR"
+chmod 755 "$RUN_DIR"
 echo "[1/4] Verzeichnisse ok ($DEST, $STATS_DIR)"
 
 # 2. Skripte installieren (überspringen, wenn bereits im Zielverzeichnis)
 if [ "$SRC" != "$DEST" ]; then
-	cp "$SRC/process.php" "$SRC/process.sh" "$DEST/"
-	chmod +x "$DEST/process.sh"
+	cp "$SRC/process.php" "$SRC/process.sh" "$SRC/recalc.sh" "$SRC/recalc-queue.sh" "$DEST/"
+	chmod +x "$DEST/process.sh" "$DEST/recalc.sh" "$DEST/recalc-queue.sh"
 	echo "[2/4] Skripte nach $DEST kopiert"
 else
-	chmod +x "$DEST/process.sh"
+	chmod +x "$DEST/process.sh" "$DEST/recalc.sh" "$DEST/recalc-queue.sh"
 	echo "[2/4] Skripte bereits im Zielverzeichnis (kein Kopieren nötig)"
 fi
 
@@ -67,14 +72,13 @@ else
 	echo "[3/4] logrotate: /etc/logrotate.d/barmbini-stats installiert"
 fi
 
-# 4. Cron (täglich 07:15, nach logrotate)
-if [ -f "$CRON_FILE" ]; then
-	echo "[4/4] Cron bereits vorhanden: $CRON_FILE"
-else
-	printf '15 7 * * * root %s/process.sh >/dev/null 2>&1\n' "$DEST" > "$CRON_FILE"
-	chmod 644 "$CRON_FILE"
-	echo "[4/4] Cron installiert: $CRON_FILE (täglich 07:15)"
-fi
+# 4. Cron: täglicher Lauf (07:15, nach logrotate) + Neuberechnungs-Queue (minütlich)
+cat > "$CRON_FILE" <<EOF
+15 7 * * * root $DEST/process.sh >/dev/null 2>&1
+* * * * * root $DEST/recalc-queue.sh >/dev/null 2>&1
+EOF
+chmod 644 "$CRON_FILE"
+echo "[4/4] Cron installiert: $CRON_FILE (täglich 07:15 + Queue minütlich)"
 
 if [ "${1:-}" = "--test" ]; then
 	echo ""

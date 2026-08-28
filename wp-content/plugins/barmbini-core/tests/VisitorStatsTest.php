@@ -283,6 +283,15 @@ class VisitorStatsTest extends TestCase {
 		@unlink( $file );
 	}
 
+	public function test_recalc_flag_file_uses_filter(): void {
+		$this->assertSame( '/var/lib/barmbini-stats/run/recalc.flag', $this->stats->get_recalc_flag_file() );
+
+		add_filter( 'barmbini_stats_recalc_flag_file', function () {
+			return '/tmp/recalc.flag';
+		} );
+		$this->assertSame( '/tmp/recalc.flag', $this->stats->get_recalc_flag_file() );
+	}
+
 	// =================================================================
 	// render_shortcode() – Gating
 	// =================================================================

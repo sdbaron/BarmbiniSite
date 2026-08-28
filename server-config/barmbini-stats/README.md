@@ -11,6 +11,8 @@ zeigt sie an (Admin + Frontend, nur für Administrator/Redakteur).
 |---|---|
 | `process.php` | PHP-CLI: parst das rotierte Zugriffslog, filtert Views, anonymisiert, schreibt JSON-Aggregate |
 | `process.sh` | Bash-Wrapper für den Cron (ruft `process.php` auf) |
+| `recalc.sh` | Neuberechnung der letzten Tage (live, `.1`, `.2.gz` … `.7.gz`) |
+| `recalc-queue.sh` | Prüft die Marker-Datei und ruft `recalc.sh` (Root-Cron, minütlich) |
 | `install.sh` | Idempotente Installation (Verzeichnisse, Skripte, logrotate, Cron) |
 | `logrotate-barmbini-stats` | logrotate-Konfiguration (nur falls nginx-logrotate die Datei nicht abdeckt) |
 
@@ -89,6 +91,22 @@ ausgeschlossen werden (z. B. die eigene Büro- oder Test-IP). Die Liste liegt in
   „Statistiken“ (nur Administrator) bearbeitet. `install.sh` legt sie mit den
   passenden Rechten an.
 - Alternativer Pfad über `BARMBINI_EXCLUDED_IPS_FILE`.
+
+## Neu berechnen (Button)
+
+Der „Neu berechnen“-Button in der Admin-Seite „Statistiken“ (nur Administrator)
+berechnet die letzten Tage mit den aktuellen Filtern (z. B. IP-Ausschluss) neu:
+
+1. Der Button schreibt nur eine Marker-Datei
+   `/var/lib/barmbini-stats/run/recalc.flag` (www-data-beschreibbar).
+2. Ein Root-Cron (jede Minute) ruft `recalc-queue.sh` auf; erkennt die Marke,
+   führt `recalc.sh` aus und entfernt die Marke wieder.
+3. `recalc.sh` verarbeitet die vorhandenen Roh-Logs erneut:
+   `barmbini_access.log` (heute), `.1` (gestern) sowie `.2.gz` … `.7.gz`.
+
+Kein direkter Root-Aufruf durch WordPress – www-data darf ausschließlich die
+Marker-Datei setzen. Eine Lock (`/run/barmbini-stats.lock`) verhindert parallele
+Läufe mit dem täglichen Cron.
 
 ## Aufbewahrung (DSGVO)
 

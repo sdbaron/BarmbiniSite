@@ -18,4 +18,10 @@ else
 	PHP_BIN="/usr/bin/php"
 fi
 
-exec "$PHP_BIN" "$DIR/process.php" "$@"
+# Serielle Ausführung: täglicher Lauf und manuelle Neuberechnung teilen
+# sich dieselbe Lock, damit nie zwei Läufe gleichzeitig schreiben.
+# (Kein `exec` für PHP, damit die Shell die Lock bis zum Ende hält.)
+exec 9>/run/barmbini-stats.lock
+flock 9
+
+"$PHP_BIN" "$DIR/process.php" "$@"

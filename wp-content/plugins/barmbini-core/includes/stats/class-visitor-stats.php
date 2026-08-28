@@ -33,6 +33,7 @@ class Barmbini_Core_Visitor_Stats {
 	const TOP_N     = 10;
 	const DEFAULT_EXCLUDED_IPS_FILE = '/var/lib/barmbini-stats/excluded-ips.conf';
 	const AGG_CACHE_VERSION = '2';
+	const DEFAULT_RECALC_FLAG_FILE = '/var/lib/barmbini-stats/run/recalc.flag';
 
 	/**
 	 * Registriert die Hooks des Statistik-Moduls.
@@ -42,6 +43,7 @@ class Barmbini_Core_Visitor_Stats {
 	public function register() {
 		add_action( 'admin_init', array( $this, 'ensure_capabilities' ) );
 		add_action( 'admin_init', array( $this, 'handle_excluded_ips_save' ) );
+		add_action( 'admin_init', array( $this, 'handle_recalc_request' ) );
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
@@ -325,6 +327,86 @@ class Barmbini_Core_Visitor_Stats {
 			<?php
 			if ( $writable ) {
 				submit_button( 'Speichern', 'primary', 'barmbini_stats_ips_save' );
+			}
+			?>
+		</form>
+		<?php
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Liefert den Pfad zur Marker-Datei für die Neuberechnung.
+	 *
+	 * Per Filter `barmbini_stats_recalc_flag_file` überschreibbar (Tests/Local).
+	 *
+	 * @return string
+	 */
+	public function get_recalc_flag_file() {
+		return apply_filters( 'barmbini_stats_recalc_flag_file', self::DEFAULT_RECALC_FLAG_FILE );
+	}
+
+	/**
+	 * Stößt die serverseitige Neuberechnung an (nur Administratoren).
+	 *
+	 * Der Button schreibt nur eine Marker-Datei; ein Root-Cron führt
+	 * ausschließlich das geprüfte recalc.sh aus. Kein direkter Root-Aufruf.
+	 *
+	 * @return void
+	 */
+	public function handle_recalc_request() {
+		if ( ! isset( $_POST['barmbini_stats_recalc'] ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['barmbini_stats_recalc_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['barmbini_stats_recalc_nonce'] ) ), 'barmbini_stats_recalc' ) ) {
+			return;
+		}
+
+		$flag = $this->get_recalc_flag_file();
+		$ok   = false;
+		if ( is_file( $flag ) ? is_writable( $flag ) : is_writable( dirname( $flag ) ) ) {
+			$ok = false !== @file_put_contents( $flag, (string) time() );
+		}
+
+		wp_safe_redirect( add_query_arg(
+			array( 'page' => self::MENU_SLUG, 'barmbini_recalc' => $ok ? '1' : '0' ),
+			admin_url( 'admin.php' )
+		) );
+		exit;
+	}
+
+	/**
+	 * Rendert den „Neu berechnen“-Button.
+	 *
+	 * @return string
+	 */
+	public function render_recalc_form() {
+		$flag      = $this->get_recalc_flag_file();
+		$writable  = is_file( $flag ) ? is_writable( $flag ) : is_writable( dirname( $flag ) );
+		$requested = isset( $_GET['barmbini_recalc'] ) ? (int) $_GET['barmbini_recalc'] : null;
+
+		ob_start();
+		?>
+		<hr />
+		<h2><?php echo esc_html( 'Neu berechnen' ); ?></h2>
+		<p class="description">
+			<?php echo esc_html( 'Berechnet die letzten Tage mit den aktuellen Filtern (z. B. IP-Ausschluss) neu. Die Ausführung übernimmt der Server-Cron innerhalb weniger Minuten.' ); ?>
+		</p>
+		<?php if ( 1 === $requested ) : ?>
+			<div class="notice notice-success"><p><?php echo esc_html( 'Neuberechnung angestoßen — wird in Kürze ausgeführt.' ); ?></p></div>
+		<?php elseif ( 0 === $requested ) : ?>
+			<div class="notice notice-error"><p><?php echo esc_html( 'Neuberechnung konnte nicht angestoßen werden (Marker-Datei nicht beschreibbar).' ); ?></p></div>
+		<?php endif; ?>
+		<?php if ( ! $writable ) : ?>
+			<div class="notice notice-warning"><p><?php echo esc_html( 'Die Marker-Datei ist für den Webserver nicht beschreibbar: ' . $flag ); ?></p></div>
+		<?php endif; ?>
+		<form method="post">
+			<input type="hidden" name="barmbini_stats_recalc_nonce" value="<?php echo esc_attr( wp_create_nonce( 'barmbini_stats_recalc' ) ); ?>" />
+			<?php
+			if ( $writable ) {
+				submit_button( 'Neu berechnen', 'secondary', 'barmbini_stats_recalc' );
 			}
 			?>
 		</form>
@@ -687,6 +769,7 @@ class Barmbini_Core_Visitor_Stats {
 		echo $this->render_block( $totals, $days ); // phpcs:ignore WordPress.Security.EscapeOutput -- HTML-Output gekapselt.
 
 		if ( current_user_can( 'manage_options' ) ) {
+			echo $this->render_recalc_form(); // phpcs:ignore WordPress.Security.EscapeOutput -- HTML-Output gekapselt.
 			echo $this->render_excluded_ips_form(); // phpcs:ignore WordPress.Security.EscapeOutput -- HTML-Output gekapselt.
 		}
 		echo '</div>';
