@@ -32,6 +32,7 @@ class Barmbini_Core_Visitor_Stats {
 	const PERIODS   = array( 7, 30, 90 );
 	const TOP_N     = 10;
 	const DEFAULT_EXCLUDED_IPS_FILE = '/var/lib/barmbini-stats/excluded-ips.conf';
+	const AGG_CACHE_VERSION = '2';
 
 	/**
 	 * Registriert die Hooks des Statistik-Moduls.
@@ -335,8 +336,9 @@ class Barmbini_Core_Visitor_Stats {
 	 * Liest und aggregiert die Tages-Dateien der letzten N Tage.
 	 *
 	 * Das Ergebnis wird per Transient (1 Stunde) zwischengespeichert; der
-	 * Cache-Schlüssel enthält einen Fingerabdruck aus Dateiname + mtime,
-	 * sodass neue Tagesdateien den Cache automatisch entwerten.
+	 * Cache-Schlüssel enthält einen Fingerabdruck aus Dateiname + mtime
+	 * sowie eine Cache-Version, damit neue Tagesdateien und Änderungen an
+	 * der Aggregations-/Sortierlogik den Cache automatisch entwerten.
 	 *
 	 * @param int $days Anzahl Tage (7/30/90).
 	 * @return array|null Aggregierte Werte oder null, wenn keine Daten.
@@ -357,7 +359,8 @@ class Barmbini_Core_Visitor_Stats {
 		foreach ( $files as $file ) {
 			$fingerprint .= $file . ':' . (string) @filemtime( $file ) . ';';
 		}
-		$cache_key = 'barmbini_stats_agg_' . (int) $days . '_' . md5( $fingerprint );
+		// Cache-Version im Schlüssel: Änderungen an der Aggregations-/Sortierlogik entwerten alte Transients.
+		$cache_key = 'barmbini_stats_agg_v' . self::AGG_CACHE_VERSION . '_' . (int) $days . '_' . md5( $fingerprint );
 
 		$cached = get_transient( $cache_key );
 		if ( false !== $cached && is_array( $cached ) ) {
