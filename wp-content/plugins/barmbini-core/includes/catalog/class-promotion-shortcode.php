@@ -163,11 +163,18 @@ class Barmbini_Core_Promotion_Shortcode {
 			$image_alt = get_the_title( $post_id );
 		}
 
-		return sprintf(
-			'<a href="%s" class="barmbini-promotion-image-link"><img class="barmbini-promotion-image" src="%s" alt="%s"></a>',
-			esc_url( get_permalink( $post_id ) ),
+		$image_html = sprintf(
+			'<img class="barmbini-promotion-image" src="%s" alt="%s">',
 			esc_url( $image_url ),
 			esc_attr( $image_alt )
+		);
+
+		$flyer = Barmbini_Core_Promotion_Post_Type::render_flyer_with_overlay( $post_id, $image_html );
+
+		return sprintf(
+			'<a href="%s" class="barmbini-promotion-image-link">%s</a>',
+			esc_url( get_permalink( $post_id ) ),
+			$flyer
 		);
 	}
 

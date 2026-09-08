@@ -202,6 +202,7 @@ ein **Start- und Enddatum**. Es gilt die Regel:
 | Metabox „Gültigkeitszeitraum“ | `_barmbini_promotion_start_date` und `_barmbini_promotion_end_date` (Format `Y-m-d`) |
 | Metabox „Link“ | `_barmbini_promotion_link_url` (optionaler Ziel-Link) |
 | Metabox „Startseiten-Anzeige“ | Checkbox „Beschreibung auf der Startseite anzeigen“ (**pro Aktion**) |
+| Metabox „Overlay auf dem Flyer“ | Optionaler Kurztext auf dem Flyer: `_barmbini_promotion_overlay_text`, `_barmbini_promotion_overlay_color`, `_barmbini_promotion_overlay_size`, `_barmbini_promotion_overlay_position_v`, `_barmbini_promotion_overlay_position_h` |
 | Beitragsbild | Standard „Flyer-Bild“ (Label ersetzt „Beitragsbild“) |
 | Taxonomien | bewusst keine Kategorien/Schlagworte |
 
@@ -260,6 +261,7 @@ WP-Cron-Job `barmbini_core_cache_maintenance` **alle 6 Stunden** den Cache
 
 - `assets/css/promotion.css`: Aktions-Karten maximal **500 px** breit,
   Grid `minmax(300px, 500px)`, zentriert (entspricht dem Startseiten-Layout).
+- Optionaler Overlay-Text auf dem Flyer: Wrapper `.barmbini-promotion-flyer`, Positionsklassen `--{v}-{h}`, Text `.barmbini-promotion-overlay` (Farbe/Größe per Inline-Style).
 - Kein Theme-CSS wird unspezifisch überschrieben; die Komponente ist separat
   gestaltbar.
 
@@ -279,6 +281,12 @@ WP-Cron-Job `barmbini_core_cache_maintenance` **alle 6 Stunden** den Cache
 - Keine wiederkehrenden oder automatisch verlängerbaren Aktionen.
 - Keine Mehrsprachigkeit.
 - Keine Kopplung an das Rabatt-System der Abonnements.
+
+### 10. Overlay-Text auf dem Flyer-Bild (umgesetzt ab 0.10.1)
+
+Optionale Kurztext-Überlagerung auf dem Flyer (Farbe, Größe in px, Position 3×3-Raster). Nur wenn Text gesetzt und Flyer vorhanden; Shortcode und Einzelansicht. Spezifikation: `Tasks/Barmbini_Aufgabe_Aktionen_Bild_Overlay_Text.md`.
+
+Meta-Keys: `_barmbini_promotion_overlay_text`, `_barmbini_promotion_overlay_color`, `_barmbini_promotion_overlay_size`, `_barmbini_promotion_overlay_position_v`, `_barmbini_promotion_overlay_position_h`. Render: `Barmbini_Core_Promotion_Post_Type::render_flyer_with_overlay()`.
 
 ## Shop-Manager-Anleitung – Detaillierte Beschreibung
 
