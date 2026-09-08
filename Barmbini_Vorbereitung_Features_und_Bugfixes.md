@@ -37,6 +37,7 @@ Der Server ist ein **1-Kern-VPS mit nur 826 MB RAM** und **8.7 GB Disk (79 % bel
 
 - **RAM ist der Engpass:** PHP-FPM-Worker (bis zu 5, à ~110–123 MB RSS) können bei Spitzen fast den gesamten RAM belegen; Swap (2 GB, 192 MB genutzt) fängt es ab.
 - **Disk-Druck:** `/` zu 79 % voll (1.9 GB frei). `/root` enthält 390 MB, davon 2× 176 MB Deploy-Backups vom 2026-08-11. → Aufgabe `Tasks/Barmbini_Aufgabe_Server_Wartung_root_aufraeumen.md`. **Fortschritt (2026-08-12):** Älteres Deploy-Backup `...-112119` wurde nach `/root/deploy-backups-archiv/` **verschoben** (reversibel, kein Speichergewinn); `barmbini-db.txt` + Malware-Backups unangetastet. Speicher wird erst durch **Löschung** des archivierten Backups (176 MB) frei – nur nach Freigabe.
+- **Journal (2026-09-08):** `/var/log/journal` von ~880 MB auf ~65 MB reduziert (`journalctl --vacuum-size=100M` + Drop-in `SystemMaxUse=100M` / `MaxRetentionSec=14day`). Disk `/` danach **68 %** (2.9 GB frei).
 
 ### Fachlich und technisch
 

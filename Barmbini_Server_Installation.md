@@ -617,11 +617,26 @@ ufw status
 ```bash
 apt-get clean
 rm -rf /var/lib/apt/lists/*
-journalctl --vacuum-size=200M
+# Journal: Einmal-Vakuum (falls nötig)
+journalctl --vacuum-size=100M
 # inaktive Standard-Themes entfernen, um Speicher zu sparen:
 rm -rf /var/www/barmbini/wp-content/themes/{storefront,twentytwentyfive,twentytwentyfour,twentytwentythree,twentytwentytwo}
 ```
 
+**Dauerhafte Journal-Begrenzung** (seit 2026-09-08 auf dem Live-Server aktiv):
+
+Datei `/etc/systemd/journald.conf.d/00-barmbini-size.conf`:
+
+```ini
+[Journal]
+SystemMaxUse=100M
+SystemKeepFree=200M
+MaxRetentionSec=14day
+Compress=yes
+```
+
+Danach: `systemctl restart systemd-journald`.  
+Ergebnis am 2026-09-08: Journal **~880 MB → ~65 MB**, Disk **`/` 77 % → 68 %** (~800 MB frei).
 ---
 
 ## 16. Abschluss-Verifikation (Checkliste)
