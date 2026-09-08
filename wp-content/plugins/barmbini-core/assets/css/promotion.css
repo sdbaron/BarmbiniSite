@@ -35,6 +35,95 @@
 	margin-bottom: 1rem;
 }
 
+.barmbini-promotion-image-link .barmbini-promotion-image,
+.barmbini-promotion-flyer .barmbini-promotion-image,
+.barmbini-promotion-flyer img {
+	margin-bottom: 0;
+}
+
+.barmbini-promotion-flyer {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+
+.barmbini-promotion-flyer .barmbini-promotion-image,
+.barmbini-promotion-flyer img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.barmbini-promotion-overlay {
+	position: absolute;
+	z-index: 1;
+	max-width: calc(100% - 1.5rem);
+	line-height: 1.2;
+	font-weight: 700;
+	pointer-events: none;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+	word-wrap: break-word;
+}
+
+.barmbini-promotion-flyer--top-left .barmbini-promotion-overlay {
+	top: 0.75rem;
+	left: 0.75rem;
+	text-align: left;
+}
+
+.barmbini-promotion-flyer--top-middle .barmbini-promotion-overlay {
+	top: 0.75rem;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+}
+
+.barmbini-promotion-flyer--top-right .barmbini-promotion-overlay {
+	top: 0.75rem;
+	right: 0.75rem;
+	text-align: right;
+}
+
+.barmbini-promotion-flyer--middle-left .barmbini-promotion-overlay {
+	top: 50%;
+	left: 0.75rem;
+	transform: translateY(-50%);
+	text-align: left;
+}
+
+.barmbini-promotion-flyer--middle-middle .barmbini-promotion-overlay {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
+
+.barmbini-promotion-flyer--middle-right .barmbini-promotion-overlay {
+	top: 50%;
+	right: 0.75rem;
+	transform: translateY(-50%);
+	text-align: right;
+}
+
+.barmbini-promotion-flyer--bottom-left .barmbini-promotion-overlay {
+	bottom: 0.75rem;
+	left: 0.75rem;
+	text-align: left;
+}
+
+.barmbini-promotion-flyer--bottom-middle .barmbini-promotion-overlay {
+	bottom: 0.75rem;
+	left: 50%;
+	transform: translateX(-50%);
+	text-align: center;
+}
+
+.barmbini-promotion-flyer--bottom-right .barmbini-promotion-overlay {
+	bottom: 0.75rem;
+	right: 0.75rem;
+	text-align: right;
+}
+
 .barmbini-promotion-title {
 	margin: 0 0 0.5rem;
 	font-size: 1.25rem;

@@ -64,7 +64,27 @@ Diese Einstellung gilt **pro Aktion**. Sie können z. B. eine Aktion mit lange
 
 ---
 
-## 5. Aktion veröffentlichen
+## 5. Overlay-Text auf dem Flyer
+
+In der Box **„Overlay auf dem Flyer"** (rechte Seitenleiste) können Sie einen kurzen Text **auf dem Flyer-Bild** platzieren – z. B. „Nur diese Woche“ oder „50 %“. Das ist kein Ersatz für Titel oder Beschreibung.
+
+| Feld | Bedeutung | Standard |
+|------|-----------|----------|
+| **Text** | Kurztext auf dem Bild (max. 80 Zeichen). **Leer lassen = kein Overlay.** | leer |
+| **Farbe** | Textfarbe (Farbwähler oder Hex, z. B. `#ffffff`) | Weiß |
+| **Größe (px)** | Schriftgröße zwischen 12 und 72 | 24 |
+| **Vertikale Position** | Oben / Mitte / Unten | Oben |
+| **Horizontale Position** | Links / Mitte / Rechts | Links |
+
+**Hinweise:**
+
+- Der Overlay erscheint auf der **Startseite** und auf der **Aktions-Einzelseite**, sobald ein Flyer-Bild gesetzt ist.
+- Ohne Flyer-Bild wird der Overlay-Text nicht angezeigt.
+- Wählen Sie eine Farbe mit gutem Kontrast zum Flyer; ein leichter Schatten hilft bei der Lesbarkeit.
+
+---
+
+## 6. Aktion veröffentlichen
 
 1. Sind Titel, Beschreibung, Flyer-Bild und Daten ausgefüllt?
 2. Klicken Sie rechts oben auf **„Veröffentlichen"**.
@@ -72,7 +92,7 @@ Diese Einstellung gilt **pro Aktion**. Sie können z. B. eine Aktion mit lange
 
 ---
 
-## 6. Aktion auf der Startseite einblenden (einmalig)
+## 7. Aktion auf der Startseite einblenden (einmalig)
 
 Damit Aktionen überhaupt auf der Startseite erscheinen, muss der Shortcode dort platziert sein. Das ist eine einmalige Einrichtung:
 
@@ -102,7 +122,7 @@ Sie können einzelne Elemente der Aktion ausblenden:
 
 ---
 
-## 7. Mehrere gleichzeitige Aktionen
+## 8. Mehrere gleichzeitige Aktionen
 
 Sie können mehrere Aktionen anlegen, die sich zeitlich überlappen. Alle gültigen Aktionen erscheinen nebeneinander auf der Startseite — üblicherweise ein bis drei Stück.
 
@@ -110,14 +130,14 @@ Sortiert wird nach Startdatum: Die **neueste Aktion zuerst**.
 
 ---
 
-## 8. Aktion bearbeiten oder löschen
+## 9. Aktion bearbeiten oder löschen
 
 - **Bearbeiten:** In der Übersicht auf den Titel klicken. Änderungen speichern.
 - **Löschen:** In der Übersicht auf „Papierkorb" klicken. Gelöschte Aktionen können 30 Tage lang wiederhergestellt werden.
 
 ---
 
-## 9. Archiv: Abgelaufene Aktionen
+## 10. Archiv: Abgelaufene Aktionen
 
 Sobald das Enddatum einer Aktion überschritten ist, wird sie automatisch aus der aktiven Ansicht entfernt und erscheint im **Archiv**. Das passiert ohne Ihr Zutun — Sie müssen nichts manuell verschieben.
 
@@ -135,7 +155,7 @@ Ein Klick auf **„Archiv"** listet alle abgelaufenen Aktionen. Sie können jede
 
 ---
 
-## 10. Aktion vorzeitig beenden
+## 11. Aktion vorzeitig beenden
 
 Es gibt zwei Wege:
 
@@ -146,7 +166,7 @@ Es gibt zwei Wege:
 
 ---
 
-## 11. Einzelansicht und Archivseite
+## 12. Einzelansicht und Archivseite
 
 Jede Aktion ist unter ihrer eigenen Adresse im Internet erreichbar, z. B.:
 
@@ -154,7 +174,7 @@ Jede Aktion ist unter ihrer eigenen Adresse im Internet erreichbar, z. B.:
 https://barmbini.de/aktion/sommerschlussverkauf/
 ```
 
-Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den Gültigkeitszeitraum und die vollständige Beschreibung. Abgelaufene Aktionen zeigen einen Hinweis **„Diese Aktion ist beendet"**, bleiben aber weiterhin abrufbar.
+Auf dieser Seite sehen Besucher den **Flyer in voller Größe** (inkl. optionalem Overlay-Text), den Titel, den Gültigkeitszeitraum und die vollständige Beschreibung. Abgelaufene Aktionen zeigen einen Hinweis **„Diese Aktion ist beendet"**, bleiben aber weiterhin abrufbar.
 
 ### Wie kommen Besucher dorthin?
 
@@ -163,13 +183,12 @@ Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den 
 
 ---
 
-## 12. Wichtige Hinweise
+## 13. Wichtige Hinweise
 
 - **Aktionen sind wie normale Beiträge bearbeitbar.** Sie können Gutenberg-Blöcke, Bilder und Formatierungen nutzen.
 - **Keine Aktion ohne Enddatum anlegen.** Ohne Enddatum erscheint die Aktion nicht auf der Startseite — das System verlangt einen definierten Zeitraum.
 - **Flyer-Bilder sollten nicht zu groß sein.** Empfohlene Größe: 800–1200 px Breite. Größere Bilder werden automatisch skaliert, verlangsamen aber die Seite.
 - **Der Gutenberg-Editor funktioniert ganz normal.** Sie können Absätze, Listen, Überschriften und alles andere verwenden, was Sie aus Beiträgen und Seiten kennen.
-- **Vorschau ist nicht nötig.** Da die Einzelansicht der Aktion deaktiviert ist, sehen Sie das Ergebnis direkt auf der Startseite.
 - **Mehrere Sprachen werden nicht unterstützt.** Die Website ist einsprachig Deutsch.
 
 ---
@@ -182,6 +201,7 @@ Auf dieser Seite sehen Besucher den **Flyer in voller Größe**, den Titel, den 
 4. **Beschreibung** schreiben (Block-Editor)
 5. **Start- und Enddatum** setzen (rechts: „Gültigkeitszeitraum")
 6. Optional: **Beschreibung auf Startseite** deaktivieren (rechts: „Startseiten-Anzeige")
-7. **Veröffentlichen**
+7. Optional: **Overlay-Text** auf dem Flyer setzen (rechts: „Overlay auf dem Flyer")
+8. **Veröffentlichen**
 
-🎉 Fertig. Die Aktion erscheint automatisch zum Startdatum.
+Fertig. Die Aktion erscheint automatisch zum Startdatum.
