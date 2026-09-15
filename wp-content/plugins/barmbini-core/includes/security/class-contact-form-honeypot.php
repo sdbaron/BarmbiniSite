@@ -52,10 +52,15 @@ class Barmbini_Core_Contact_Form_Honeypot {
 
 	/**
 	 * Blendet das Honeypot-Feld für Menschen aus (Bots sehen es weiterhin).
+	 * Nur auf Seiten mit Contact Form 7.
 	 *
 	 * @return void
 	 */
 	public function enqueue_styles() {
+		if ( ! Barmbini_Core_Frontend_Assets::page_needs_cf7() ) {
+			return;
+		}
+
 		wp_register_style( 'barmbini-core-cf7-honeypot', false, array(), BARMBINI_CORE_VERSION );
 		wp_enqueue_style( 'barmbini-core-cf7-honeypot' );
 		wp_add_inline_style(

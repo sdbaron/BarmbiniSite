@@ -32,6 +32,7 @@ class Barmbini_Core_Plugin {
 		$this->register_account_module();
 		$this->register_notifications_module();
 		$this->register_privacy_module();
+		$this->register_frontend_assets_module();
 		$this->register_security_module();
 		$this->register_contact_form_honeypot_module();
 		$this->register_address_settings_module();
@@ -188,6 +189,16 @@ class Barmbini_Core_Plugin {
 
 		$this->loader->add_filter( 'wp_privacy_personal_data_exporters', $privacy_exporter, 'register_exporter' );
 		$this->loader->add_filter( 'wp_privacy_personal_data_erasers', $privacy_exporter, 'register_eraser' );
+	}
+
+	/**
+	 * Registriert Frontend-Asset-Steuerung (Order Attribution aus, CF7 bedingt).
+	 *
+	 * @return void
+	 */
+	protected function register_frontend_assets_module() {
+		$assets = new Barmbini_Core_Frontend_Assets();
+		$assets->register();
 	}
 
 	/**

@@ -59,6 +59,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-top-product-categories-shortcode.php
 |   |   |-- class-homepage-layout.php
 |   |   `-- class-progressive-bg.php
+|   |-- frontend/
+|   |   `-- class-frontend-assets.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -81,7 +83,9 @@ wp-content/plugins/barmbini-core/
 |       |-- class-consent-recorder.php
 |       `-- class-privacy-exporter.php
 |   `-- security/
-|       `-- class-rest-api-hardening.php
+|       |-- class-rest-api-hardening.php
+|       |-- class-contact-form-honeypot.php
+|       `-- class-login-limiter.php
 |   `-- roles/
 |       `-- class-roles.php
 |   `-- guides/
@@ -175,6 +179,16 @@ Wichtig:
 - `class-top-product-categories-shortcode.php` stellt den Shortcode `[barmbini_top_product_categories]` bereit (Attribute: `columns`, `hide_empty`, `exclude`, `move_last`, `parent`, `orderby`, `order`). Er rendert die Top-Level-Produktkategorien als gruppierte Grids, jeweils mit Unterkategorien und/oder der Kategorie selbst, in Sektionen mit Überschrift und Trenner. Wurde aus dem MU-Plugin `mu-plugins/barmbini-sortiment-shortcodes.php` ins Plugin migriert. Auf der Seite „Sortiment" wird er mit `[barmbini_top_product_categories columns="4" hide_empty="0" exclude="60"]` verwendet.
 - `class-cache-maintenance.php` (Barmbini_Core_Cache_Maintenance) plant einen WP-Cron-Job, der alle 6 Stunden den **WP Fastest Cache** leert (Standard-Hook `wpfc_clear_all_cache` + Verzeichnis-Fallback + `wp_cache_flush`). Zweck: Zeitlich begrenzte Inhalte (z. B. abgelaufene Aktionen des CPT `barmbini_aktion`) verschwinden zuverlässig von der Startseite, da die Free-Version von WP Fastest Cache keine native Cache-Lebensdauer kennt und rein datumsbasierte Änderungen keine Cache-Invalidierung auslösen. Cron-Hook: `barmbini_core_cache_maintenance`, Intervall `barmbini_core_6_hours`. Deaktivierung räumt das Ereignis auf (`class-deactivator.php`).
 
+### 1b. Frontend-Assets-Modul (seit 0.10.3)
+
+Zweck:
+
+- Unnötige Frontend-Skripte auf Katalogseiten ohne Checkout reduzieren
+
+Verantwortung:
+
+- `class-frontend-assets.php` (Barmbini_Core_Frontend_Assets): deaktiviert WooCommerce **Order Attribution** (Option-Filter `pre_option_woocommerce_feature_order_attribution_enabled` → `no`, Tracking-Filter `wc_order_attribution_allow_tracking` → false, Dequeue von `sourcebuster-js` / `wc-order-attribution`). Lädt Contact Form 7 JS/CSS nur, wenn die Seite ein Formular braucht (`wpcf7_load_js` / `wpcf7_load_css`, Erkennung Shortcode/Block bzw. Kontakt-Slug, Filter `barmbini_core_load_cf7_assets`). Registriert in `class-plugin.php`/`register_frontend_assets_module()`.
+
 ### 2. Account-Modul
 
 Zweck:
@@ -247,7 +261,7 @@ Zweck:
 Verantwortung:
 
 - `class-rest-api-hardening.php` (Barmbini_Core_Rest_Api_Hardening): sperrt via `rest_endpoints`-Filter die Benutzer-Routen (`/wp/v2/users`, `users/{id}`, `users/me`, `users/{id}/posts`) für Aufrufer ohne `list_users`-Berechtigung. Dadurch liefert `GET /wp-json/wp/v2/users` keinen Benutzernamen mehr an nicht angemeldete Besucher (HTTP 404 `rest_no_route`). Angemeldete Administratoren behalten vollen Zugriff. Deaktiviert zusätzlich XML-RPC (`xmlrpc_enabled` → `false`), wodurch WordPress-XML-RPC-Methoden (z. B. `wp.getUsersBlogs`) mit Fehler 405 „XML-RPC-Dienst deaktiviert" antworten. Registriert in `class-plugin.php`/`register_security_module()`.
-- `class-contact-form-honeypot.php` (Barmbini_Core_Contact_Form_Honeypot): setzt einen minimalen, datenschutzfreundlichen Spam-Schutz für das Contact Form 7-Kontaktformular um. Ein per CSS verstecktes Feld (`your-website`) wird von Spambots typischerweise ausgefüllt; der Filter `wpcf7_spam` markiert die Einreichung dann als Spam. Kein externer Dienst, keine Cookies. Registriert in `class-plugin.php`/`register_contact_form_honeypot_module()`.
+- `class-contact-form-honeypot.php` (Barmbini_Core_Contact_Form_Honeypot): setzt einen minimalen, datenschutzfreundlichen Spam-Schutz für das Contact Form 7-Kontaktformular um. Ein per CSS verstecktes Feld (`your-website`) wird von Spambots typischerweise ausgefüllt; der Filter `wpcf7_spam` markiert die Einreichung dann als Spam. Honeypot-CSS nur auf Seiten mit CF7 (`Barmbini_Core_Frontend_Assets::page_needs_cf7()`). Kein externer Dienst, keine Cookies. Registriert in `class-plugin.php`/`register_contact_form_honeypot_module()`.
 - `class-login-limiter.php` (Barmbini_Core_Login_Limiter): begrenzt fehlgeschlagene Anmeldeversuche pro IP (5 Fehlversuche → 15 Minuten Sperre) über Transients; Filter `authenticate` + Actions `wp_login_failed`/`wp_login`. Keine Cookies, keine externen Dienste. Registriert in `class-plugin.php`/`register_login_limiter_module()`.
 
 Hinweis:
