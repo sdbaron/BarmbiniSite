@@ -1,0 +1,55 @@
+/**
+ * Progressive Background Images
+ *
+ * Platzhalter-Zustand bis HQ geladen ist.
+ * Blur liegt auf ::before, damit Kind-Inhalte (Text, Buttons) scharf bleiben.
+ *
+ * @since 0.10.2
+ */
+
+.barmbini-progressive-bg {
+	position: relative;
+	isolation: isolate;
+	background-color: #d8d8d8;
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+/* Weicher Platzhalter-Schleier nur über dem Hintergrund, nicht über dem Inhalt */
+.barmbini-progressive-bg:not(.barmbini-progressive-bg--loaded)::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	background-color: rgba(216, 216, 216, 0.15);
+	transition: opacity 0.45s ease-out;
+}
+
+.barmbini-progressive-bg > * {
+	position: relative;
+	z-index: 1;
+}
+
+.barmbini-progressive-bg.barmbini-progressive-bg--loaded::before {
+	opacity: 0;
+}
+
+.barmbini-progressive-bg.barmbini-progressive-bg--loaded {
+	background-color: transparent;
+}
+
+.barmbini-progressive-bg.barmbini-progressive-bg--failed::before {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.barmbini-progressive-bg:not(.barmbini-progressive-bg--loaded)::before {
+		backdrop-filter: none;
+		-webkit-backdrop-filter: none;
+		transition: none;
+	}
+}

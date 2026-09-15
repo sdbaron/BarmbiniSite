@@ -27,6 +27,7 @@ class Barmbini_Core_Plugin {
 		$this->register_account_menu_module();
 		$this->register_cache_maintenance_module();
 		$this->register_homepage_layout_module();
+		$this->register_progressive_bg_module();
 		$this->register_top_product_categories_module();
 		$this->register_account_module();
 		$this->register_notifications_module();
@@ -120,6 +121,16 @@ class Barmbini_Core_Plugin {
 	protected function register_homepage_layout_module() {
 		$layout = new Barmbini_Core_Homepage_Layout();
 		$layout->register();
+	}
+
+	/**
+	 * Registriert progressive Hintergrundbilder (Lazy-Load per IntersectionObserver).
+	 *
+	 * @return void
+	 */
+	protected function register_progressive_bg_module() {
+		$progressive_bg = new Barmbini_Core_Progressive_Bg();
+		$progressive_bg->register();
 	}
 
 	/**

@@ -289,6 +289,12 @@ Optionale Kurztext-Überlagerung auf dem Flyer (Farbe, Größe in px, Position 3
 
 Meta-Keys: `_barmbini_promotion_overlay_text`, `_barmbini_promotion_overlay_color`, `_barmbini_promotion_overlay_size`, `_barmbini_promotion_overlay_position_v`, `_barmbini_promotion_overlay_position_h`. Render: `Barmbini_Core_Promotion_Post_Type::render_flyer_with_overlay()`.
 
+### 11. Progressive Hintergrundbilder (umgesetzt ab 0.10.2)
+
+Universelles Lazy-Loading für CSS-`background-image` per IntersectionObserver (`class-progressive-bg.php`). Markup mit `data-bg-src` / `data-bg-src-sm` / `data-bg-src-md` / `data-bg-lq`, oder Selektoren über Filter `barmbini_progressive_bg_targets`. Startseite: Column `13_dbd800-e9` lädt 480 → 800/1920 bei Sichtbarkeit.
+
+**Anleitung:** `Docs/Barmbini_Anleitung_Progressive_Hintergrundbilder.md`
+
 ## Shop-Manager-Anleitung – Detaillierte Beschreibung
 
 Dieses Kapitel beschreibt die **interne Anleitung für den Shop Manager**

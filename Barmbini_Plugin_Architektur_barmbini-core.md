@@ -57,7 +57,8 @@ wp-content/plugins/barmbini-core/
 |   |   |-- class-promotion-post-type.php
 |   |   |-- class-promotion-shortcode.php
 |   |   |-- class-top-product-categories-shortcode.php
-|   |   `-- class-homepage-layout.php
+|   |   |-- class-homepage-layout.php
+|   |   `-- class-progressive-bg.php
 |   |-- account/
 |   |   |-- class-account-endpoint.php
 |   |   |-- class-subscription-settings.php
@@ -101,9 +102,11 @@ wp-content/plugins/barmbini-core/
     |   |-- footer-burger-menu.css
     |   |-- latest-news.css
     |   |-- homepage-hero.css
+    |   |-- progressive-bg.css
     |   `-- promotion.css
     `-- js/
-        `-- footer-burger-menu.js
+        |-- footer-burger-menu.js
+        `-- progressive-bg.js
 ```
 
 ## Bootstrap-Konzept
@@ -161,6 +164,7 @@ Wichtig:
   - **Beispiel-Hinweis**: `render_example_notice()` gibt auf `is_shop()`/`is_product_category()` einen grünen Balken „Die gezeigten Artikel dienen als Beispiele…“ aus (Klasse `.barmbini-example-notice`, Hook `woocommerce_before_main_content` Prio 30).
 - `class-catalog-hooks.php` lädt zusätzlich über `enqueue_global_styles()`/`get_global_inline_styles()` einen **globalen** Inline-Style (Handle `barmbini-core-global`, auf allen Seiten, unabhängig von WooCommerce): `.entry-hero-container-inner .entry-header { min-height: 120px !important }` — reduziert die Höhe des Kadence-Titelbanners auf inneren Seiten von 200 px auf **120 px**. Die Startseite (eigener Hero-Layout) und Produktseiten (kein Titelbanner) bleiben unverändert.
 - `class-homepage-layout.php` (Barmbini_Core_Homepage_Layout) lädt nur auf `is_front_page()` das Stylesheet `assets/css/homepage-hero.css`. Damit bleibt der Startseiten-Hero (Block-ID `.kb-row-layout-id13_93d54b-9c`) bis **600 px** zweispaltig (`grid-template-columns: repeat(2, minmax(0,1fr)) !important`), damit das Logo nicht überbreit gestapelt wird. Hinweis: Die Block-ID kann sich bei Neu-Erstellung des Hero-Blocks ändern (CSS-Kommentar).
+- `class-progressive-bg.php` (Barmbini_Core_Progressive_Bg, seit 0.10.2): Lazy-/Progressive-Loading für CSS-Hintergründe per IntersectionObserver. Universell über `data-bg-src` / `data-bg-src-sm` / `data-bg-src-md` / `data-bg-lq` oder konfigurierte Selektoren (Filter `barmbini_progressive_bg_targets`). Assets: `assets/js/progressive-bg.js`, `assets/css/progressive-bg.css`. Standard-Ziel auf der Startseite: `.kadence-column13_dbd800-e9 > .kt-inside-inner-col` mit Hintergrund-480/800/1920. Anleitung: `Docs/Barmbini_Anleitung_Progressive_Hintergrundbilder.md`.
 - `class-promotion-shortcode.php` rendert die Aktions-Karten mit `assets/css/promotion.css`: max. **500 px** Breite, Grid `minmax(300px, 500px)`, zentriert.
 - `class-footer-menu.php` steuert das mobile Footer-Menü per CSS/JS/Grid.
 - `class-address-shortcode.php` stellt den Adressblock als Shortcode bereit (Daten in `wp_options`). Das Telefonfeld wird als anklickbarer `tel:`-Link ausgegeben (nur Ziffern/`+`, z. B. `tel:04042945339`).

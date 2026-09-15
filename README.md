@@ -133,6 +133,7 @@ Die aktuelle nginx-Konfiguration liegt zusätzlich als Referenz unter
 ├── README.md                    # Diese Datei
 ├── Docs/                        # Benutzerdokumentation (Anleitungen, Inhalte, Referenzen)
 │   ├── Barmbini_Anleitung_Aktionen_Admin.md
+│   ├── Barmbini_Anleitung_Progressive_Hintergrundbilder.md
 │   ├── Barmbini_Seiteninhalte.md
 │   ├── Barmbini_Shortcodes.md
 │   ├── Barmbini_Rechtliche_Seiten.md
