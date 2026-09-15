@@ -106,12 +106,14 @@ class Barmbini_Core_Progressive_Bg {
 		$defaults = array();
 
 		if ( is_front_page() ) {
+			// Kein 'lq': vor DOMContentLoaded kein Bild via Progressive-JS.
+			// Wichtig: Im Kadence-Block darf ebenfalls kein Hintergrundbild gesetzt sein,
+			// sonst lädt der Browser die URL bereits über generiertes CSS (vor DOMContentLoaded).
 			$defaults[] = array(
 				'selector' => '.kadence-column13_dbd800-e9 > .kt-inside-inner-col',
 				'src'      => $base . 'Hintergrund-1920.jpg',
 				'srcMd'    => $base . 'Hintergrund-800.jpg',
 				'srcSm'    => $base . 'Hintergrund-480.jpg',
-				'lq'       => $base . 'Hintergrund-480.jpg',
 			);
 		}
 

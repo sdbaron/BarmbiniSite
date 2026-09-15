@@ -1,9 +1,10 @@
 /**
  * Progressive Background Images
  *
- * Lädt Hintergrundbilder erst bei Sichtbarkeit (IntersectionObserver).
- * Markup: Elemente mit data-bg-src (optional data-bg-src-sm/md, data-bg-lq).
- * Zusätzliche Ziele können per wp_localize_script (barmbiniProgressiveBg.targets) kommen.
+ * Lädt Hintergrundbilder erst nach DOMContentLoaded und nur bei Sichtbarkeit
+ * (IntersectionObserver). Markup: Elemente mit data-bg-src (optional
+ * data-bg-src-sm/md, data-bg-lq). Zusätzliche Ziele können per
+ * wp_localize_script (barmbiniProgressiveBg.targets) kommen.
  *
  * @since 0.10.2
  */
@@ -178,6 +179,7 @@
 
 	/**
 	 * Startet den Observer für alle markierten Elemente.
+	 * Wird ausschließlich nach DOMContentLoaded aufgerufen.
 	 *
 	 * @return {void}
 	 */
@@ -220,9 +222,21 @@
 		});
 	}
 
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', init);
-	} else {
+	/**
+	 * HQ-/Observer-Start erst nach DOMContentLoaded —
+	 * kein Nachladen während des HTML-Parsings.
+	 *
+	 * @return {void}
+	 */
+	function startAfterDomReady() {
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', init, { once: true });
+			return;
+		}
+
+		// DOMContentLoaded liegt bereits hinter uns (Skript im Footer / defer).
 		init();
 	}
+
+	startAfterDomReady();
 })();

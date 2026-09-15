@@ -10,9 +10,10 @@ Zielgruppe: Administratoren und Entwickler, die Hintergründe (z. B. Kadence-S
 
 Statt ein großes Hintergrundbild sofort zu laden, gilt:
 
-1. **Sofort sichtbar:** grauer Platzhalter und/oder ein kleines Bild (`data-bg-lq` bzw. Mobile-Variante).
-2. **Wenn das Element in den Viewport kommt:** das passende höherwertige Bild wird nachgeladen.
-3. **Übergang:** leichter Blur nur über dem Hintergrund (Text und Buttons bleiben scharf).
+1. **Sofort sichtbar (CSS/Kadence):** grauer Platzhalter und/oder ein kleines Bild im Block.
+2. **Nach `DOMContentLoaded`:** das Skript startet erst dann (kein HQ-Nachladen während des HTML-Parsings).
+3. **Wenn das Element in den Viewport kommt:** das passende höherwertige Bild wird nachgeladen.
+4. **Übergang:** leichter Blur nur über dem Hintergrund (Text und Buttons bleiben scharf).
 
 Das gilt für echte CSS-`background-image`-Flächen (Kadence Section/Column), **nicht** für normale Bild-Blöcke mit `<img>` (dort nutzt WordPress bereits `srcset`).
 
@@ -132,8 +133,19 @@ Code-Stelle: `includes/catalog/class-progressive-bg.php` → Methode `get_target
 
 1. Neue Varianten (klein / mittel / groß) in die Mediathek hochladen.
 2. In `get_targets()` (oder per Filter) die Dateinamen/URLs ersetzen.
-3. Optional im Editor der Startseite beim betreffenden Block das Kadence-Hintergrundbild auf die **kleine** Variante setzen (Platzhalter), damit ohne JavaScript etwas Sichtbares bleibt.
-4. Cache leeren (WP Fastest Cache) und hard-reload im Browser.
+3. **Kein Hintergrundbild im Kadence-Block** für diese Column setzen (oder leeren). Sonst schreibt Kadence `background-image` ins CSS — der Browser lädt die Datei **schon während des Parsings**, vor `DOMContentLoaded`, unabhängig von `lq` / Progressive-JS.
+4. Optional nur `background-color` in Kadence als Platzhalter.
+5. Cache leeren (WP Fastest Cache) und hard-reload im Browser.
+
+### Warum lädt `Hintergrund-480.jpg` trotzdem vor DOMContentLoaded?
+
+| Quelle | Wann lädt das Bild? |
+|--------|---------------------|
+| Kadence-Block → „Hintergrundbild“ / `backgroundImg` | Sofort mit dem CSS (oft **vor** DOMContentLoaded) |
+| Progressive-JS `lq` / `data-bg-lq` | Erst **nach** DOMContentLoaded |
+| Progressive-JS `src` / `srcMd` / `srcSm` | Nach DOMContentLoaded + Sichtbarkeit |
+
+`lq` auskommentieren verhindert nur das Setzen durch unser Skript — **nicht** ein Bild, das Kadence bereits im CSS hat. Auf Desktop ohne `lq` und ohne Kadence-Hintergrundbild startet erst nach DOMContentLoaded der Download von `src` (1920) bzw. auf schmaleren Viewports `srcMd`/`srcSm`.
 
 ### Anderen Block statt der aktuellen Column
 
@@ -189,7 +201,7 @@ Skript: `assets/js/progressive-bg.js`
 | Datei | Rolle |
 |-------|-------|
 | `includes/catalog/class-progressive-bg.php` | Registrierung, Defaults, Filter |
-| `assets/js/progressive-bg.js` | IntersectionObserver, URL-Wahl, Sicherheitscheck |
+| `assets/js/progressive-bg.js` | Start nach DOMContentLoaded, IntersectionObserver, URL-Wahl, Sicherheitscheck |
 | `assets/css/progressive-bg.css` | Platzhalter und Übergang |
 
 Technik-Kurzbeschreibung auch in: `Barmbini_Plugin_Architektur_barmbini-core.md` (Catalog-Modul).
