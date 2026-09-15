@@ -5,6 +5,7 @@
  * Reduziert unnötige Frontend-Skripte auf Katalogseiten:
  * - WooCommerce Order Attribution (Sourcebuster) dauerhaft aus
  * - Contact Form 7 CSS/JS nur auf Seiten mit Formular
+ * - WooCommerce Cart-/Frontend-JS nur auf Shop-, Produkt- und Kontoseiten
  *
  * @package Barmbini_Core
  * @since 0.10.3
@@ -29,6 +30,8 @@ class Barmbini_Core_Frontend_Assets {
 		add_filter( 'wpcf7_load_js', array( $this, 'should_load_cf7_assets' ) );
 		add_filter( 'wpcf7_load_css', array( $this, 'should_load_cf7_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_cf7_assets_when_unused' ), 100 );
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_woocommerce_scripts_when_unused' ), 100 );
 	}
 
 	/**
@@ -83,6 +86,35 @@ class Barmbini_Core_Frontend_Assets {
 	}
 
 	/**
+	 * Entfernt WooCommerce-Frontend-/Cart-JS außerhalb von Shop und Konto.
+	 *
+	 * @return void
+	 */
+	public function dequeue_woocommerce_scripts_when_unused() {
+		if ( self::page_needs_woocommerce_scripts() ) {
+			return;
+		}
+
+		$handles = array(
+			'woocommerce',
+			'wc-add-to-cart',
+			'wc-add-to-cart-variation',
+			'wc-cart-fragments',
+			'wc-cart',
+			'wc-checkout',
+			'wc-single-product',
+			'wc-jquery-blockui',
+			'jquery-blockui',
+			'wc-js-cookie',
+			'js-cookie',
+		);
+
+		foreach ( $handles as $handle ) {
+			wp_dequeue_script( $handle );
+		}
+	}
+
+	/**
 	 * Prüft, ob die aktuelle Frontend-Seite CF7-Assets braucht.
 	 *
 	 * Erkennung: Shortcode/Block im Inhalt, bekannte Kontakt-Slug, Filter.
@@ -117,5 +149,30 @@ class Barmbini_Core_Frontend_Assets {
 		 * @param bool $needs Aktuelle Entscheidung.
 		 */
 		return (bool) apply_filters( 'barmbini_core_load_cf7_assets', $needs );
+	}
+
+	/**
+	 * Prüft, ob WooCommerce-Frontend-JS auf dieser Seite nötig ist.
+	 *
+	 * Behalten auf Shop/Produkt/Taxonomie, Warenkorb, Kasse und Mein Konto.
+	 *
+	 * @return bool
+	 */
+	public static function page_needs_woocommerce_scripts() {
+		$needs = false;
+
+		if ( function_exists( 'is_woocommerce' ) ) {
+			$needs = is_woocommerce()
+				|| is_cart()
+				|| is_checkout()
+				|| is_account_page();
+		}
+
+		/**
+		 * Filter: WooCommerce-Frontend-JS auf dieser Anfrage laden?
+		 *
+		 * @param bool $needs Aktuelle Entscheidung.
+		 */
+		return (bool) apply_filters( 'barmbini_core_load_woocommerce_scripts', $needs );
 	}
 }
