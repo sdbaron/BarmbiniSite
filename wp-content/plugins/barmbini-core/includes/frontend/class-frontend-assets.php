@@ -6,6 +6,7 @@
  * - WooCommerce Order Attribution (Sourcebuster) dauerhaft aus
  * - Contact Form 7 CSS/JS nur auf Seiten mit Formular
  * - WooCommerce Cart-/Frontend-JS nur auf Shop-, Produkt- und Kontoseiten
+ * - defer für eigene und ausgewählte Theme-/Plugin-Skripte
  *
  * @package Barmbini_Core
  * @since 0.10.3
@@ -32,6 +33,7 @@ class Barmbini_Core_Frontend_Assets {
 		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_cf7_assets_when_unused' ), 100 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'dequeue_woocommerce_scripts_when_unused' ), 100 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'apply_defer_strategy' ), 999 );
 	}
 
 	/**
@@ -111,6 +113,43 @@ class Barmbini_Core_Frontend_Assets {
 
 		foreach ( $handles as $handle ) {
 			wp_dequeue_script( $handle );
+		}
+	}
+
+	/**
+	 * Setzt loading strategy=defer für sichere Frontend-Handles.
+	 *
+	 * Nicht: jQuery (Inline/abhängige Plugins), CF7 (Inline-before),
+	 * Kadence Navigation (Theme setzt bereits async).
+	 *
+	 * @return void
+	 */
+	public function apply_defer_strategy() {
+		if ( is_admin() ) {
+			return;
+		}
+
+		/**
+		 * Filter: Script-Handles, die mit defer geladen werden sollen.
+		 *
+		 * @param string[] $handles Script-Handles.
+		 */
+		$handles = apply_filters(
+			'barmbini_core_defer_script_handles',
+			array(
+				'barmbini-core-footer-burger-menu',
+				'barmbini-core-progressive-bg',
+			)
+		);
+
+		foreach ( $handles as $handle ) {
+			$handle = (string) $handle;
+			if ( '' === $handle ) {
+				continue;
+			}
+			if ( wp_script_is( $handle, 'registered' ) || wp_script_is( $handle, 'enqueued' ) ) {
+				wp_script_add_data( $handle, 'strategy', 'defer' );
+			}
 		}
 	}
 

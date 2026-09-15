@@ -130,7 +130,10 @@ class Barmbini_Core_Footer_Menu {
 			BARMBINI_CORE_URL . 'assets/js/footer-burger-menu.js',
 			array(),
 			BARMBINI_CORE_VERSION,
-			true
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
 		);
 	}
 }

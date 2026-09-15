@@ -51,7 +51,10 @@ class Barmbini_Core_Progressive_Bg {
 			BARMBINI_CORE_URL . 'assets/js/progressive-bg.js',
 			array(),
 			BARMBINI_CORE_VERSION,
-			true
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
 		);
 
 		wp_localize_script(
